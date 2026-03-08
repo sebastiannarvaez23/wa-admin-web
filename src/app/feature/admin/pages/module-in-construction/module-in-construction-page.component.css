@@ -1,0 +1,57 @@
+.text {
+    font-size: 26px;
+    font-weight: 600;
+    padding-left: 20px;
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.construction-wrapper {
+    position: absolute;
+    top: 60px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.construction-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    text-align: center;
+    max-width: 420px;
+    padding: 20px;
+}
+
+.icon-ring {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    background: var(--primary-color-hover);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-ring i {
+    font-size: 2.8rem;
+    color: var(--primary-color);
+}
+
+.construction-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0;
+}
+
+.construction-message {
+    font-size: 0.95rem;
+    color: #999;
+    margin: 0;
+    line-height: 1.6;
+}

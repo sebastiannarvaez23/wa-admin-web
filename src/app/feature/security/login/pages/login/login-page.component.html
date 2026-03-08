@@ -1,0 +1,50 @@
+<section class="login-section">
+    <div class="login-wrapper">
+
+        <wa-card-primary class="login-card">
+            <div class="login-form-inner">
+
+                <div class="login-brand">
+                    <img class="auth-logo"
+                         [src]="(themeService.theme$ | async) === 'dark'
+                                  ? 'assets/logo/Logo dark.png'
+                                  : 'assets/logo/Logo light.png'"
+                         alt="Warehouse Anywhere Admin">
+                </div>
+
+                <h1 class="login-title">{{ 'security.auth.subtitle' | translate }}</h1>
+
+                <form [formGroup]="form" autocomplete="new-password">
+                    <wa-form-field formControlName="username"
+                        [label]="'security.auth.form.user' | translate"
+                        [placeholder]="'security.auth.form.placeholder-user' | translate"
+                        [invalid]="isInvalid('username')"
+                        [maxLength]="20" [allowed]="'alphanumeric'" [extraChars]="'._-'" [lowercase]="true">
+                    </wa-form-field>
+
+                    <wa-password-input formControlName="password"
+                        [label]="'security.auth.form.ps' | translate"
+                        [placeholder]="'security.auth.form.placeholder-password' | translate"
+                        [invalid]="isInvalid('password')">
+                    </wa-password-input>
+                </form>
+
+                <div class="error-banner" *ngIf="errorMessage">
+                    <i class="pi pi-exclamation-triangle"></i> {{ errorMessage }}
+                </div>
+
+                <div class="login-actions">
+                    <wa-btn [loading]="loading" (clicked)="login()">
+                        {{ loading
+                            ? ('security.auth.form.logging-in' | translate)
+                            : ('security.auth.form.login' | translate) }}
+                    </wa-btn>
+                </div>
+
+            </div>
+        </wa-card-primary>
+
+        <p class="login-footer">{{ 'security.register.common.footer' | translate }}</p>
+
+    </div>
+</section>

@@ -1,0 +1,114 @@
+:host {
+    display: block;
+}
+
+.page-title {
+    font-size: 26px;
+    font-weight: 600;
+    padding-left: 20px;
+    color: var(--primary-color);
+    white-space: nowrap;
+}
+
+.page-title i {
+    margin: 0 10px;
+    vertical-align: middle;
+}
+
+.settings-wrapper {
+    position: absolute;
+    margin-top: 35px;
+    width: 95%;
+    left: 2.5%;
+}
+
+/* ---- Tab bar ---- */
+.settings-tabs {
+    display: flex;
+    gap: 2px;
+    border-bottom: 2px solid var(--surface-border);
+    padding: 8px 0 0;
+}
+
+.tab-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 20px;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    transition: color 0.2s, background 0.2s;
+    font-family: inherit;
+}
+
+.tab-btn i { font-size: 1rem; }
+
+.tab-btn:hover {
+    color: var(--primary-color);
+    background: rgba(0, 0, 0, 0.025);
+}
+
+.tab-btn.active {
+    color: var(--primary-color);
+    border-bottom-color: var(--primary-color);
+    font-weight: 600;
+}
+
+/* ---- Scrollable content ---- */
+.tab-content-area {
+    padding: 20px 0;
+    max-height: calc(100vh - 260px);
+    overflow-y: auto;
+    overflow-x: auto;
+}
+
+.tab-content-area::-webkit-scrollbar { width: 5px; }
+.tab-content-area::-webkit-scrollbar-track { background: transparent; }
+.tab-content-area::-webkit-scrollbar-thumb {
+    background: var(--surface-border);
+    border-radius: 99px;
+}
+
+/* ---- Mobile ---- */
+@media (max-width: 768px) {
+    :host { width: 100%; overflow-x: hidden; }
+
+    .settings-wrapper {
+        position: static;
+        width: 100%;
+        padding: 0 16px;
+        box-sizing: border-box;
+        margin: 16px 0 0;
+        left: auto;
+    }
+
+    .settings-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        touch-action: pan-x;
+        flex-wrap: nowrap;
+        scrollbar-width: none;
+        padding: 8px 0 0;
+    }
+
+    .settings-tabs::-webkit-scrollbar { display: none; }
+
+    .tab-btn {
+        flex-shrink: 0;
+        white-space: nowrap;
+        padding: 8px 14px;
+        font-size: 0.82rem;
+    }
+
+    .tab-content-area {
+        max-height: calc(100dvh - 280px);
+        overflow-x: hidden;
+    }
+}

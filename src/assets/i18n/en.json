@@ -1,0 +1,86 @@
+{
+  "sidebar": {
+    "index": "Dashboard",
+    "tenants": "Companies",
+    "users-roles": "Users & Roles",
+    "security": "Security",
+    "settings": "Settings",
+    "subscriptions": "Subscriptions",
+    "billing": "Billing",
+    "features": "Features",
+    "ai": "AI",
+    "support": "Support",
+    "docs": "Documentation",
+    "analytics": "Analytics",
+    "audit": "Audit",
+    "group": {
+      "platform": "Platform",
+      "commercial": "Commercial",
+      "support": "Support",
+      "analytics": "Analytics"
+    }
+  },
+  "admin": {
+    "settings": {
+      "title": "Settings",
+      "subtitle": "Manage your account preferences",
+      "tab": {
+        "preferences": "Preferences"
+      }
+    }
+  },
+  "settings": {
+    "preferences": {
+      "title": "Application preferences",
+      "subtitle": "Customize your platform experience.",
+      "theme-section": "Appearance",
+      "theme-label": "Theme",
+      "theme-hint": "Affects the entire application interface",
+      "theme-light": "Light",
+      "theme-dark": "Dark",
+      "theme-lila": "Lilac",
+      "theme-pink": "Pink",
+      "theme-amber": "Amber",
+      "theme-crimson": "Crimson",
+      "theme-ocean": "Ocean",
+      "theme-mint": "Mint",
+      "region-section": "Language & region",
+      "language-label": "Language",
+      "language-es": "Spanish",
+      "language-en": "English",
+      "timezone-label": "Timezone",
+      "dateformat-label": "Date format",
+      "save": "Save preferences",
+      "saved": "Preferences saved"
+    }
+  },
+  "security": {
+    "auth": {
+      "title": "Warehouse Anywhere Admin",
+      "subtitle": "Sign in",
+      "form": {
+        "user": "Username",
+        "ps": "Password",
+        "login": "Sign in",
+        "logging-in": "Signing in...",
+        "placeholder-user": "e.g. admin",
+        "placeholder-password": "Your password"
+      },
+      "error": {
+        "invalid-credentials": "Invalid username or password."
+      }
+    },
+    "register": {
+      "common": {
+        "footer": "All rights reserved - Warehouse Anywhere® v 1.0"
+      }
+    }
+  },
+  "dialog": {
+    "logout": {
+      "title": "Sign out",
+      "message": "Are you sure you want to sign out?",
+      "confirm": "Sign out"
+    }
+  }
+}

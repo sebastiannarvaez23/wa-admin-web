@@ -1,0 +1,86 @@
+{
+  "sidebar": {
+    "index": "Dashboard",
+    "tenants": "Empresas",
+    "users-roles": "Usuarios y Roles",
+    "security": "Seguridad",
+    "settings": "Configuraciones",
+    "subscriptions": "Suscripciones",
+    "billing": "Facturación",
+    "features": "Funcionalidades",
+    "ai": "IA",
+    "support": "Soporte",
+    "docs": "Documentación",
+    "analytics": "Analíticas",
+    "audit": "Auditoría",
+    "group": {
+      "platform": "Plataforma",
+      "commercial": "Comercial",
+      "support": "Soporte",
+      "analytics": "Analítica"
+    }
+  },
+  "admin": {
+    "settings": {
+      "title": "Configuraciones",
+      "subtitle": "Gestiona las preferencias de tu cuenta",
+      "tab": {
+        "preferences": "Preferencias"
+      }
+    }
+  },
+  "settings": {
+    "preferences": {
+      "title": "Preferencias de la aplicación",
+      "subtitle": "Personaliza la experiencia de uso de la plataforma.",
+      "theme-section": "Apariencia",
+      "theme-label": "Tema",
+      "theme-hint": "Afecta la interfaz de toda la aplicación",
+      "theme-light": "Claro",
+      "theme-dark": "Oscuro",
+      "theme-lila": "Lila",
+      "theme-pink": "Rosa",
+      "theme-amber": "Ámbar",
+      "theme-crimson": "Carmesí",
+      "theme-ocean": "Océano",
+      "theme-mint": "Menta",
+      "region-section": "Idioma y región",
+      "language-label": "Idioma",
+      "language-es": "Español",
+      "language-en": "English",
+      "timezone-label": "Zona horaria",
+      "dateformat-label": "Formato de fecha",
+      "save": "Guardar preferencias",
+      "saved": "Preferencias guardadas"
+    }
+  },
+  "security": {
+    "auth": {
+      "title": "Warehouse Anywhere Admin",
+      "subtitle": "Iniciar sesión",
+      "form": {
+        "user": "Usuario",
+        "ps": "Contraseña",
+        "login": "Ingresar",
+        "logging-in": "Ingresando...",
+        "placeholder-user": "Ej. admin",
+        "placeholder-password": "Tu contraseña"
+      },
+      "error": {
+        "invalid-credentials": "Usuario o contraseña incorrectos."
+      }
+    },
+    "register": {
+      "common": {
+        "footer": "Derechos reservados - Warehouse Anywhere® v 1.0"
+      }
+    }
+  },
+  "dialog": {
+    "logout": {
+      "title": "Cerrar sesión",
+      "message": "¿Estás seguro que deseas cerrar sesión?",
+      "confirm": "Cerrar sesión"
+    }
+  }
+}

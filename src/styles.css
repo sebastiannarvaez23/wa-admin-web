@@ -1,0 +1,7 @@
+/* ================================================================
+   wa-admin-web – estilos globales específicos de esta app.
+   Los temas, estilos base, utilidades y dimensiones de componentes
+   se importan desde la librería en angular.json:
+     - wa-components-web/src/lib/themes.css
+     - wa-components-web/src/lib/global-styles.css
+   ================================================================ */

@@ -1,0 +1,94 @@
+.login-section {
+    min-height: 100vh;
+    width: 100%;
+    background: var(--very-like);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    box-sizing: border-box;
+}
+
+.login-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 420px;
+    gap: 20px;
+}
+
+.login-card {
+    width: 100%;
+}
+
+.login-form-inner {
+    padding: 20px 12px 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-brand {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.auth-logo {
+    height: 100px;
+    width: auto;
+    max-width: 420px;
+    object-fit: contain;
+}
+
+.login-title {
+    text-align: center;
+    font-size: 1.7rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin: 0 0 24px;
+}
+
+.login-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.error-banner {
+    background: #fdecea;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.login-footer {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin: 0;
+    opacity: 0.7;
+}
+
+@media (max-width: 480px) {
+    .login-section {
+        padding: 24px 12px;
+        align-items: flex-start;
+        padding-top: 48px;
+    }
+
+    .login-wrapper {
+        max-width: 100%;
+    }
+
+    .login-title {
+        font-size: 1.45rem;
+    }
+}

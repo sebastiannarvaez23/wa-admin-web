@@ -1,0 +1,22 @@
+<span class="page-title">
+    <i class="bx bx-cog"></i>
+    {{ 'admin.settings.title' | translate }}
+</span>
+
+<div class="settings-wrapper">
+
+    <div class="settings-tabs">
+        <button class="tab-btn"
+            [class.active]="activeTab === 'preferences'"
+            (click)="activeTab = 'preferences'">
+            <i class="bx bx-slider"></i>
+            {{ 'admin.settings.tab.preferences' | translate }}
+        </button>
+    </div>
+
+    <div class="tab-content-area">
+        <wa-settings-preferences *ngIf="activeTab === 'preferences'">
+        </wa-settings-preferences>
+    </div>
+
+</div>
