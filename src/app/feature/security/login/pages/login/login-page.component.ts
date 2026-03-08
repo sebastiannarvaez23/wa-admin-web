@@ -3,7 +3,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 
-import { AuthService, ThemeService } from 'wa-components-web';
+import { ThemeService } from 'wa-components-web';
+import { AdminAuthService } from '../../../../../core/services/admin-auth.service';
 import { isFieldInvalid } from '../../../../../core/utils/form.utils';
 
 @Component({
@@ -20,7 +21,7 @@ export class LoginPageComponent {
     constructor(
         private fb: FormBuilder,
         private router: Router,
-        private authService: AuthService,
+        private adminAuthService: AdminAuthService,
         private translate: TranslateService,
         public themeService: ThemeService,
     ) {
@@ -42,7 +43,7 @@ export class LoginPageComponent {
         this.loading = true;
         this.errorMessage = null;
         const { username, password } = this.form.value;
-        this.authService.login(username, password).subscribe({
+        this.adminAuthService.login(username, password).subscribe({
             next: () => this.router.navigate(['/admin/dashboard']),
             error: (err: { error?: { detail?: string } }) => {
                 this.loading = false;

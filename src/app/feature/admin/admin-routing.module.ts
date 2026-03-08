@@ -5,11 +5,13 @@ import { LayoutPageComponent } from 'src/app/core/components/layout-page/layout-
 import { DashboardPageComponent } from './pages/dashboard/dashboard-page.component';
 import { ModuleInConstructionPageComponent } from './pages/module-in-construction/module-in-construction-page.component';
 import { SettingsPageComponent } from './pages/settings/settings-page.component';
+import { authGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
     {
         path: '',
         component: LayoutPageComponent,
+        canActivate: [authGuard],
         children: [
             { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
 

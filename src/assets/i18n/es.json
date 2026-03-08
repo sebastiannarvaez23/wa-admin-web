@@ -17,7 +17,11 @@
       "platform": "Plataforma",
       "commercial": "Comercial",
       "support": "Soporte",
-      "analytics": "Analítica"
+      "analytics": "Analítica",
+      "system": "Sistema"
+    },
+    "footer": {
+      "platform": "Arisoft · WA Plataforma Administrativa"
     }
   },
   "admin": {
@@ -76,7 +80,14 @@
       }
     }
   },
+  "auth": {
+    "login-success": "Sesión iniciada correctamente"
+  },
   "dialog": {
+    "common": {
+      "cancel": "Cancelar",
+      "confirm": "Confirmar"
+    },
     "logout": {
       "title": "Cerrar sesión",
       "message": "¿Estás seguro que deseas cerrar sesión?",

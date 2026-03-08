@@ -18,6 +18,9 @@
       "commercial": "Commercial",
       "support": "Support",
       "analytics": "Analytics"
+    },
+    "footer": {
+      "platform": "Arisoft · WA Administrative Platform"
     }
   },
   "admin": {
