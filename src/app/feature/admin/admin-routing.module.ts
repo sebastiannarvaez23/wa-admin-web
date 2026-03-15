@@ -6,6 +6,8 @@ import { DashboardPageComponent } from './pages/dashboard/dashboard-page.compone
 import { ModuleInConstructionPageComponent } from './pages/module-in-construction/module-in-construction-page.component';
 import { SettingsPageComponent } from './pages/settings/settings-page.component';
 import { SubscriptionsPageComponent } from './pages/subscriptions/subscriptions-page.component';
+import { FeaturesPageComponent } from './pages/features/features-page.component';
+import { UsersRolesPageComponent } from './pages/users-roles/users-roles-page.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
@@ -21,14 +23,14 @@ const routes: Routes = [
 
             // Plataforma
             { path: 'tenants',   component: ModuleInConstructionPageComponent },
-            { path: 'users',     component: ModuleInConstructionPageComponent },
+            { path: 'users',     component: UsersRolesPageComponent },
             { path: 'security',  component: ModuleInConstructionPageComponent },
             { path: 'settings',  component: SettingsPageComponent },
 
             // Comercial
             { path: 'subscriptions', component: SubscriptionsPageComponent },
             { path: 'billing',       component: ModuleInConstructionPageComponent },
-            { path: 'features',      component: ModuleInConstructionPageComponent },
+            { path: 'features',      component: FeaturesPageComponent },
             { path: 'ai-features',   component: ModuleInConstructionPageComponent },
 
             // Soporte

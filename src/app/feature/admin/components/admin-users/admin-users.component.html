@@ -1,0 +1,275 @@
+<!-- ── Page header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h2>{{ 'admin.users-roles.users.title' | translate }}</h2>
+        <p class="subtitle">{{ 'admin.users-roles.users.subtitle' | translate }}</p>
+    </div>
+    <wa-btn (clicked)="openCreate()">
+        <i class="bx bx-plus"></i>
+        {{ 'admin.users-roles.users.new-user' | translate }}
+    </wa-btn>
+</div>
+
+<!-- ── Table shell ──────────────────────────────────────────────────────── -->
+<div class="table-shell">
+
+    <!-- Table scrollable area -->
+    <div class="table-scrollable">
+
+        <!-- Column headers (sticky top: 0) -->
+        <div class="table-head" [style.grid-template-columns]="gridTemplate">
+            <span *ngFor="let col of tableConfig.columns" class="col-header"
+                [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
+                {{ col.label | translate }}
+                <i *ngIf="col.filterable && filterForm.get(col.key)?.value" class="bx bx-filter-alt filter-active-badge"
+                    [title]="'admin.users-roles.users.filter.active-badge' | translate"></i>
+            </span>
+            <span *ngIf="tableConfig.editable || tableConfig.deletable" class="col-header">
+                {{ 'admin.users-roles.users.table.actions' | translate }}
+            </span>
+        </div>
+
+        <!-- Filter row (sticky top: 44px) -->
+        <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
+            <ng-container *ngFor="let col of tableConfig.columns">
+
+                <!-- Text filter -->
+                <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
+                    <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
+                        <i class="bx bx-search filter-icon"></i>
+                        <input [formControlName]="col.key" class="filter-input" autocomplete="off"
+                            [placeholder]="'admin.users-roles.users.filter.placeholder' | translate">
+                        <button *ngIf="filterForm.get(col.key)?.value" class="filter-clear-btn" type="button"
+                            (click)="clearFilter(col.key)">
+                            <i class="bx bx-x"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Select filter or spacer -->
+                <ng-template #selectOrSpacer>
+                    <div class="filter-cell" *ngIf="col.filterable && col.filterType === 'select'; else filterSpacer">
+                        <select [formControlName]="col.key" class="filter-select"
+                            [class.has-value]="filterForm.get(col.key)?.value">
+                            <option *ngFor="let opt of col.filterOptions" [value]="opt.value">
+                                {{ opt.label | translate }}
+                            </option>
+                        </select>
+                    </div>
+                    <ng-template #filterSpacer>
+                        <div class="filter-cell filter-spacer"></div>
+                    </ng-template>
+                </ng-template>
+
+            </ng-container>
+
+            <!-- Actions column: clear-all button -->
+            <div class="filter-cell filter-actions-cell" *ngIf="tableConfig.editable || tableConfig.deletable">
+                <button *ngIf="hasActiveFilters" class="clear-all-btn" type="button" (click)="clearFilters()">
+                    <i class="bx bx-filter-alt"></i>
+                    {{ 'admin.users-roles.users.filter.clear' | translate }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="loading">
+            <i class="bx bx-loader-alt bx-spin"></i>
+            <span>{{ 'admin.users-roles.users.loading' | translate }}</span>
+        </div>
+
+        <!-- Data rows -->
+        <ng-container *ngIf="!loading">
+            <div class="table-row" *ngFor="let user of pagedUsers" [style.grid-template-columns]="gridTemplate">
+
+                <ng-container *ngFor="let col of tableConfig.columns">
+                    <ng-container [ngSwitch]="col.type">
+
+                        <!-- user-cell -->
+                        <div *ngSwitchCase="'user-cell'" class="user-cell">
+                            <div class="avatar" [ngClass]="getRoleClass(user.rol?.name ?? '')">
+                                {{ getInitials(user) }}
+                            </div>
+                            <div class="user-info">
+                                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                                <span class="user-phone">{{ user.telephone }}</span>
+                            </div>
+                        </div>
+
+                        <!-- text -->
+                        <span *ngSwitchCase="'text'" class="cell-text">
+                            {{ getCellValue(user, col.key) }}
+                        </span>
+
+                        <!-- muted (username with @) -->
+                        <span *ngSwitchCase="'muted'" class="cell-muted">
+                            {{ '@' + user.username }}
+                        </span>
+
+                        <!-- role-badge -->
+                        <span *ngSwitchCase="'role-badge'" class="role-badge"
+                            [ngClass]="getRoleClass(user.rol?.name ?? '')">
+                            {{ user.rol?.name ?? '—' }}
+                        </span>
+
+                        <!-- status-badge -->
+                        <span *ngSwitchCase="'status-badge'" class="status-badge" [class.active]="user.is_active"
+                            [class.inactive]="!user.is_active">
+                            <i class="bx" [ngClass]="user.is_active ? 'bxs-circle' : 'bx-circle'"></i>
+                            {{ (user.is_active
+                            ? 'admin.users-roles.users.status.active'
+                            : 'admin.users-roles.users.status.inactive') | translate }}
+                        </span>
+
+                    </ng-container>
+                </ng-container>
+
+                <!-- Action buttons -->
+                <div *ngIf="tableConfig.editable || tableConfig.deletable" class="row-actions">
+                    <button *ngIf="tableConfig.editable" class="icon-btn edit" (click)="openEdit(user)"
+                        [title]="'common.edit' | translate">
+                        <i class="bx bx-edit"></i>
+                    </button>
+                    <button *ngIf="tableConfig.deletable" class="icon-btn" [class.toggle-on]="user.is_active"
+                        [class.toggle-off]="!user.is_active" (click)="toggleActive(user)"
+                        [title]="(user.is_active ? 'admin.users-roles.users.actions.deactivate' : 'admin.users-roles.users.actions.activate') | translate">
+                        <i class="bx" [ngClass]="user.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="pagedUsers.length === 0">
+                <i class="bx" [ngClass]="hasActiveFilters ? 'bx-search-alt' : 'bx-group'"></i>
+                <span>
+                    {{ (hasActiveFilters
+                    ? 'admin.users-roles.users.empty.filtered'
+                    : 'admin.users-roles.users.empty.no-users') | translate }}
+                </span>
+                <button *ngIf="hasActiveFilters" class="clear-filters-link" type="button" (click)="clearFilters()">
+                    {{ 'admin.users-roles.users.filter.clear-all' | translate }}
+                </button>
+            </div>
+
+        </ng-container><!-- /!loading -->
+
+    </div><!-- /table-scrollable -->
+
+    <!-- Paginator -->
+    <div class="paginator" *ngIf="total > 0">
+
+        <span class="record-count">
+            <strong>{{ total }}</strong>
+            {{ (total === 1 ? 'admin.users-roles.users.paginator.record' : 'admin.users-roles.users.paginator.records')
+            | translate }}
+        </span>
+
+        <div class="page-nav" *ngIf="totalPages > 1">
+            <button class="page-btn" [title]="'admin.users-roles.users.paginator.first' | translate"
+                [disabled]="currentPage === 1" (click)="onPageChange(1)">
+                <i class="bx bx-chevrons-left"></i>
+            </button>
+            <button class="page-btn" [title]="'admin.users-roles.users.paginator.prev' | translate"
+                [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+                <i class="bx bx-chevron-left"></i>
+            </button>
+
+            <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+
+            <button class="page-btn" [title]="'admin.users-roles.users.paginator.next-page' | translate"
+                [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+                <i class="bx bx-chevron-right"></i>
+            </button>
+            <button class="page-btn" [title]="'admin.users-roles.users.paginator.last' | translate"
+                [disabled]="currentPage === totalPages" (click)="onPageChange(totalPages)">
+                <i class="bx bx-chevrons-right"></i>
+            </button>
+        </div>
+
+    </div>
+
+</div><!-- /table-shell -->
+
+<!-- ── Edit / Create modal ──────────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ (editingUser
+                ? 'admin.users-roles.users.modal.edit-title'
+                : 'admin.users-roles.users.modal.create-title') | translate }}</h3>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <form [formGroup]="form" class="modal-form" autocomplete="off">
+            <div class="form-row-2">
+                <wa-form-field formControlName="first_name"
+                    [label]="'admin.users-roles.users.modal.first-name-label' | translate"
+                    [placeholder]="'admin.users-roles.users.modal.first-name-placeholder' | translate"
+                    [invalid]="isInvalid('first_name')"
+                    [errorMessage]="'admin.users-roles.users.modal.first-name-error' | translate">
+                </wa-form-field>
+                <wa-form-field formControlName="last_name"
+                    [label]="'admin.users-roles.users.modal.last-name-label' | translate"
+                    [placeholder]="'admin.users-roles.users.modal.last-name-placeholder' | translate"
+                    [invalid]="isInvalid('last_name')"
+                    [errorMessage]="'admin.users-roles.users.modal.last-name-error' | translate">
+                </wa-form-field>
+            </div>
+
+            <div class="form-row-2">
+                <wa-form-field formControlName="email"
+                    [label]="'admin.users-roles.users.modal.email-label' | translate"
+                    [placeholder]="'admin.users-roles.users.modal.email-placeholder' | translate"
+                    [invalid]="isInvalid('email')"
+                    [errorMessage]="'admin.users-roles.users.modal.email-error' | translate">
+                </wa-form-field>
+                <wa-form-field formControlName="username"
+                    [label]="'admin.users-roles.users.modal.username-label' | translate"
+                    [placeholder]="'admin.users-roles.users.modal.username-placeholder' | translate"
+                    [invalid]="isInvalid('username')"
+                    [errorMessage]="'admin.users-roles.users.modal.username-error' | translate" [maxLength]="20"
+                    [allowed]="'alphanumeric'" [extraChars]="'._-'" [lowercase]="true" [showCount]="true">
+                </wa-form-field>
+            </div>
+
+            <wa-form-field formControlName="telephone" mask="phone"
+                [label]="'admin.users-roles.users.modal.telephone-label' | translate"
+                [placeholder]="'admin.users-roles.users.modal.telephone-placeholder' | translate"
+                [invalid]="isInvalid('telephone')"
+                [errorMessage]="'admin.users-roles.users.modal.telephone-error' | translate">
+            </wa-form-field>
+
+            <div class="select-wrapper">
+                <label class="select-label">
+                    {{ 'admin.users-roles.users.modal.role-label' | translate }}
+                </label>
+                <select formControlName="rol_id" class="native-select" [class.invalid]="isInvalid('rol_id')">
+                    <option value="">
+                        {{ 'admin.users-roles.users.modal.role-placeholder' | translate }}
+                    </option>
+                    <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+                </select>
+                <span class="select-error" *ngIf="isInvalid('rol_id')">{{
+                    'admin.users-roles.users.modal.role-placeholder' | translate }}</span>
+            </div>
+
+            <wa-password-input *ngIf="!editingUser" formControlName="password"
+                [label]="'admin.users-roles.users.modal.password-label' | translate"
+                [placeholder]="'admin.users-roles.users.modal.password-placeholder' | translate"
+                [invalid]="isInvalid('password')"
+                [errorMessage]="'admin.users-roles.users.modal.password-error' | translate">
+            </wa-password-input>
+        </form>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" [disabled]="saving" (clicked)="closeModal()">
+                {{ 'admin.users-roles.users.modal.cancel' | translate }}
+            </wa-btn>
+            <wa-btn [loading]="saving" (clicked)="save()">
+                {{ 'admin.users-roles.users.modal.save' | translate }}
+            </wa-btn>
+        </div>
+    </div>
+</div>

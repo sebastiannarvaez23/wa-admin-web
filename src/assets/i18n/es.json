@@ -32,6 +32,231 @@
         "preferences": "Preferencias"
       }
     },
+    "features": {
+      "title": "Funcionalidades",
+      "tab": {
+        "modules": "Módulos",
+        "features": "Funcionalidades"
+      },
+      "modules": {
+        "subtitle": "Administra los módulos disponibles en la plataforma",
+        "add-btn": "Nuevo módulo",
+        "loading": "Cargando módulos...",
+        "empty": "No hay módulos registrados",
+        "features-count": "funcionalidades",
+        "status-active": "Activo",
+        "status-inactive": "Inactivo",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "modal": {
+          "add-title": "Nuevo módulo",
+          "edit-title": "Editar módulo",
+          "add-btn": "Crear módulo",
+          "save-btn": "Guardar cambios"
+        },
+        "form": {
+          "code": "Código",
+          "code-placeholder": "Ej. orders",
+          "code-error": "El código es requerido (mín. 2 caracteres)",
+          "name": "Nombre",
+          "name-placeholder": "Ej. Pedidos",
+          "name-error": "El nombre es requerido (mín. 2 caracteres)",
+          "description": "Descripción",
+          "description-placeholder": "Descripción del módulo",
+          "description-error": "La descripción es requerida",
+          "icon": "Icono (clase Boxicons)",
+          "icon-placeholder": "Ej. bx-cart",
+          "icon-error": "El icono es requerido"
+        }
+      },
+      "features-section": {
+        "subtitle": "Administra las funcionalidades individuales de cada módulo",
+        "add-btn": "Nueva funcionalidad",
+        "loading": "Cargando funcionalidades...",
+        "modal": {
+          "add-title": "Nueva funcionalidad",
+          "edit-title": "Editar funcionalidad",
+          "add-btn": "Crear funcionalidad",
+          "save-btn": "Guardar cambios"
+        },
+        "form": {
+          "key": "Clave",
+          "key-placeholder": "Ej. orders.create",
+          "key-error": "La clave es requerida (mín. 3 caracteres)",
+          "label": "Etiqueta",
+          "label-placeholder": "Ej. Crear pedidos",
+          "label-error": "La etiqueta es requerida (mín. 2 caracteres)",
+          "description": "Descripción",
+          "description-placeholder": "Descripción de la funcionalidad",
+          "description-error": "La descripción es requerida",
+          "module": "Módulo",
+          "module-placeholder": "Seleccionar módulo",
+          "module-error": "El módulo es requerido",
+          "category": "Categoría"
+        }
+      },
+      "table": {
+        "label": "Etiqueta",
+        "key": "Clave",
+        "module": "Módulo",
+        "category": "Categoría",
+        "status": "Estado",
+        "actions": "Acciones"
+      },
+      "filter": {
+        "placeholder": "Buscar...",
+        "clear": "Limpiar",
+        "clear-all": "Limpiar todos los filtros",
+        "module": {
+          "all": "Todos los módulos"
+        },
+        "category": {
+          "all": "Todas",
+          "features": "Funcionalidades",
+          "ai": "IA"
+        },
+        "status": {
+          "all": "Todos",
+          "active": "Activo",
+          "inactive": "Inactivo"
+        }
+      },
+      "category": {
+        "features": "Funcionalidad",
+        "ai": "IA"
+      },
+      "status": {
+        "active": "Activo",
+        "inactive": "Inactivo"
+      },
+      "actions": {
+        "edit": "Editar",
+        "activate": "Activar",
+        "deactivate": "Desactivar"
+      },
+      "empty": {
+        "filtered": "No se encontraron funcionalidades con los filtros aplicados",
+        "no-features": "No hay funcionalidades registradas"
+      },
+      "paginator": {
+        "record": "registro",
+        "records": "registros"
+      }
+    },
+    "users-roles": {
+      "title": "Usuarios y Roles",
+      "tabs": {
+        "users": "Usuarios",
+        "permissions": "Permisos"
+      },
+      "users": {
+        "title": "Usuarios del administrador",
+        "subtitle": "Gestiona los usuarios que tienen acceso al panel administrativo",
+        "new-user": "Nuevo usuario",
+        "loading": "Cargando usuarios...",
+        "table": {
+          "name": "Nombre",
+          "email": "Correo",
+          "username": "Usuario",
+          "role": "Rol",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "filter": {
+          "placeholder": "Buscar...",
+          "active-badge": "Filtro activo",
+          "clear": "Limpiar",
+          "clear-all": "Limpiar todos los filtros",
+          "status": {
+            "all": "Todos",
+            "active": "Activo",
+            "inactive": "Inactivo"
+          }
+        },
+        "status": {
+          "active": "Activo",
+          "inactive": "Inactivo"
+        },
+        "actions": {
+          "activate": "Activar",
+          "deactivate": "Desactivar"
+        },
+        "empty": {
+          "filtered": "No se encontraron usuarios con los filtros aplicados",
+          "no-users": "No hay usuarios registrados"
+        },
+        "paginator": {
+          "record": "registro",
+          "records": "registros",
+          "first": "Primera página",
+          "prev": "Página anterior",
+          "next-page": "Página siguiente",
+          "last": "Última página"
+        },
+        "modal": {
+          "create-title": "Nuevo usuario",
+          "edit-title": "Editar usuario",
+          "first-name-label": "Nombre",
+          "first-name-placeholder": "Ej. Juan",
+          "first-name-error": "El nombre es requerido (mín. 2 caracteres)",
+          "last-name-label": "Apellido",
+          "last-name-placeholder": "Ej. Pérez",
+          "last-name-error": "El apellido es requerido (mín. 2 caracteres)",
+          "email-label": "Correo electrónico",
+          "email-placeholder": "Ej. juan@empresa.com",
+          "email-error": "Correo electrónico inválido",
+          "username-label": "Usuario",
+          "username-placeholder": "Ej. jperez",
+          "username-error": "El usuario es requerido (mín. 3 caracteres)",
+          "telephone-label": "Teléfono",
+          "telephone-placeholder": "Ej. +57 300 123 4567",
+          "telephone-error": "El teléfono es requerido (10-15 dígitos)",
+          "role-label": "Rol",
+          "role-placeholder": "Seleccionar rol",
+          "password-label": "Contraseña",
+          "password-placeholder": "Mínimo 8 caracteres",
+          "password-error": "La contraseña es requerida (mín. 8 caracteres)",
+          "cancel": "Cancelar",
+          "save": "Guardar"
+        },
+        "notifications": {
+          "load-error": "Error al cargar los usuarios",
+          "create-success": "Usuario creado exitosamente",
+          "create-error": "Error al crear el usuario",
+          "update-success": "Usuario actualizado exitosamente",
+          "update-error": "Error al actualizar el usuario",
+          "toggle-activated": "Usuario activado",
+          "toggle-deactivated": "Usuario desactivado",
+          "toggle-error": "Error al cambiar el estado del usuario"
+        }
+      },
+      "permissions": {
+        "title": "Roles y Permisos",
+        "subtitle": "Configura los roles y permisos de acceso para los usuarios del administrador",
+        "new-role": "Nuevo rol",
+        "edit-role": "Editar rol",
+        "edit-role-btn": "Editar rol",
+        "generic-role": "Rol genérico de plataforma",
+        "deactivate-role": "Desactivar rol",
+        "activate-role": "Activar rol",
+        "save": "Guardar permisos",
+        "saved": "Permisos guardados",
+        "readonly-role": "Solo lectura",
+        "select-user": "Selecciona un rol para ver sus permisos",
+        "configure-permissions": "Configurar permisos",
+        "no-features": "No hay funcionalidades definidas para este módulo.",
+        "role-name": "Nombre del rol",
+        "role-name-placeholder": "Ej. Supervisor",
+        "role-description": "Descripción",
+        "role-description-placeholder": "Descripción del rol",
+        "modules": {},
+        "modules-descriptions": {},
+        "feature-categories": {
+          "features": "Funcionalidades",
+          "ai": "Inteligencia Artificial"
+        }
+      }
+    },
     "subscriptions": {
       "title": "Suscripciones",
       "subtitle": "Administra los planes de suscripción disponibles para las empresas",
@@ -129,6 +354,12 @@
   },
   "auth": {
     "login-success": "Sesión iniciada correctamente"
+  },
+  "common": {
+    "edit": "Editar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "apply": "Aplicar"
   },
   "dialog": {
     "common": {

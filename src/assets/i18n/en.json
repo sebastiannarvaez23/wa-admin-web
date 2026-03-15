@@ -31,6 +31,231 @@
         "preferences": "Preferences"
       }
     },
+    "features": {
+      "title": "Features",
+      "tab": {
+        "modules": "Modules",
+        "features": "Features"
+      },
+      "modules": {
+        "subtitle": "Manage the modules available on the platform",
+        "add-btn": "New module",
+        "loading": "Loading modules...",
+        "empty": "No modules registered",
+        "features-count": "features",
+        "status-active": "Active",
+        "status-inactive": "Inactive",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "modal": {
+          "add-title": "New module",
+          "edit-title": "Edit module",
+          "add-btn": "Create module",
+          "save-btn": "Save changes"
+        },
+        "form": {
+          "code": "Code",
+          "code-placeholder": "e.g. orders",
+          "code-error": "Code is required (min. 2 characters)",
+          "name": "Name",
+          "name-placeholder": "e.g. Orders",
+          "name-error": "Name is required (min. 2 characters)",
+          "description": "Description",
+          "description-placeholder": "Module description",
+          "description-error": "Description is required",
+          "icon": "Icon (Boxicons class)",
+          "icon-placeholder": "e.g. bx-cart",
+          "icon-error": "Icon is required"
+        }
+      },
+      "features-section": {
+        "subtitle": "Manage individual features for each module",
+        "add-btn": "New feature",
+        "loading": "Loading features...",
+        "modal": {
+          "add-title": "New feature",
+          "edit-title": "Edit feature",
+          "add-btn": "Create feature",
+          "save-btn": "Save changes"
+        },
+        "form": {
+          "key": "Key",
+          "key-placeholder": "e.g. orders.create",
+          "key-error": "Key is required (min. 3 characters)",
+          "label": "Label",
+          "label-placeholder": "e.g. Create orders",
+          "label-error": "Label is required (min. 2 characters)",
+          "description": "Description",
+          "description-placeholder": "Feature description",
+          "description-error": "Description is required",
+          "module": "Module",
+          "module-placeholder": "Select module",
+          "module-error": "Module is required",
+          "category": "Category"
+        }
+      },
+      "table": {
+        "label": "Label",
+        "key": "Key",
+        "module": "Module",
+        "category": "Category",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "filter": {
+        "placeholder": "Search...",
+        "clear": "Clear",
+        "clear-all": "Clear all filters",
+        "module": {
+          "all": "All modules"
+        },
+        "category": {
+          "all": "All",
+          "features": "Features",
+          "ai": "AI"
+        },
+        "status": {
+          "all": "All",
+          "active": "Active",
+          "inactive": "Inactive"
+        }
+      },
+      "category": {
+        "features": "Feature",
+        "ai": "AI"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "actions": {
+        "edit": "Edit",
+        "activate": "Activate",
+        "deactivate": "Deactivate"
+      },
+      "empty": {
+        "filtered": "No features found with the applied filters",
+        "no-features": "No features registered"
+      },
+      "paginator": {
+        "record": "record",
+        "records": "records"
+      }
+    },
+    "users-roles": {
+      "title": "Users & Roles",
+      "tabs": {
+        "users": "Users",
+        "permissions": "Permissions"
+      },
+      "users": {
+        "title": "Admin Users",
+        "subtitle": "Manage users with access to the admin panel",
+        "new-user": "New user",
+        "loading": "Loading users...",
+        "table": {
+          "name": "Name",
+          "email": "Email",
+          "username": "Username",
+          "role": "Role",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "filter": {
+          "placeholder": "Search...",
+          "active-badge": "Active filter",
+          "clear": "Clear",
+          "clear-all": "Clear all filters",
+          "status": {
+            "all": "All",
+            "active": "Active",
+            "inactive": "Inactive"
+          }
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "actions": {
+          "activate": "Activate",
+          "deactivate": "Deactivate"
+        },
+        "empty": {
+          "filtered": "No users found with the applied filters",
+          "no-users": "No users registered"
+        },
+        "paginator": {
+          "record": "record",
+          "records": "records",
+          "first": "First page",
+          "prev": "Previous page",
+          "next-page": "Next page",
+          "last": "Last page"
+        },
+        "modal": {
+          "create-title": "New user",
+          "edit-title": "Edit user",
+          "first-name-label": "First name",
+          "first-name-placeholder": "e.g. John",
+          "first-name-error": "First name is required (min. 2 characters)",
+          "last-name-label": "Last name",
+          "last-name-placeholder": "e.g. Doe",
+          "last-name-error": "Last name is required (min. 2 characters)",
+          "email-label": "Email",
+          "email-placeholder": "e.g. john@company.com",
+          "email-error": "Invalid email address",
+          "username-label": "Username",
+          "username-placeholder": "e.g. jdoe",
+          "username-error": "Username is required (min. 3 characters)",
+          "telephone-label": "Phone",
+          "telephone-placeholder": "e.g. +1 555 123 4567",
+          "telephone-error": "Phone is required (10-15 digits)",
+          "role-label": "Role",
+          "role-placeholder": "Select role",
+          "password-label": "Password",
+          "password-placeholder": "Minimum 8 characters",
+          "password-error": "Password is required (min. 8 characters)",
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "notifications": {
+          "load-error": "Error loading users",
+          "create-success": "User created successfully",
+          "create-error": "Error creating user",
+          "update-success": "User updated successfully",
+          "update-error": "Error updating user",
+          "toggle-activated": "User activated",
+          "toggle-deactivated": "User deactivated",
+          "toggle-error": "Error changing user status"
+        }
+      },
+      "permissions": {
+        "title": "Roles & Permissions",
+        "subtitle": "Configure roles and access permissions for admin users",
+        "new-role": "New role",
+        "edit-role": "Edit role",
+        "edit-role-btn": "Edit role",
+        "generic-role": "Platform generic role",
+        "deactivate-role": "Deactivate role",
+        "activate-role": "Activate role",
+        "save": "Save permissions",
+        "saved": "Permissions saved",
+        "readonly-role": "Read only",
+        "select-user": "Select a role to view its permissions",
+        "configure-permissions": "Configure permissions",
+        "no-features": "No features defined for this module.",
+        "role-name": "Role name",
+        "role-name-placeholder": "e.g. Supervisor",
+        "role-description": "Description",
+        "role-description-placeholder": "Role description",
+        "modules": {},
+        "modules-descriptions": {},
+        "feature-categories": {
+          "features": "Features",
+          "ai": "Artificial Intelligence"
+        }
+      }
+    },
     "subscriptions": {
       "title": "Subscriptions",
       "subtitle": "Manage subscription plans available for companies",
@@ -125,6 +350,12 @@
         "footer": "All rights reserved - Warehouse Anywhere® v 1.0"
       }
     }
+  },
+  "common": {
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "apply": "Apply"
   },
   "dialog": {
     "logout": {
