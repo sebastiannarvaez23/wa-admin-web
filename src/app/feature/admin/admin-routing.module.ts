@@ -5,6 +5,7 @@ import { LayoutPageComponent } from 'src/app/core/components/layout-page/layout-
 import { DashboardPageComponent } from './pages/dashboard/dashboard-page.component';
 import { ModuleInConstructionPageComponent } from './pages/module-in-construction/module-in-construction-page.component';
 import { SettingsPageComponent } from './pages/settings/settings-page.component';
+import { SubscriptionsPageComponent } from './pages/subscriptions/subscriptions-page.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
@@ -25,7 +26,7 @@ const routes: Routes = [
             { path: 'settings',  component: SettingsPageComponent },
 
             // Comercial
-            { path: 'subscriptions', component: ModuleInConstructionPageComponent },
+            { path: 'subscriptions', component: SubscriptionsPageComponent },
             { path: 'billing',       component: ModuleInConstructionPageComponent },
             { path: 'features',      component: ModuleInConstructionPageComponent },
             { path: 'ai-features',   component: ModuleInConstructionPageComponent },

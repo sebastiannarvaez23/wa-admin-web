@@ -30,6 +30,53 @@
       "tab": {
         "preferences": "Preferences"
       }
+    },
+    "subscriptions": {
+      "title": "Subscriptions",
+      "subtitle": "Manage subscription plans available for companies",
+      "add-btn": "New subscription",
+      "loading": "Loading subscriptions...",
+      "empty": "No subscriptions registered",
+      "month": "month",
+      "status-active": "Active",
+      "status-inactive": "Inactive",
+      "activate": "Activate",
+      "deactivate": "Deactivate",
+      "modules-count": "modules",
+      "configure-modules": "Configure modules and access",
+      "configure-features": "Configure features",
+      "modules-modal": {
+        "title": "Modules and access",
+        "done": "Done"
+      },
+      "features-modal": {
+        "apply": "Apply"
+      },
+      "feature-categories": {
+        "features": "Features",
+        "ai": "Artificial Intelligence"
+      },
+      "no-features": "No features defined for this module.",
+      "modal": {
+        "add-title": "New subscription",
+        "edit-title": "Edit subscription",
+        "add-btn": "Create subscription",
+        "save-btn": "Save changes"
+      },
+      "form": {
+        "code": "Code",
+        "code-placeholder": "e.g. PRO",
+        "code-error": "Code is required (min. 2 characters)",
+        "name": "Name",
+        "name-placeholder": "e.g. Professional",
+        "name-error": "Name is required (min. 2 characters)",
+        "description": "Description",
+        "description-placeholder": "Subscription plan description",
+        "description-error": "Description is required",
+        "price": "Monthly price (USD)",
+        "price-placeholder": "0.00",
+        "price-error": "Price must be greater than or equal to 0"
+      }
     }
   },
   "settings": {

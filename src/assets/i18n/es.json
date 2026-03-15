@@ -31,6 +31,53 @@
       "tab": {
         "preferences": "Preferencias"
       }
+    },
+    "subscriptions": {
+      "title": "Suscripciones",
+      "subtitle": "Administra los planes de suscripción disponibles para las empresas",
+      "add-btn": "Nueva suscripción",
+      "loading": "Cargando suscripciones...",
+      "empty": "No hay suscripciones registradas",
+      "month": "mes",
+      "status-active": "Activa",
+      "status-inactive": "Inactiva",
+      "activate": "Activar",
+      "deactivate": "Desactivar",
+      "modules-count": "módulos",
+      "configure-modules": "Configurar módulos y accesos",
+      "configure-features": "Configurar funcionalidades",
+      "modules-modal": {
+        "title": "Módulos y accesos",
+        "done": "Listo"
+      },
+      "features-modal": {
+        "apply": "Aplicar"
+      },
+      "feature-categories": {
+        "features": "Funcionalidades",
+        "ai": "Inteligencia Artificial"
+      },
+      "no-features": "No hay funcionalidades definidas para este módulo.",
+      "modal": {
+        "add-title": "Nueva suscripción",
+        "edit-title": "Editar suscripción",
+        "add-btn": "Crear suscripción",
+        "save-btn": "Guardar cambios"
+      },
+      "form": {
+        "code": "Código",
+        "code-placeholder": "Ej. PRO",
+        "code-error": "El código es requerido (mín. 2 caracteres)",
+        "name": "Nombre",
+        "name-placeholder": "Ej. Profesional",
+        "name-error": "El nombre es requerido (mín. 2 caracteres)",
+        "description": "Descripción",
+        "description-placeholder": "Descripción del plan de suscripción",
+        "description-error": "La descripción es requerida",
+        "price": "Precio mensual (USD)",
+        "price-placeholder": "0.00",
+        "price-error": "El precio debe ser mayor o igual a 0"
+      }
     }
   },
   "settings": {

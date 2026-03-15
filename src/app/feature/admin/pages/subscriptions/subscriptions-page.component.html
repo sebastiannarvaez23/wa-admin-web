@@ -1,0 +1,257 @@
+<span class="page-title">
+    <i class="bx bx-credit-card"></i>
+    {{ 'admin.subscriptions.title' | translate }}
+</span>
+
+<div class="page-wrapper">
+
+    <div class="section-header">
+        <div>
+            <p class="subtitle">{{ 'admin.subscriptions.subtitle' | translate }}</p>
+        </div>
+        <wa-btn (clicked)="openCreate()">
+            <i class="bx bx-plus"></i>
+            {{ 'admin.subscriptions.add-btn' | translate }}
+        </wa-btn>
+    </div>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+        <i class="bx bx-loader-alt bx-spin"></i>
+        <span>{{ 'admin.subscriptions.loading' | translate }}</span>
+    </div>
+
+    <!-- Subscriptions list -->
+    <div class="subscriptions-list" *ngIf="!loading">
+
+        <div class="subscription-card" *ngFor="let sub of subscriptions"
+            [class.inactive-card]="!sub.is_active">
+
+            <!-- Tier badge -->
+            <div class="sub-tier-badge" [ngClass]="getPriceClass(sub.price)">
+                <img *ngIf="sub.logo" [src]="sub.logo" [alt]="sub.name" class="sub-logo">
+                <i *ngIf="!sub.logo" class="bx bx-package"></i>
+            </div>
+
+            <!-- Info -->
+            <div class="sub-info">
+                <div class="sub-info-top">
+                    <span class="sub-name">{{ sub.name }}</span>
+                    <span class="sub-code">{{ sub.code }}</span>
+                </div>
+                <span class="sub-description">{{ sub.description }}</span>
+                <span class="sub-features-count">
+                    <i class="bx bx-grid-alt"></i>
+                    {{ getActiveModulesCount(sub) }}/{{ getTotalModulesCount() }} {{ 'admin.subscriptions.modules-count' | translate }}
+                </span>
+            </div>
+
+            <!-- Price -->
+            <div class="sub-price" [ngClass]="getPriceClass(sub.price)">
+                <span class="price-currency">$</span>
+                <span class="price-value">{{ sub.price | number:'1.2-2' }}</span>
+                <span class="price-period">/ {{ 'admin.subscriptions.month' | translate }}</span>
+            </div>
+
+            <!-- Status badge -->
+            <span class="sub-status-badge"
+                [class.active]="sub.is_active"
+                [class.inactive]="!sub.is_active">
+                <i class="bx bxs-circle"></i>
+                {{ (sub.is_active ? 'admin.subscriptions.status-active' : 'admin.subscriptions.status-inactive') | translate }}
+            </span>
+
+            <!-- Actions -->
+            <div class="sub-actions">
+                <button class="action-btn toggle"
+                    [class.is-active]="sub.is_active"
+                    (click)="toggleActive(sub)"
+                    [title]="(sub.is_active ? 'admin.subscriptions.deactivate' : 'admin.subscriptions.activate') | translate">
+                    <i class="bx" [class.bx-toggle-right]="sub.is_active" [class.bx-toggle-left]="!sub.is_active"></i>
+                </button>
+                <button class="action-btn edit" (click)="openEdit(sub)">
+                    <i class="bx bx-edit"></i>
+                </button>
+                <button class="action-btn config" (click)="openModulesModal(sub)"
+                    [title]="'admin.subscriptions.configure-modules' | translate">
+                    <i class="bx bx-shield-quarter"></i>
+                </button>
+                <button class="action-btn delete" (click)="confirmDelete(sub)">
+                    <i class="bx bx-trash"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="empty-state" *ngIf="subscriptions.length === 0">
+            <i class="bx bx-credit-card"></i>
+            <span>{{ 'admin.subscriptions.empty' | translate }}</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- ================================================================ -->
+<!-- Add / Edit modal                                                 -->
+<!-- ================================================================ -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h3>{{ (editingSubscription ? 'admin.subscriptions.modal.edit-title' : 'admin.subscriptions.modal.add-title') | translate }}</h3>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <form [formGroup]="form" class="sub-form">
+
+                <div class="form-row">
+                    <wa-form-field formControlName="code"
+                        [label]="'admin.subscriptions.form.code' | translate"
+                        [placeholder]="'admin.subscriptions.form.code-placeholder' | translate"
+                        [invalid]="isInvalid('code')"
+                        [errorMessage]="'admin.subscriptions.form.code-error' | translate"
+                        [inputStyle]="{ 'text-transform': 'uppercase' }">
+                    </wa-form-field>
+
+                    <wa-form-field formControlName="name"
+                        [label]="'admin.subscriptions.form.name' | translate"
+                        [placeholder]="'admin.subscriptions.form.name-placeholder' | translate"
+                        [invalid]="isInvalid('name')"
+                        [errorMessage]="'admin.subscriptions.form.name-error' | translate">
+                    </wa-form-field>
+                </div>
+
+                <wa-form-field formControlName="description"
+                    [label]="'admin.subscriptions.form.description' | translate"
+                    [placeholder]="'admin.subscriptions.form.description-placeholder' | translate"
+                    [invalid]="isInvalid('description')"
+                    [errorMessage]="'admin.subscriptions.form.description-error' | translate"
+                    [fullWidth]="true">
+                </wa-form-field>
+
+                <wa-form-field formControlName="price" type="number"
+                    [label]="'admin.subscriptions.form.price' | translate"
+                    [placeholder]="'admin.subscriptions.form.price-placeholder' | translate"
+                    [invalid]="isInvalid('price')"
+                    [errorMessage]="'admin.subscriptions.form.price-error' | translate">
+                </wa-form-field>
+
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" (clicked)="closeModal()">
+                {{ 'dialog.common.cancel' | translate }}
+            </wa-btn>
+            <wa-btn (clicked)="save()" [loading]="saving">
+                <i class="bx bx-check"></i>
+                {{ (editingSubscription ? 'admin.subscriptions.modal.save-btn' : 'admin.subscriptions.modal.add-btn') | translate }}
+            </wa-btn>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- Modules modal (permissions-style list)                           -->
+<!-- ================================================================ -->
+<div class="modal-overlay" *ngIf="showModulesModal" (click)="closeModulesModal()">
+    <div class="modal-card features-modal" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h3>
+                <i class="bx bx-shield-quarter"></i>
+                {{ 'admin.subscriptions.modules-modal.title' | translate }}
+                <span class="features-modal-sub" *ngIf="modulesSubscription">— {{ modulesSubscription.name }}</span>
+            </h3>
+            <button class="modal-close" (click)="closeModulesModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modules-scroll" *ngIf="modulesSubscription">
+            <div class="module-row" *ngFor="let mod of modulesSubscription.modules">
+                <div class="module-info">
+                    <i class="bx" [ngClass]="mod.icon"></i>
+                    <div class="module-text">
+                        <span class="module-name">{{ mod.name }}</span>
+                        <span class="module-description">{{ mod.description }}</span>
+                    </div>
+                </div>
+                <div class="module-controls">
+                    <label class="toggle-switch">
+                        <input type="checkbox"
+                            [checked]="mod.hasAccess"
+                            (change)="toggleModuleAccess(mod)">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <button class="config-btn" (click)="openFeatureDetail(mod)"
+                        [title]="'admin.subscriptions.configure-features' | translate">
+                        <i class="bx bx-extension"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn (clicked)="closeModulesModal()">
+                <i class="bx bx-check"></i>
+                {{ 'admin.subscriptions.modules-modal.done' | translate }}
+            </wa-btn>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- Feature detail modal (per-module features)                       -->
+<!-- ================================================================ -->
+<div class="modal-overlay" *ngIf="showFeatureDetailModal" (click)="closeFeatureDetail()">
+    <div class="modal-card features-modal" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h3>
+                <i class="bx" [ngClass]="currentDetailModule?.icon"></i>
+                {{ currentDetailModule?.name }}
+            </h3>
+            <button class="modal-close" (click)="closeFeatureDetail()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body" *ngIf="currentDetailModule">
+            <ng-container *ngIf="currentDetailGroups.length > 0; else noFeatures">
+                <div class="feature-group" *ngFor="let group of currentDetailGroups">
+                    <div class="feature-category-header">
+                        <i class="bx" [ngClass]="group.category === 'ai' ? 'bx-brain' : 'bx-list-ul'"></i>
+                        <span>{{ (group.category === 'ai' ? 'admin.subscriptions.feature-categories.ai' : 'admin.subscriptions.feature-categories.features') | translate }}</span>
+                    </div>
+                    <div class="feature-item" *ngFor="let feature of group.features">
+                        <span class="feature-label">{{ feature.label }}</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" [(ngModel)]="feature.enabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #noFeatures>
+                <div class="no-features">
+                    <i class="bx bx-info-circle"></i>
+                    <span>{{ 'admin.subscriptions.no-features' | translate }}</span>
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn (clicked)="closeFeatureDetail()">
+                <i class="bx bx-check"></i>
+                {{ 'admin.subscriptions.features-modal.apply' | translate }}
+            </wa-btn>
+        </div>
+
+    </div>
+</div>
