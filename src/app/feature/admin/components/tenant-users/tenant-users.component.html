@@ -1,0 +1,150 @@
+<!-- ── Page header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h2>{{ 'admin.tenants.users.title' | translate }}</h2>
+        <p class="subtitle">{{ 'admin.tenants.users.subtitle' | translate }}</p>
+    </div>
+</div>
+
+<!-- ── Table shell ──────────────────────────────────────────────────────── -->
+<div class="table-shell">
+
+    <div class="table-scrollable">
+
+        <!-- Column headers -->
+        <div class="table-head" [style.grid-template-columns]="gridTemplate">
+            <span *ngFor="let col of tableConfig.columns" class="col-header"
+                [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
+                {{ col.label | translate }}
+                <i *ngIf="col.filterable && filterForm.get(col.key)?.value" class="bx bx-filter-alt filter-active-badge"></i>
+            </span>
+            <span *ngIf="tableConfig.editable || tableConfig.deletable" class="col-header">
+                {{ 'admin.tenants.users.table.actions' | translate }}
+            </span>
+        </div>
+
+        <!-- Filter row -->
+        <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
+            <ng-container *ngFor="let col of tableConfig.columns">
+                <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
+                    <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
+                        <i class="bx bx-search filter-icon"></i>
+                        <input [formControlName]="col.key" class="filter-input" autocomplete="off"
+                            [placeholder]="'admin.tenants.users.filter.placeholder' | translate">
+                        <button *ngIf="filterForm.get(col.key)?.value" class="filter-clear-btn" type="button"
+                            (click)="clearFilter(col.key)">
+                            <i class="bx bx-x"></i>
+                        </button>
+                    </div>
+                </div>
+                <ng-template #selectOrSpacer>
+                    <div class="filter-cell" *ngIf="col.filterable && col.filterType === 'select'; else filterSpacer">
+                        <select [formControlName]="col.key" class="filter-select"
+                            [class.has-value]="filterForm.get(col.key)?.value">
+                            <option *ngFor="let opt of col.filterOptions" [value]="opt.value">
+                                {{ opt.label | translate }}
+                            </option>
+                        </select>
+                    </div>
+                    <ng-template #filterSpacer>
+                        <div class="filter-cell filter-spacer"></div>
+                    </ng-template>
+                </ng-template>
+            </ng-container>
+            <div class="filter-cell filter-actions-cell" *ngIf="tableConfig.editable || tableConfig.deletable">
+                <button *ngIf="hasActiveFilters" class="clear-all-btn" type="button" (click)="clearFilters()">
+                    <i class="bx bx-filter-alt"></i>
+                    {{ 'admin.tenants.users.filter.clear' | translate }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="loading">
+            <i class="bx bx-loader-alt bx-spin"></i>
+            <span>{{ 'admin.tenants.users.loading' | translate }}</span>
+        </div>
+
+        <!-- Data rows -->
+        <ng-container *ngIf="!loading">
+            <div class="table-row" *ngFor="let user of pagedUsers" [style.grid-template-columns]="gridTemplate">
+
+                <ng-container *ngFor="let col of tableConfig.columns">
+                    <ng-container [ngSwitch]="col.type">
+
+                        <!-- text -->
+                        <span *ngSwitchCase="'text'" class="cell-text">
+                            {{ getCellValue(user, col.key) }}
+                        </span>
+
+                        <!-- muted -->
+                        <span *ngSwitchCase="'muted'" class="cell-muted">
+                            {{ getCellValue(user, col.key) }}
+                        </span>
+
+                        <!-- status-badge -->
+                        <span *ngSwitchCase="'status-badge'" class="status-badge"
+                            [class.active]="user.is_active"
+                            [class.inactive]="!user.is_active">
+                            <i class="bx" [ngClass]="user.is_active ? 'bxs-circle' : 'bx-circle'"></i>
+                            {{ (user.is_active
+                                ? 'admin.tenants.users.status.active'
+                                : 'admin.tenants.users.status.inactive') | translate }}
+                        </span>
+
+                    </ng-container>
+                </ng-container>
+
+                <!-- Action buttons -->
+                <div *ngIf="tableConfig.editable || tableConfig.deletable" class="row-actions">
+                    <button *ngIf="tableConfig.deletable" class="icon-btn"
+                        [class.toggle-on]="user.is_active"
+                        [class.toggle-off]="!user.is_active"
+                        (click)="toggleActive(user)"
+                        [title]="(user.is_active ? 'admin.tenants.users.actions.deactivate' : 'admin.tenants.users.actions.activate') | translate">
+                        <i class="bx" [ngClass]="user.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="pagedUsers.length === 0">
+                <i class="bx" [ngClass]="hasActiveFilters ? 'bx-search-alt' : 'bx-group'"></i>
+                <span>
+                    {{ (hasActiveFilters
+                        ? 'admin.tenants.users.empty.filtered'
+                        : 'admin.tenants.users.empty.no-users') | translate }}
+                </span>
+                <button *ngIf="hasActiveFilters" class="clear-filters-link" type="button" (click)="clearFilters()">
+                    {{ 'admin.tenants.users.filter.clear-all' | translate }}
+                </button>
+            </div>
+
+        </ng-container>
+
+    </div>
+
+    <!-- Paginator -->
+    <div class="paginator" *ngIf="total > 0">
+        <span class="record-count">
+            <strong>{{ total }}</strong>
+            {{ (total === 1 ? 'admin.tenants.users.paginator.record' : 'admin.tenants.users.paginator.records') | translate }}
+        </span>
+        <div class="page-nav" *ngIf="totalPages > 1">
+            <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(1)">
+                <i class="bx bx-chevrons-left"></i>
+            </button>
+            <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+                <i class="bx bx-chevron-left"></i>
+            </button>
+            <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+            <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+                <i class="bx bx-chevron-right"></i>
+            </button>
+            <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(totalPages)">
+                <i class="bx bx-chevrons-right"></i>
+            </button>
+        </div>
+    </div>
+
+</div>

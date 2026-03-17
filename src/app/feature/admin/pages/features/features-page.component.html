@@ -5,283 +5,225 @@
 
 <div class="page-wrapper">
 
-    <!-- Tab bar -->
-    <div class="tab-bar">
-        <button class="tab-btn" [class.active]="activeTab === 'modules'" (click)="setTab('modules')">
-            <i class="bx bx-grid-alt"></i>
-            {{ 'admin.features.tab.modules' | translate }}
-        </button>
-        <button class="tab-btn" [class.active]="activeTab === 'features'" (click)="setTab('features')">
-            <i class="bx bx-list-ul"></i>
-            {{ 'admin.features.tab.features' | translate }}
-        </button>
+    <!-- Loading skeleton -->
+    <div class="loading-state" *ngIf="sectionsLoading && modulesLoading">
+        <i class="bx bx-loader-alt bx-spin"></i>
+        <span>{{ 'admin.features.modules.loading' | translate }}</span>
     </div>
 
-    <!-- ================================================================ -->
-    <!-- MODULES TAB (card-based, like subscriptions)                      -->
-    <!-- ================================================================ -->
-    <div class="tab-content" *ngIf="activeTab === 'modules'">
+    <div class="sections-modules-layout" *ngIf="!sectionsLoading || !modulesLoading">
 
-        <div class="section-header">
-            <div>
-                <p class="subtitle">{{ 'admin.features.modules.subtitle' | translate }}</p>
+        <!-- ── Left panel: sections list ─────────────────────────────── -->
+        <div class="sections-list">
+
+            <div class="sections-list-header">
+                <span class="sections-list-title">{{ 'admin.features.sections.title' | translate }}</span>
+                <button class="add-section-btn"
+                    (click)="openCreateSection()"
+                    [title]="'admin.features.sections.add-btn' | translate">
+                    <i class="bx bx-plus"></i>
+                </button>
             </div>
-            <wa-btn (clicked)="openCreateModule()">
-                <i class="bx bx-plus"></i>
-                {{ 'admin.features.modules.add-btn' | translate }}
-            </wa-btn>
-        </div>
 
-        <!-- Loading -->
-        <div class="loading-state" *ngIf="modulesLoading">
-            <i class="bx bx-loader-alt bx-spin"></i>
-            <span>{{ 'admin.features.modules.loading' | translate }}</span>
-        </div>
+            <div *ngFor="let sec of sections" class="section-item"
+                [class.selected]="sec.id === selectedSectionId"
+                [class.inactive]="!sec.is_active"
+                (click)="selectSection(sec)">
 
-        <!-- Module cards list -->
-        <div class="modules-list" *ngIf="!modulesLoading">
-
-            <div class="module-card" *ngFor="let mod of modules"
-                [class.inactive-card]="!mod.is_active">
-
-                <!-- Icon badge -->
-                <div class="mod-icon-badge">
-                    <i class="bx" [ngClass]="mod.icon"></i>
+                <div class="section-icon-badge">
+                    <i class="bx" [ngClass]="sec.icon || 'bx-category'"></i>
                 </div>
 
-                <!-- Info -->
-                <div class="mod-info">
-                    <div class="mod-info-top">
-                        <span class="mod-name">{{ mod.name }}</span>
-                        <span class="mod-code">{{ mod.code }}</span>
-                    </div>
-                    <span class="mod-description">{{ mod.description }}</span>
-                    <span class="mod-features-count">
-                        <i class="bx bx-extension"></i>
-                        {{ mod.features_count }} {{ 'admin.features.modules.features-count' | translate }}
-                    </span>
+                <div class="section-info">
+                    <span class="section-name">{{ sec.name }}</span>
+                    <span class="section-code">{{ sec.code }}</span>
                 </div>
 
-                <!-- Status badge -->
-                <span class="mod-status-badge"
-                    [class.active]="mod.is_active"
-                    [class.inactive]="!mod.is_active">
-                    <i class="bx bxs-circle"></i>
-                    {{ (mod.is_active ? 'admin.features.modules.status-active' : 'admin.features.modules.status-inactive') | translate }}
-                </span>
-
-                <!-- Actions -->
-                <div class="mod-actions">
-                    <button class="action-btn toggle"
-                        [class.is-active]="mod.is_active"
-                        (click)="toggleModuleActive(mod)"
-                        [title]="(mod.is_active ? 'admin.features.modules.deactivate' : 'admin.features.modules.activate') | translate">
-                        <i class="bx" [class.bx-toggle-right]="mod.is_active" [class.bx-toggle-left]="!mod.is_active"></i>
-                    </button>
-                    <button class="action-btn edit" (click)="openEditModule(mod)">
+                <div class="section-actions">
+                    <button class="role-action-btn"
+                        (click)="openEditSection(sec, $event)"
+                        [title]="'admin.features.sections.edit-btn' | translate">
                         <i class="bx bx-edit"></i>
                     </button>
-                    <button class="action-btn delete" (click)="confirmDeleteModule(mod)">
+                    <button class="role-action-btn"
+                        [class.role-action-btn--danger]="sec.is_active"
+                        [class.role-action-btn--success]="!sec.is_active"
+                        (click)="toggleSectionActive(sec, $event)"
+                        [title]="(sec.is_active ? 'admin.features.sections.deactivate' : 'admin.features.sections.activate') | translate">
+                        <i class="bx bx-power-off"></i>
+                    </button>
+                    <button class="role-action-btn role-action-btn--danger"
+                        (click)="confirmDeleteSection(sec, $event)"
+                        [title]="'admin.features.sections.delete-btn' | translate">
                         <i class="bx bx-trash"></i>
                     </button>
                 </div>
+
+                <i class="bx bx-chevron-right chevron-icon"></i>
             </div>
 
             <!-- Empty state -->
-            <div class="empty-state" *ngIf="modules.length === 0">
-                <i class="bx bx-grid-alt"></i>
-                <span>{{ 'admin.features.modules.empty' | translate }}</span>
+            <div class="empty-sections" *ngIf="sections.length === 0 && !sectionsLoading">
+                <i class="bx bx-category"></i>
+                <span>{{ 'admin.features.sections.empty' | translate }}</span>
             </div>
+
         </div>
+
+        <!-- ── Right panel: modules for the selected section ───────── -->
+        <div class="modules-panel" *ngIf="selectedSectionId; else noSectionSelection">
+
+            <div class="panel-header-top">
+                <div class="panel-section-info">
+                    <div class="section-icon-badge section-icon-badge--lg">
+                        <i class="bx" [ngClass]="selectedSection?.icon || 'bx-category'"></i>
+                    </div>
+                    <div>
+                        <div class="panel-section-name">{{ selectedSection?.name }}</div>
+                        <div class="panel-section-desc">
+                            {{ filteredModules.length }}
+                            {{ 'admin.features.sections.modules-count' | translate }}
+                        </div>
+                    </div>
+                </div>
+                <wa-btn (clicked)="openCreateModule()">
+                    <i class="bx bx-plus"></i>
+                    {{ 'admin.features.modules.add-btn' | translate }}
+                </wa-btn>
+            </div>
+
+            <!-- Loading modules -->
+            <div class="loading-state panel-loading" *ngIf="modulesLoading">
+                <i class="bx bx-loader-alt bx-spin"></i>
+                <span>{{ 'admin.features.modules.loading' | translate }}</span>
+            </div>
+
+            <!-- Module cards -->
+            <div class="modules-panel-scroll" *ngIf="!modulesLoading">
+
+                <div class="module-card" *ngFor="let mod of filteredModules"
+                    [class.inactive-card]="!mod.is_active">
+
+                    <div class="mod-icon-badge">
+                        <i class="bx" [ngClass]="mod.icon"></i>
+                    </div>
+
+                    <div class="mod-info">
+                        <div class="mod-info-top">
+                            <span class="mod-name">{{ mod.name }}</span>
+                            <span class="mod-code">{{ mod.code }}</span>
+                        </div>
+                        <span class="mod-description">{{ mod.description }}</span>
+                    </div>
+
+                    <span class="mod-status-badge"
+                        [class.active]="mod.is_active"
+                        [class.inactive]="!mod.is_active">
+                        <i class="bx bxs-circle"></i>
+                        {{ (mod.is_active ? 'admin.features.modules.status-active' : 'admin.features.modules.status-inactive') | translate }}
+                    </span>
+
+                    <div class="mod-actions">
+                        <button class="action-btn features" (click)="openModuleFeatures(mod)"
+                            [title]="'admin.features.modules.manage-features' | translate">
+                            <i class="bx bx-extension"></i>
+                        </button>
+                        <button class="action-btn toggle"
+                            [class.is-active]="mod.is_active"
+                            (click)="toggleModuleActive(mod)"
+                            [title]="(mod.is_active ? 'admin.features.modules.deactivate' : 'admin.features.modules.activate') | translate">
+                            <i class="bx" [class.bx-toggle-right]="mod.is_active" [class.bx-toggle-left]="!mod.is_active"></i>
+                        </button>
+                        <button class="action-btn edit" (click)="openEditModule(mod)">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="action-btn delete" (click)="confirmDeleteModule(mod)">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- Empty state -->
+                <div class="empty-state" *ngIf="filteredModules.length === 0">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>{{ 'admin.features.modules.empty-section' | translate }}</span>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- No section selected -->
+        <ng-template #noSectionSelection>
+            <div class="no-selection">
+                <i class="bx bx-grid-alt"></i>
+                <span>{{ 'admin.features.sections.select-hint' | translate }}</span>
+            </div>
+        </ng-template>
 
     </div>
 
-    <!-- ================================================================ -->
-    <!-- FEATURES TAB (table with pagination, like user management)        -->
-    <!-- ================================================================ -->
-    <div class="tab-content" *ngIf="activeTab === 'features'">
+</div>
 
-        <div class="section-header">
-            <div>
-                <p class="subtitle">{{ 'admin.features.features-section.subtitle' | translate }}</p>
+<!-- ================================================================ -->
+<!-- Section Create/Edit Modal                                         -->
+<!-- ================================================================ -->
+<div class="modal-overlay" *ngIf="showSectionModal" (click)="closeSectionModal()">
+    <div class="modal-card modal-card--sm" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <div class="modal-title-group">
+                <i class="bx" [ngClass]="editingSection ? 'bx-edit' : 'bx-category-alt'"></i>
+                <h3>{{ (editingSection ? 'admin.features.sections.modal.edit-title' : 'admin.features.sections.modal.add-title') | translate }}</h3>
             </div>
-            <wa-btn (clicked)="openCreateFeature()">
-                <i class="bx bx-plus"></i>
-                {{ 'admin.features.features-section.add-btn' | translate }}
+            <button class="modal-close" (click)="closeSectionModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body modal-body--padded">
+            <form [formGroup]="sectionForm" class="sec-form">
+
+                <div class="form-row">
+                    <wa-form-field formControlName="code"
+                        [label]="'admin.features.sections.form.code' | translate"
+                        [placeholder]="'admin.features.sections.form.code-placeholder' | translate"
+                        [invalid]="isSectionInvalid('code')"
+                        [errorMessage]="'admin.features.sections.form.code-error' | translate"
+                        [inputStyle]="{ 'text-transform': 'uppercase' }">
+                    </wa-form-field>
+
+                    <wa-form-field formControlName="name"
+                        [label]="'admin.features.sections.form.name' | translate"
+                        [placeholder]="'admin.features.sections.form.name-placeholder' | translate"
+                        [invalid]="isSectionInvalid('name')"
+                        [errorMessage]="'admin.features.sections.form.name-error' | translate">
+                    </wa-form-field>
+                </div>
+
+                <wa-form-field formControlName="icon"
+                    [label]="'admin.features.sections.form.icon' | translate"
+                    [placeholder]="'admin.features.sections.form.icon-placeholder' | translate"
+                    [invalid]="isSectionInvalid('icon')"
+                    [errorMessage]="'admin.features.sections.form.icon-error' | translate"
+                    [fullWidth]="true">
+                </wa-form-field>
+
+            </form>
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" (clicked)="closeSectionModal()">
+                {{ 'dialog.common.cancel' | translate }}
+            </wa-btn>
+            <wa-btn (clicked)="saveSection()" [loading]="sectionSaving">
+                <i class="bx bx-check"></i>
+                {{ (editingSection ? 'admin.features.sections.modal.save-btn' : 'admin.features.sections.modal.add-btn') | translate }}
             </wa-btn>
         </div>
 
-        <!-- Table shell -->
-        <div class="table-shell">
-
-            <div class="table-scrollable">
-
-                <!-- Column headers -->
-                <div class="table-head" [style.grid-template-columns]="gridTemplate">
-                    <span *ngFor="let col of tableConfig.columns" class="col-header"
-                        [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
-                        {{ col.label | translate }}
-                        <i *ngIf="col.filterable && filterForm.get(col.key)?.value"
-                            class="bx bx-filter-alt filter-active-badge"></i>
-                    </span>
-                    <span *ngIf="tableConfig.editable || tableConfig.deletable" class="col-header">
-                        {{ 'admin.features.table.actions' | translate }}
-                    </span>
-                </div>
-
-                <!-- Filter row -->
-                <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
-                    <ng-container *ngFor="let col of tableConfig.columns">
-
-                        <!-- Text filter -->
-                        <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
-                            <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
-                                <i class="bx bx-search filter-icon"></i>
-                                <input [formControlName]="col.key" class="filter-input" autocomplete="off"
-                                    [placeholder]="'admin.features.filter.placeholder' | translate">
-                                <button *ngIf="filterForm.get(col.key)?.value" class="filter-clear-btn" type="button"
-                                    (click)="clearFilter(col.key)">
-                                    <i class="bx bx-x"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Select filter or spacer -->
-                        <ng-template #selectOrSpacer>
-                            <div class="filter-cell" *ngIf="col.filterable && col.filterType === 'select'; else filterSpacer">
-                                <select [formControlName]="col.key" class="filter-select"
-                                    [class.has-value]="filterForm.get(col.key)?.value">
-                                    <option *ngFor="let opt of col.filterOptions" [value]="opt.value">
-                                        {{ opt.label | translate }}
-                                    </option>
-                                </select>
-                            </div>
-                            <ng-template #filterSpacer>
-                                <div class="filter-cell filter-spacer"></div>
-                            </ng-template>
-                        </ng-template>
-
-                    </ng-container>
-
-                    <!-- Actions column: clear-all button -->
-                    <div class="filter-cell filter-actions-cell" *ngIf="tableConfig.editable || tableConfig.deletable">
-                        <button *ngIf="hasActiveFilters" class="clear-all-btn" type="button" (click)="clearFilters()">
-                            <i class="bx bx-filter-alt"></i>
-                            {{ 'admin.features.filter.clear' | translate }}
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Loading -->
-                <div class="loading-state" *ngIf="featuresLoading">
-                    <i class="bx bx-loader-alt bx-spin"></i>
-                    <span>{{ 'admin.features.features-section.loading' | translate }}</span>
-                </div>
-
-                <!-- Data rows -->
-                <ng-container *ngIf="!featuresLoading">
-                    <div class="table-row" *ngFor="let feat of pagedFeatures" [style.grid-template-columns]="gridTemplate">
-
-                        <ng-container *ngFor="let col of tableConfig.columns">
-                            <ng-container [ngSwitch]="col.type">
-
-                                <!-- text -->
-                                <span *ngSwitchCase="'text'" class="cell-text">
-                                    {{ getCellValue(feat, col.key) }}
-                                </span>
-
-                                <!-- muted (key) -->
-                                <span *ngSwitchCase="'muted'" class="cell-muted">
-                                    {{ getCellValue(feat, col.key) }}
-                                </span>
-
-                                <!-- module-badge -->
-                                <div *ngSwitchCase="'module-badge'" class="badge-cell">
-                                    <span class="module-badge">
-                                        {{ getCellValue(feat, col.key) }}
-                                    </span>
-                                </div>
-
-                                <!-- category-badge -->
-                                <div *ngSwitchCase="'category-badge'" class="badge-cell">
-                                    <span class="category-badge"
-                                        [ngClass]="getCategoryClass(feat.category)">
-                                        <i class="bx" [ngClass]="feat.category === 'ai' ? 'bx-brain' : 'bx-list-ul'"></i>
-                                        {{ (feat.category === 'ai' ? 'admin.features.category.ai' : 'admin.features.category.features') | translate }}
-                                    </span>
-                                </div>
-
-                                <!-- status-badge -->
-                                <span *ngSwitchCase="'status-badge'" class="status-badge"
-                                    [class.active]="feat.is_active"
-                                    [class.inactive]="!feat.is_active">
-                                    <i class="bx" [ngClass]="feat.is_active ? 'bxs-circle' : 'bx-circle'"></i>
-                                    {{ (feat.is_active ? 'admin.features.status.active' : 'admin.features.status.inactive') | translate }}
-                                </span>
-
-                            </ng-container>
-                        </ng-container>
-
-                        <!-- Action buttons -->
-                        <div *ngIf="tableConfig.editable || tableConfig.deletable" class="row-actions">
-                            <button *ngIf="tableConfig.editable" class="icon-btn edit" (click)="openEditFeature(feat)"
-                                [title]="'admin.features.actions.edit' | translate">
-                                <i class="bx bx-edit"></i>
-                            </button>
-                            <button *ngIf="tableConfig.deletable" class="icon-btn"
-                                [class.toggle-on]="feat.is_active"
-                                [class.toggle-off]="!feat.is_active"
-                                (click)="toggleFeatureActive(feat)"
-                                [title]="(feat.is_active ? 'admin.features.actions.deactivate' : 'admin.features.actions.activate') | translate">
-                                <i class="bx" [ngClass]="feat.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Empty state -->
-                    <div class="empty-state" *ngIf="pagedFeatures.length === 0">
-                        <i class="bx" [ngClass]="hasActiveFilters ? 'bx-search-alt' : 'bx-extension'"></i>
-                        <span>
-                            {{ (hasActiveFilters
-                                ? 'admin.features.empty.filtered'
-                                : 'admin.features.empty.no-features') | translate }}
-                        </span>
-                        <button *ngIf="hasActiveFilters" class="clear-filters-link" type="button" (click)="clearFilters()">
-                            {{ 'admin.features.filter.clear-all' | translate }}
-                        </button>
-                    </div>
-
-                </ng-container>
-
-            </div>
-
-            <!-- Paginator -->
-            <div class="paginator" *ngIf="featuresTotal > 0">
-                <span class="record-count">
-                    <strong>{{ featuresTotal }}</strong>
-                    {{ (featuresTotal === 1 ? 'admin.features.paginator.record' : 'admin.features.paginator.records') | translate }}
-                </span>
-                <div class="page-nav" *ngIf="featuresTotalPages > 1">
-                    <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(1)">
-                        <i class="bx bx-chevrons-left"></i>
-                    </button>
-                    <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
-                        <i class="bx bx-chevron-left"></i>
-                    </button>
-                    <span class="page-indicator">{{ currentPage }} / {{ featuresTotalPages }}</span>
-                    <button class="page-btn" [disabled]="currentPage === featuresTotalPages" (click)="onPageChange(currentPage + 1)">
-                        <i class="bx bx-chevron-right"></i>
-                    </button>
-                    <button class="page-btn" [disabled]="currentPage === featuresTotalPages" (click)="onPageChange(featuresTotalPages)">
-                        <i class="bx bx-chevrons-right"></i>
-                    </button>
-                </div>
-            </div>
-
-        </div>
-
     </div>
-
 </div>
 
 <!-- ================================================================ -->
@@ -325,12 +267,32 @@
                     [fullWidth]="true">
                 </wa-form-field>
 
-                <wa-form-field formControlName="icon"
-                    [label]="'admin.features.modules.form.icon' | translate"
-                    [placeholder]="'admin.features.modules.form.icon-placeholder' | translate"
-                    [invalid]="isModuleInvalid('icon')"
-                    [errorMessage]="'admin.features.modules.form.icon-error' | translate">
-                </wa-form-field>
+                <div class="form-row">
+                    <wa-form-field formControlName="icon"
+                        [label]="'admin.features.modules.form.icon' | translate"
+                        [placeholder]="'admin.features.modules.form.icon-placeholder' | translate"
+                        [invalid]="isModuleInvalid('icon')"
+                        [errorMessage]="'admin.features.modules.form.icon-error' | translate">
+                    </wa-form-field>
+
+                    <wa-form-field formControlName="route"
+                        [label]="'admin.features.modules.form.route' | translate"
+                        [placeholder]="'admin.features.modules.form.route-placeholder' | translate"
+                        [invalid]="isModuleInvalid('route')"
+                        [errorMessage]="'admin.features.modules.form.route-error' | translate">
+                    </wa-form-field>
+                </div>
+
+                <div class="select-wrapper">
+                    <label class="select-label">{{ 'admin.features.modules.form.section' | translate }}</label>
+                    <select formControlName="section_id" class="native-select" [class.invalid]="isModuleInvalid('section_id')">
+                        <option value="">{{ 'admin.features.modules.form.section-placeholder' | translate }}</option>
+                        <option *ngFor="let sec of sections" [value]="sec.id">{{ sec.name }}</option>
+                    </select>
+                    <span class="select-error" *ngIf="isModuleInvalid('section_id')">
+                        {{ 'admin.features.modules.form.section-error' | translate }}
+                    </span>
+                </div>
 
             </form>
         </div>
@@ -349,19 +311,107 @@
 </div>
 
 <!-- ================================================================ -->
-<!-- Feature Create/Edit Modal                                         -->
+<!-- Module Features Modal                                             -->
 <!-- ================================================================ -->
-<div class="modal-overlay" *ngIf="showFeatureModal" (click)="closeFeatureModal()">
-    <div class="modal-card" (click)="$event.stopPropagation()">
+<div class="modal-overlay" *ngIf="showFeaturesModal" (click)="closeModuleFeaturesModal()">
+    <div class="modal-card modal-card--lg" (click)="$event.stopPropagation()">
 
         <div class="modal-header">
-            <h3>{{ (editingFeature ? 'admin.features.features-section.modal.edit-title' : 'admin.features.features-section.modal.add-title') | translate }}</h3>
+            <div class="modal-title-group">
+                <i class="bx bx-extension"></i>
+                <div>
+                    <h3>{{ 'admin.features.features-modal.title' | translate }}</h3>
+                    <span class="modal-module-name">{{ selectedModuleForFeatures?.name }}</span>
+                </div>
+            </div>
+            <div class="modal-header-actions">
+                <wa-btn (clicked)="openCreateFeature()">
+                    <i class="bx bx-plus"></i>
+                    {{ 'admin.features.features-modal.add-btn' | translate }}
+                </wa-btn>
+                <button class="modal-close" (click)="closeModuleFeaturesModal()">
+                    <i class="bx bx-x"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="modal-body modal-body--features">
+
+            <div class="loading-state" *ngIf="moduleFeaturesLoading">
+                <i class="bx bx-loader-alt bx-spin"></i>
+                <span>{{ 'admin.features.features-modal.loading' | translate }}</span>
+            </div>
+
+            <ng-container *ngIf="!moduleFeaturesLoading">
+
+                <div class="features-list" *ngIf="moduleFeatures.length > 0">
+                    <div class="feature-item" *ngFor="let feat of moduleFeatures"
+                        [class.inactive]="!feat.is_active">
+
+                        <div class="feature-item-info">
+                            <span class="feature-label">{{ feat.label }}</span>
+                            <span class="feature-key">{{ feat.key }}</span>
+                        </div>
+
+                        <span class="category-badge"
+                            [ngClass]="feat.category === 'ai' ? 'cat-ai' : 'cat-features'">
+                            <i class="bx" [ngClass]="feat.category === 'ai' ? 'bx-brain' : 'bx-list-ul'"></i>
+                            {{ (feat.category === 'ai' ? 'admin.features.category.ai' : 'admin.features.category.features') | translate }}
+                        </span>
+
+                        <span class="feat-status-badge"
+                            [class.active]="feat.is_active"
+                            [class.inactive]="!feat.is_active">
+                            <i class="bx bxs-circle"></i>
+                            {{ (feat.is_active ? 'admin.features.status.active' : 'admin.features.status.inactive') | translate }}
+                        </span>
+
+                        <div class="feature-item-actions">
+                            <button class="icon-btn edit" (click)="openEditFeature(feat)"
+                                [title]="'admin.features.actions.edit' | translate">
+                                <i class="bx bx-edit"></i>
+                            </button>
+                            <button class="icon-btn"
+                                [class.toggle-on]="feat.is_active"
+                                [class.toggle-off]="!feat.is_active"
+                                (click)="toggleFeatureActive(feat)"
+                                [title]="(feat.is_active ? 'admin.features.actions.deactivate' : 'admin.features.actions.activate') | translate">
+                                <i class="bx" [ngClass]="feat.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="empty-state" *ngIf="moduleFeatures.length === 0">
+                    <i class="bx bx-extension"></i>
+                    <span>{{ 'admin.features.features-modal.empty' | translate }}</span>
+                </div>
+
+            </ng-container>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- Feature Create/Edit Modal (nested)                               -->
+<!-- ================================================================ -->
+<div class="modal-overlay modal-overlay--nested" *ngIf="showFeatureModal" (click)="closeFeatureModal()">
+    <div class="modal-card modal-card--sm" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <div class="modal-title-group">
+                <i class="bx" [ngClass]="editingFeature ? 'bx-edit' : 'bx-plus-circle'"></i>
+                <h3>{{ (editingFeature ? 'admin.features.features-section.modal.edit-title' : 'admin.features.features-section.modal.add-title') | translate }}</h3>
+            </div>
             <button class="modal-close" (click)="closeFeatureModal()">
                 <i class="bx bx-x"></i>
             </button>
         </div>
 
-        <div class="modal-body">
+        <div class="modal-body modal-body--padded">
             <form [formGroup]="featureForm" class="feat-form">
 
                 <div class="form-row">
@@ -380,33 +430,12 @@
                     </wa-form-field>
                 </div>
 
-                <wa-form-field formControlName="description"
-                    [label]="'admin.features.features-section.form.description' | translate"
-                    [placeholder]="'admin.features.features-section.form.description-placeholder' | translate"
-                    [invalid]="isFeatureInvalid('description')"
-                    [errorMessage]="'admin.features.features-section.form.description-error' | translate"
-                    [fullWidth]="true">
-                </wa-form-field>
-
-                <div class="form-row">
-                    <div class="select-wrapper">
-                        <label class="select-label">{{ 'admin.features.features-section.form.module' | translate }}</label>
-                        <select formControlName="module_code" class="native-select" [class.invalid]="isFeatureInvalid('module_code')">
-                            <option value="">{{ 'admin.features.features-section.form.module-placeholder' | translate }}</option>
-                            <option *ngFor="let mod of modules" [value]="mod.code">{{ mod.name }}</option>
-                        </select>
-                        <span class="select-error" *ngIf="isFeatureInvalid('module_code')">
-                            {{ 'admin.features.features-section.form.module-error' | translate }}
-                        </span>
-                    </div>
-
-                    <div class="select-wrapper">
-                        <label class="select-label">{{ 'admin.features.features-section.form.category' | translate }}</label>
-                        <select formControlName="category" class="native-select">
-                            <option value="features">{{ 'admin.features.category.features' | translate }}</option>
-                            <option value="ai">{{ 'admin.features.category.ai' | translate }}</option>
-                        </select>
-                    </div>
+                <div class="select-wrapper">
+                    <label class="select-label">{{ 'admin.features.features-section.form.category' | translate }}</label>
+                    <select formControlName="category" class="native-select">
+                        <option value="features">{{ 'admin.features.category.features' | translate }}</option>
+                        <option value="ai">{{ 'admin.features.category.ai' | translate }}</option>
+                    </select>
                 </div>
 
             </form>

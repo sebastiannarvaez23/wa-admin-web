@@ -34,20 +34,56 @@
     },
     "features": {
       "title": "Funcionalidades",
-      "tab": {
-        "modules": "Módulos",
-        "features": "Funcionalidades"
+      "sections": {
+        "title": "Secciones",
+        "add-btn": "Nueva sección",
+        "edit-btn": "Editar sección",
+        "delete-btn": "Eliminar sección",
+        "delete-dialog": {
+          "title": "Eliminar sección",
+          "message": "¿Estás seguro de que deseas eliminar la sección \"{{name}}\"? Esta acción no se puede deshacer.",
+          "confirm": "Eliminar"
+        },
+        "activate": "Activar sección",
+        "deactivate": "Desactivar sección",
+        "empty": "No hay secciones registradas",
+        "select-hint": "Selecciona una sección para ver sus módulos",
+        "modules-count": "módulos",
+        "modal": {
+          "add-title": "Nueva sección",
+          "edit-title": "Editar sección",
+          "add-btn": "Crear sección",
+          "save-btn": "Guardar cambios"
+        },
+        "form": {
+          "code": "Código",
+          "code-placeholder": "Ej. platform",
+          "code-error": "El código es requerido (mín. 2 caracteres)",
+          "name": "Nombre",
+          "name-placeholder": "Ej. Plataforma",
+          "name-error": "El nombre es requerido (mín. 2 caracteres)",
+          "icon": "Icono (clase Boxicons)",
+          "icon-placeholder": "Ej. bx-category",
+          "icon-error": "El icono es requerido"
+        }
       },
       "modules": {
         "subtitle": "Administra los módulos disponibles en la plataforma",
         "add-btn": "Nuevo módulo",
         "loading": "Cargando módulos...",
         "empty": "No hay módulos registrados",
-        "features-count": "funcionalidades",
+        "empty-section": "No hay módulos en esta sección",
+        "manage-features": "Gestionar funcionalidades",
         "status-active": "Activo",
         "status-inactive": "Inactivo",
         "activate": "Activar",
         "deactivate": "Desactivar",
+        "delete": "Eliminar módulo",
+        "delete-dialog": {
+          "title": "Eliminar módulo",
+          "message": "¿Estás seguro de que deseas eliminar el módulo \"{{name}}\"? Esta acción no se puede deshacer.",
+          "confirm": "Eliminar"
+        },
         "modal": {
           "add-title": "Nuevo módulo",
           "edit-title": "Editar módulo",
@@ -66,8 +102,20 @@
           "description-error": "La descripción es requerida",
           "icon": "Icono (clase Boxicons)",
           "icon-placeholder": "Ej. bx-cart",
-          "icon-error": "El icono es requerido"
+          "icon-error": "El icono es requerido",
+          "route": "Ruta",
+          "route-placeholder": "Ej. /orders",
+          "route-error": "La ruta es requerida",
+          "section": "Sección",
+          "section-placeholder": "Seleccionar sección",
+          "section-error": "La sección es requerida"
         }
+      },
+      "features-modal": {
+        "title": "Funcionalidades del módulo",
+        "add-btn": "Nueva funcionalidad",
+        "loading": "Cargando funcionalidades...",
+        "empty": "Este módulo no tiene funcionalidades registradas"
       },
       "features-section": {
         "subtitle": "Administra las funcionalidades individuales de cada módulo",
@@ -111,7 +159,7 @@
           "all": "Todos los módulos"
         },
         "category": {
-          "all": "Todas",
+          "all": "Todas las categorías",
           "features": "Funcionalidades",
           "ai": "IA"
         },
@@ -255,6 +303,164 @@
           "features": "Funcionalidades",
           "ai": "Inteligencia Artificial"
         }
+      }
+    },
+    "tenants": {
+      "title": "Empresas",
+      "tabs": {
+        "companies": "Empresas",
+        "users": "Usuarios",
+        "permissions": "Permisos",
+        "params": "Parámetros"
+      },
+      "companies": {
+        "title": "Gestión de empresas",
+        "subtitle": "Administra las empresas registradas en la plataforma",
+        "new-company": "Nueva empresa",
+        "loading": "Cargando empresas...",
+        "table": {
+          "name": "Nombre",
+          "nit": "NIT",
+          "city": "Ciudad",
+          "subscription": "Suscripción",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "filter": {
+          "placeholder": "Buscar...",
+          "clear": "Limpiar",
+          "clear-all": "Limpiar todos los filtros",
+          "status": {
+            "all": "Todos",
+            "active": "Activo",
+            "inactive": "Inactivo"
+          }
+        },
+        "status": {
+          "active": "Activa",
+          "inactive": "Inactiva"
+        },
+        "actions": {
+          "activate": "Activar",
+          "deactivate": "Desactivar"
+        },
+        "empty": {
+          "filtered": "No se encontraron empresas con los filtros aplicados",
+          "no-companies": "No hay empresas registradas"
+        },
+        "paginator": {
+          "record": "registro",
+          "records": "registros"
+        },
+        "modal": {
+          "create-title": "Nueva empresa",
+          "edit-title": "Editar empresa",
+          "name-label": "Nombre de la empresa",
+          "name-placeholder": "Ej. Mi Empresa S.A.",
+          "name-error": "El nombre es requerido (mín. 2 caracteres)",
+          "nit-label": "NIT / Identificación fiscal",
+          "nit-placeholder": "Ej. 900123456-1",
+          "nit-error": "El NIT es requerido (mín. 5 caracteres)",
+          "schema-label": "Esquema (identificador interno)",
+          "schema-placeholder": "Ej. miempresa",
+          "schema-error": "El esquema es requerido (mín. 2 caracteres)",
+          "address-label": "Dirección",
+          "address-placeholder": "Ej. Calle 123 #45-67",
+          "address-error": "La dirección es requerida",
+          "country-label": "País",
+          "country-placeholder": "Ej. Colombia",
+          "country-error": "El país es requerido",
+          "state-label": "Departamento / Estado",
+          "state-placeholder": "Ej. Antioquia",
+          "state-error": "El departamento es requerido",
+          "city-label": "Ciudad",
+          "city-placeholder": "Ej. Medellín",
+          "city-error": "La ciudad es requerida",
+          "cancel": "Cancelar",
+          "save": "Guardar"
+        },
+        "notifications": {
+          "load-error": "Error al cargar las empresas",
+          "create-success": "Empresa creada exitosamente",
+          "create-error": "Error al crear la empresa",
+          "update-success": "Empresa actualizada exitosamente",
+          "update-error": "Error al actualizar la empresa",
+          "toggle-activated": "Empresa activada",
+          "toggle-deactivated": "Empresa desactivada",
+          "toggle-error": "Error al cambiar el estado de la empresa"
+        }
+      },
+      "users": {
+        "title": "Usuarios de empresas",
+        "subtitle": "Visualiza y gestiona los usuarios de todas las empresas registradas",
+        "loading": "Cargando usuarios...",
+        "table": {
+          "name": "Nombre",
+          "email": "Correo",
+          "company": "Empresa",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "filter": {
+          "placeholder": "Buscar...",
+          "clear": "Limpiar",
+          "clear-all": "Limpiar todos los filtros",
+          "status": {
+            "all": "Todos",
+            "active": "Activo",
+            "inactive": "Inactivo"
+          }
+        },
+        "status": {
+          "active": "Activo",
+          "inactive": "Inactivo"
+        },
+        "actions": {
+          "activate": "Activar",
+          "deactivate": "Desactivar"
+        },
+        "empty": {
+          "filtered": "No se encontraron usuarios con los filtros aplicados",
+          "no-users": "No hay usuarios registrados"
+        },
+        "paginator": {
+          "record": "registro",
+          "records": "registros"
+        },
+        "notifications": {
+          "load-error": "Error al cargar los usuarios",
+          "toggle-activated": "Usuario activado",
+          "toggle-deactivated": "Usuario desactivado",
+          "toggle-error": "Error al cambiar el estado del usuario"
+        }
+      },
+      "permissions": {
+        "title": "Roles y Permisos",
+        "subtitle": "Configura los roles y permisos de acceso disponibles para todas las empresas",
+        "new-role": "Nuevo rol",
+        "edit-role": "Editar rol",
+        "edit-role-btn": "Editar rol",
+        "generic-role": "Rol genérico de plataforma",
+        "deactivate-role": "Desactivar rol",
+        "activate-role": "Activar rol",
+        "save": "Guardar permisos",
+        "saved": "Permisos guardados",
+        "readonly-role": "Solo lectura",
+        "select-role": "Selecciona un rol para ver sus permisos",
+        "configure-permissions": "Configurar permisos",
+        "no-features": "No hay funcionalidades definidas para este módulo.",
+        "role-name": "Nombre del rol",
+        "role-name-placeholder": "Ej. Supervisor",
+        "role-description": "Descripción",
+        "role-description-placeholder": "Descripción del rol",
+        "feature-categories": {
+          "features": "Funcionalidades",
+          "ai": "Inteligencia Artificial"
+        }
+      },
+      "params": {
+        "under-construction": "Esta sección está en construcción",
+        "hint": "La configuración de parámetros estará disponible próximamente."
       }
     },
     "subscriptions": {

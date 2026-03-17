@@ -1,0 +1,192 @@
+<div class="tab-section">
+
+    <div class="section-header">
+        <div>
+            <h2>{{ 'admin.tenants.permissions.title' | translate }}</h2>
+            <p class="subtitle">{{ 'admin.tenants.permissions.subtitle' | translate }}</p>
+        </div>
+        <wa-btn (clicked)="openCreateRoleModal()">
+            <i class="bx bx-plus"></i>
+            {{ 'admin.tenants.permissions.new-role' | translate }}
+        </wa-btn>
+    </div>
+
+    <div class="permissions-layout" *ngIf="!loading; else loadingTpl">
+
+        <!-- Role list (left panel) -->
+        <div class="role-list">
+            <div *ngFor="let row of rolePermissions" class="role-item" [class.selected]="row.role.id === selectedRoleId"
+                [class.inactive]="!(row.role.is_active ?? true)" (click)="selectRole(row.role)">
+                <div class="avatar-wrapper">
+                    <div class="avatar" [ngClass]="getRoleClass(row.role.name)">
+                        {{ getInitials(row.role) }}
+                    </div>
+                </div>
+                <div class="role-info">
+                    <span class="role-name">{{ row.role.name }}</span>
+                    <span class="role-description">{{ row.role.description ?? '' }}</span>
+                </div>
+                <div class="role-actions">
+                    <button class="role-action-btn"
+                        (click)="openEditRoleModal(row.role, $event)"
+                        [title]="'admin.tenants.permissions.edit-role-btn' | translate">
+                        <i class="bx bx-edit"></i>
+                    </button>
+                    <button class="role-action-btn" [class.role-action-btn--danger]="row.role.is_active ?? true"
+                        [class.role-action-btn--success]="!(row.role.is_active ?? true)"
+                        (click)="toggleRoleActive(row, $event)"
+                        [title]="(row.role.is_active ?? true) ? ('admin.tenants.permissions.deactivate-role' | translate) : ('admin.tenants.permissions.activate-role' | translate)">
+                        <i class="bx bx-power-off"></i>
+                    </button>
+                </div>
+                <i class="bx bx-chevron-right chevron-icon"></i>
+            </div>
+        </div>
+
+        <!-- Permission panel (right panel) -->
+        <div class="permission-panel" *ngIf="selectedRow; else noSelection">
+            <div class="panel-header-top">
+                <div class="panel-role-info">
+                    <div class="avatar-lg" [ngClass]="getRoleClass(selectedRow.role.name)">
+                        {{ getInitials(selectedRow.role) }}
+                    </div>
+                    <div>
+                        <div class="panel-role-name">{{ selectedRow.role.name }}</div>
+                        <div class="panel-role-desc">{{ selectedRow.role.description ?? '' }}</div>
+                    </div>
+                </div>
+                <div class="save-btn-wrapper">
+                    <span class="saved-msg" *ngIf="saved">
+                        <i class="bx bx-check-circle"></i>
+                        {{ 'admin.tenants.permissions.saved' | translate }}
+                    </span>
+                    <wa-btn *ngIf="!saved" (clicked)="savePermissions()">
+                        <i class="bx bx-save"></i>
+                        {{ 'admin.tenants.permissions.save' | translate }}
+                    </wa-btn>
+                </div>
+            </div>
+
+            <div class="modules-scroll">
+                <div class="module-row" *ngFor="let perm of selectedRow.modules">
+                    <div class="module-info">
+                        <i class="bx" [ngClass]="perm.moduleIcon"></i>
+                        <div class="module-text">
+                            <span class="module-name">{{ perm.moduleName }}</span>
+                        </div>
+                    </div>
+
+                    <div class="module-controls">
+                        <label class="toggle-switch">
+                            <input type="checkbox" [checked]="perm.hasAccess" (change)="toggleModuleAccess(perm)">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <button class="config-btn" (click)="openDetailModal(perm.module)"
+                            [title]="'admin.tenants.permissions.configure-permissions' | translate">
+                            <i class="bx bx-extension"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #noSelection>
+            <div class="no-selection">
+                <i class="bx bx-shield-quarter"></i>
+                <span>{{ 'admin.tenants.permissions.select-role' | translate }}</span>
+            </div>
+        </ng-template>
+
+    </div>
+
+    <ng-template #loadingTpl>
+        <div class="no-selection">
+            <i class="bx bx-loader-alt bx-spin"></i>
+        </div>
+    </ng-template>
+
+</div>
+
+<!-- Create / Edit role modal -->
+<div class="modal-overlay" *ngIf="showRoleModal" (click)="closeRoleModal()">
+    <div class="modal-card modal-card--sm" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title-group">
+                <i class="bx" [ngClass]="editingRole ? 'bx-edit' : 'bx-shield-plus'"></i>
+                <h3>{{ (editingRole ? 'admin.tenants.permissions.edit-role' :
+                    'admin.tenants.permissions.new-role') | translate }}</h3>
+            </div>
+            <button class="modal-close" (click)="closeRoleModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body modal-body--padded">
+            <div class="form-group">
+                <label class="form-label">{{ 'admin.tenants.permissions.role-name' | translate }} <span
+                        class="required">*</span></label>
+                <input class="form-input" type="text" [(ngModel)]="roleForm.name"
+                    [placeholder]="'admin.tenants.permissions.role-name-placeholder' | translate">
+            </div>
+            <div class="form-group">
+                <label class="form-label">{{ 'admin.tenants.permissions.role-description' | translate }}</label>
+                <textarea class="form-input form-textarea" [(ngModel)]="roleForm.description" rows="3"
+                    [placeholder]="'admin.tenants.permissions.role-description-placeholder' | translate"></textarea>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" (clicked)="closeRoleModal()">
+                {{ 'common.cancel' | translate }}
+            </wa-btn>
+            <wa-btn (clicked)="saveRole()" [disabled]="!roleForm.name.trim()">
+                {{ 'common.save' | translate }}
+            </wa-btn>
+        </div>
+    </div>
+</div>
+
+<!-- Detail features modal -->
+<div class="modal-overlay" *ngIf="showDetailModal" (click)="closeDetailModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <div class="modal-title-group">
+                <i class="bx" [ngClass]="currentDetailModule?.moduleIcon"></i>
+                <h3>{{ currentDetailModule?.moduleName }}</h3>
+            </div>
+            <button class="modal-close" (click)="closeDetailModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body" *ngIf="currentDetailModule">
+            <ng-container *ngIf="currentDetailGroups.length > 0; else noFeaturesTpl">
+                <div class="feature-group" *ngFor="let group of currentDetailGroups">
+                    <div class="feature-category-header">
+                        <i class="bx" [ngClass]="group.category === 'ai' ? 'bx-brain' : 'bx-list-ul'"></i>
+                        <span>{{ ('admin.tenants.permissions.feature-categories.' + group.category) | translate }}</span>
+                    </div>
+                    <div class="feature-item" *ngFor="let feature of group.features">
+                        <span class="feature-label">{{ feature.label }}</span>
+                        <label class="toggle-switch">
+                            <input type="checkbox" [(ngModel)]="feature.enabled">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </ng-container>
+            <ng-template #noFeaturesTpl>
+                <div class="no-features">
+                    <i class="bx bx-info-circle"></i>
+                    <span>{{ 'admin.tenants.permissions.no-features' | translate }}</span>
+                </div>
+            </ng-template>
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn (clicked)="closeDetailModal()">
+                {{ 'common.apply' | translate }}
+            </wa-btn>
+        </div>
+    </div>
+</div>

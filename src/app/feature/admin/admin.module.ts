@@ -14,8 +14,12 @@ import { SettingsPageComponent } from './pages/settings/settings-page.component'
 import { SubscriptionsPageComponent } from './pages/subscriptions/subscriptions-page.component';
 import { FeaturesPageComponent } from './pages/features/features-page.component';
 import { UsersRolesPageComponent } from './pages/users-roles/users-roles-page.component';
+import { TenantsPageComponent } from './pages/tenants/tenants-page.component';
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
 import { AdminPermissionsComponent } from './components/admin-permissions/admin-permissions.component';
+import { TenantCompaniesComponent } from './components/tenant-companies/tenant-companies.component';
+import { TenantUsersComponent } from './components/tenant-users/tenant-users.component';
+import { TenantPermissionsComponent } from './components/tenant-permissions/tenant-permissions.component';
 
 @NgModule({
     declarations: [
@@ -25,8 +29,12 @@ import { AdminPermissionsComponent } from './components/admin-permissions/admin-
         SubscriptionsPageComponent,
         FeaturesPageComponent,
         UsersRolesPageComponent,
+        TenantsPageComponent,
         AdminUsersComponent,
         AdminPermissionsComponent,
+        TenantCompaniesComponent,
+        TenantUsersComponent,
+        TenantPermissionsComponent,
     ],
     imports: [
         CommonModule,

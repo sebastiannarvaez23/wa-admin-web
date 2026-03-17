@@ -1,0 +1,38 @@
+/* ── Subscription badges ──────────────────────────────────────────────────── */
+
+.badge-cell {
+    display: flex;
+    align-items: center;
+}
+
+.subscription-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    width: fit-content;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.subscription-badge.sub-active    { background: #e8f5e9; color: #2e7d32; }
+.subscription-badge.sub-suspended { background: #fff3e0; color: #e65100; }
+.subscription-badge.sub-expired   { background: #fce4ec; color: #c62828; }
+.subscription-badge.sub-cancelled { background: #f3e5f5; color: #6a1b9a; }
+.subscription-badge.sub-none      { background: var(--very-like); color: var(--text-secondary); }
+
+/* ── 3-column form row ───────────────────────────────────────────────────── */
+
+.form-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+}
+
+@media (max-width: 768px) {
+    .form-row-3 { grid-template-columns: 1fr; }
+}

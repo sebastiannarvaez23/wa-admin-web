@@ -80,10 +80,104 @@ export interface AdminModule {
     description: string;
     icon: string;
     route: string;
+    section_id: string;
     section_code: string;
+    section_name: string;
     section_order: number;
     order: number;
     is_active: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface PaginatedModulesResponse {
+    items:       AdminModule[];
+    total:       number;
+    page:        number;
+    page_size:   number;
+    total_pages: number;
+}
+
+export interface ModulesFilterParams {
+    name?:       string;
+    code?:       string;
+    section_id?: string;
+    is_active?:  'true' | 'false';
+}
+
+export interface CreateModulePayload {
+    code:         string;
+    name:         string;
+    description?: string;
+    icon:         string;
+    route:        string;
+    section_id:   string;
+    order?:       number;
+}
+
+export interface UpdateModulePayload {
+    code?:        string;
+    name?:        string;
+    description?: string;
+    icon?:        string;
+    route?:       string;
+    section_id?:  string;
+    order?:       number;
+    is_active?:   boolean;
+}
+
+// AdminFunctionality maps to the security_features table (endpoint: /company-features/)
+export interface AdminFunctionality {
+    id:        string;
+    module:    string;   // module code string (not FK)
+    key:       string;
+    label:     string;
+    category:  string;
+    is_active: boolean;
+}
+
+export interface FunctionalitiesFilterParams {
+    module?: string;    // module code — server-side filter
+    // label, key, category, is_active are filtered client-side
+}
+
+export interface CreateFunctionalityPayload {
+    module:    string;   // module code
+    key:       string;
+    label:     string;
+    category?: string;
+}
+
+export interface UpdateFunctionalityPayload {
+    module?:    string;
+    key?:       string;
+    label?:     string;
+    category?:  string;
+    is_active?: boolean;
+}
+
+export interface AdminSection {
+    id:       string;
+    code:     string;
+    name:     string;
+    icon:     string;
+    order:    number;
+    is_active: boolean;
+}
+
+export interface CreateSectionPayload {
+    code:   string;
+    name:   string;
+    icon:   string;
+    order?: number;
+}
+
+export interface UpdateSectionPayload {
+    code?:      string;
+    name?:      string;
+    icon?:      string;
+    order?:     number;
+    is_active?: boolean;
 }
 
 export type UserColumnType = 'user-cell' | 'text' | 'muted' | 'role-badge' | 'status-badge';

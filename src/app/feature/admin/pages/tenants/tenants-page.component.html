@@ -1,0 +1,29 @@
+<span class="text">
+    <i class="bx bx-buildings"></i>
+    {{ 'admin.tenants.title' | translate }}
+</span>
+
+<div class="page-layout">
+
+    <div class="settings-tabs">
+        <button *ngFor="let tab of tabs" class="tab-btn" [class.active]="activeTab === tab.key"
+            (click)="setTab(tab.key)">
+            <i class="bx" [ngClass]="tab.icon"></i>
+            {{ tab.label | translate }}
+        </button>
+    </div>
+
+    <div class="page-content">
+        <wa-tenant-companies   *ngIf="activeTab === 'companies'"></wa-tenant-companies>
+        <wa-tenant-users       *ngIf="activeTab === 'users'"></wa-tenant-users>
+        <wa-tenant-permissions *ngIf="activeTab === 'permissions'"></wa-tenant-permissions>
+
+        <!-- Params: under construction -->
+        <div class="construction-state" *ngIf="activeTab === 'params'">
+            <i class="bx bx-hard-hat"></i>
+            <span>{{ 'admin.tenants.params.under-construction' | translate }}</span>
+            <p class="construction-hint">{{ 'admin.tenants.params.hint' | translate }}</p>
+        </div>
+    </div>
+
+</div>

@@ -4,6 +4,7 @@ export interface FeatureModule {
     name: string;
     description: string;
     icon: string;
+    section_id: string;
     is_active: boolean;
     features_count: number;
     created_at: string;

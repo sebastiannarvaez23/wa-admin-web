@@ -33,20 +33,56 @@
     },
     "features": {
       "title": "Features",
-      "tab": {
-        "modules": "Modules",
-        "features": "Features"
+      "sections": {
+        "title": "Sections",
+        "add-btn": "New section",
+        "edit-btn": "Edit section",
+        "delete-btn": "Delete section",
+        "delete-dialog": {
+          "title": "Delete section",
+          "message": "Are you sure you want to delete the section \"{{name}}\"? This action cannot be undone.",
+          "confirm": "Delete"
+        },
+        "activate": "Activate section",
+        "deactivate": "Deactivate section",
+        "empty": "No sections registered",
+        "select-hint": "Select a section to view its modules",
+        "modules-count": "modules",
+        "modal": {
+          "add-title": "New section",
+          "edit-title": "Edit section",
+          "add-btn": "Create section",
+          "save-btn": "Save changes"
+        },
+        "form": {
+          "code": "Code",
+          "code-placeholder": "e.g. platform",
+          "code-error": "Code is required (min. 2 characters)",
+          "name": "Name",
+          "name-placeholder": "e.g. Platform",
+          "name-error": "Name is required (min. 2 characters)",
+          "icon": "Icon (Boxicons class)",
+          "icon-placeholder": "e.g. bx-category",
+          "icon-error": "Icon is required"
+        }
       },
       "modules": {
         "subtitle": "Manage the modules available on the platform",
         "add-btn": "New module",
         "loading": "Loading modules...",
         "empty": "No modules registered",
-        "features-count": "features",
+        "empty-section": "No modules in this section",
+        "manage-features": "Manage features",
         "status-active": "Active",
         "status-inactive": "Inactive",
         "activate": "Activate",
         "deactivate": "Deactivate",
+        "delete": "Delete module",
+        "delete-dialog": {
+          "title": "Delete module",
+          "message": "Are you sure you want to delete the module \"{{name}}\"? This action cannot be undone.",
+          "confirm": "Delete"
+        },
         "modal": {
           "add-title": "New module",
           "edit-title": "Edit module",
@@ -65,8 +101,20 @@
           "description-error": "Description is required",
           "icon": "Icon (Boxicons class)",
           "icon-placeholder": "e.g. bx-cart",
-          "icon-error": "Icon is required"
+          "icon-error": "Icon is required",
+          "route": "Route",
+          "route-placeholder": "e.g. /orders",
+          "route-error": "Route is required",
+          "section": "Section",
+          "section-placeholder": "Select section",
+          "section-error": "Section is required"
         }
+      },
+      "features-modal": {
+        "title": "Module features",
+        "add-btn": "New feature",
+        "loading": "Loading features...",
+        "empty": "This module has no registered features"
       },
       "features-section": {
         "subtitle": "Manage individual features for each module",
@@ -110,7 +158,7 @@
           "all": "All modules"
         },
         "category": {
-          "all": "All",
+          "all": "All categories",
           "features": "Features",
           "ai": "AI"
         },
@@ -256,6 +304,164 @@
         }
       }
     },
+    "tenants": {
+      "title": "Companies",
+      "tabs": {
+        "companies": "Companies",
+        "users": "Users",
+        "permissions": "Permissions",
+        "params": "Parameters"
+      },
+      "companies": {
+        "title": "Company Management",
+        "subtitle": "Manage companies registered on the platform",
+        "new-company": "New company",
+        "loading": "Loading companies...",
+        "table": {
+          "name": "Name",
+          "nit": "Tax ID",
+          "city": "City",
+          "subscription": "Subscription",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "filter": {
+          "placeholder": "Search...",
+          "clear": "Clear",
+          "clear-all": "Clear all filters",
+          "status": {
+            "all": "All",
+            "active": "Active",
+            "inactive": "Inactive"
+          }
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "actions": {
+          "activate": "Activate",
+          "deactivate": "Deactivate"
+        },
+        "empty": {
+          "filtered": "No companies found with the applied filters",
+          "no-companies": "No companies registered"
+        },
+        "paginator": {
+          "record": "record",
+          "records": "records"
+        },
+        "modal": {
+          "create-title": "New company",
+          "edit-title": "Edit company",
+          "name-label": "Company name",
+          "name-placeholder": "e.g. My Company Inc.",
+          "name-error": "Name is required (min. 2 characters)",
+          "nit-label": "Tax ID",
+          "nit-placeholder": "e.g. 900123456-1",
+          "nit-error": "Tax ID is required (min. 5 characters)",
+          "schema-label": "Schema (internal identifier)",
+          "schema-placeholder": "e.g. mycompany",
+          "schema-error": "Schema is required (min. 2 characters)",
+          "address-label": "Address",
+          "address-placeholder": "e.g. 123 Main Street",
+          "address-error": "Address is required",
+          "country-label": "Country",
+          "country-placeholder": "e.g. Colombia",
+          "country-error": "Country is required",
+          "state-label": "State / Province",
+          "state-placeholder": "e.g. Antioquia",
+          "state-error": "State is required",
+          "city-label": "City",
+          "city-placeholder": "e.g. Medellín",
+          "city-error": "City is required",
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "notifications": {
+          "load-error": "Error loading companies",
+          "create-success": "Company created successfully",
+          "create-error": "Error creating company",
+          "update-success": "Company updated successfully",
+          "update-error": "Error updating company",
+          "toggle-activated": "Company activated",
+          "toggle-deactivated": "Company deactivated",
+          "toggle-error": "Error changing company status"
+        }
+      },
+      "users": {
+        "title": "Company Users",
+        "subtitle": "View and manage users across all registered companies",
+        "loading": "Loading users...",
+        "table": {
+          "name": "Name",
+          "email": "Email",
+          "company": "Company",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "filter": {
+          "placeholder": "Search...",
+          "clear": "Clear",
+          "clear-all": "Clear all filters",
+          "status": {
+            "all": "All",
+            "active": "Active",
+            "inactive": "Inactive"
+          }
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "actions": {
+          "activate": "Activate",
+          "deactivate": "Deactivate"
+        },
+        "empty": {
+          "filtered": "No users found with the applied filters",
+          "no-users": "No users registered"
+        },
+        "paginator": {
+          "record": "record",
+          "records": "records"
+        },
+        "notifications": {
+          "load-error": "Error loading users",
+          "toggle-activated": "User activated",
+          "toggle-deactivated": "User deactivated",
+          "toggle-error": "Error changing user status"
+        }
+      },
+      "permissions": {
+        "title": "Roles & Permissions",
+        "subtitle": "Configure roles and access permissions available for all companies",
+        "new-role": "New role",
+        "edit-role": "Edit role",
+        "edit-role-btn": "Edit role",
+        "generic-role": "Platform generic role",
+        "deactivate-role": "Deactivate role",
+        "activate-role": "Activate role",
+        "save": "Save permissions",
+        "saved": "Permissions saved",
+        "readonly-role": "Read only",
+        "select-role": "Select a role to view its permissions",
+        "configure-permissions": "Configure permissions",
+        "no-features": "No features defined for this module.",
+        "role-name": "Role name",
+        "role-name-placeholder": "e.g. Supervisor",
+        "role-description": "Description",
+        "role-description-placeholder": "Role description",
+        "feature-categories": {
+          "features": "Features",
+          "ai": "Artificial Intelligence"
+        }
+      },
+      "params": {
+        "under-construction": "This section is under construction",
+        "hint": "Parameter configuration will be available soon."
+      }
+    },
     "subscriptions": {
       "title": "Subscriptions",
       "subtitle": "Manage subscription plans available for companies",
@@ -358,6 +564,10 @@
     "apply": "Apply"
   },
   "dialog": {
+    "common": {
+      "cancel": "Cancel",
+      "confirm": "Confirm"
+    },
     "logout": {
       "title": "Sign out",
       "message": "Are you sure you want to sign out?",

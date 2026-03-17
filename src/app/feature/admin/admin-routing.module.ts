@@ -8,6 +8,7 @@ import { SettingsPageComponent } from './pages/settings/settings-page.component'
 import { SubscriptionsPageComponent } from './pages/subscriptions/subscriptions-page.component';
 import { FeaturesPageComponent } from './pages/features/features-page.component';
 import { UsersRolesPageComponent } from './pages/users-roles/users-roles-page.component';
+import { TenantsPageComponent } from './pages/tenants/tenants-page.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
@@ -22,7 +23,7 @@ const routes: Routes = [
             { path: 'dashboard', component: DashboardPageComponent },
 
             // Plataforma
-            { path: 'tenants',   component: ModuleInConstructionPageComponent },
+            { path: 'tenants',   component: TenantsPageComponent },
             { path: 'users',     component: UsersRolesPageComponent },
             { path: 'security',  component: ModuleInConstructionPageComponent },
             { path: 'settings',  component: SettingsPageComponent },

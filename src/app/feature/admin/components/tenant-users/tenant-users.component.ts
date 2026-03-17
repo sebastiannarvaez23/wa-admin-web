@@ -1,0 +1,161 @@
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Subscription } from 'rxjs';
+import { debounceTime, startWith } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+
+import {
+    TenantUser,
+    TenantUsersFilterParams,
+    TenantColumnConfig,
+    TenantTableConfig,
+} from '../../interfaces/admin-tenants.interfaces';
+import { AdminTenantsService } from '../../services/admin-tenants.service';
+import { NotificationService } from 'wa-components-web';
+
+@Component({
+    selector: 'wa-tenant-users',
+    templateUrl: './tenant-users.component.html',
+    styleUrls: ['../admin-shared.css', '../admin-users/admin-users.component.css'],
+})
+export class TenantUsersComponent implements OnInit, OnDestroy {
+
+    readonly tableConfig: TenantTableConfig = {
+        columns: [
+            { key: 'name',         label: 'admin.tenants.users.table.name',    filterable: true, type: 'text',         width: '1.8fr' },
+            { key: 'email',        label: 'admin.tenants.users.table.email',   filterable: true, type: 'text',         width: '1.5fr' },
+            { key: 'company_name', label: 'admin.tenants.users.table.company', filterable: true, type: 'text',         width: '1.2fr' },
+            {
+                key: 'status', label: 'admin.tenants.users.table.status', filterable: true,
+                type: 'status-badge', width: '0.8fr',
+                filterType: 'select',
+                filterOptions: [
+                    { value: '',         label: 'admin.tenants.users.filter.status.all' },
+                    { value: 'active',   label: 'admin.tenants.users.filter.status.active' },
+                    { value: 'inactive', label: 'admin.tenants.users.filter.status.inactive' },
+                ],
+            },
+        ],
+        editable: false,
+        deletable: true,
+    };
+
+    readonly gridTemplate: string;
+
+    pagedUsers: TenantUser[] = [];
+    total      = 0;
+    totalPages = 0;
+
+    loading = false;
+
+    readonly pageSize = 10;
+    currentPage      = 1;
+
+    filterForm: FormGroup;
+    private filterSub?: Subscription;
+
+    constructor(
+        private fb: FormBuilder,
+        private tenantService: AdminTenantsService,
+        private notification: NotificationService,
+        private translate: TranslateService,
+    ) {
+        const filterControls: Record<string, string> = {};
+        this.tableConfig.columns
+            .filter(c => c.filterable)
+            .forEach(c => { filterControls[c.key] = ''; });
+        this.filterForm = this.fb.group(filterControls);
+
+        this.gridTemplate = this.buildGridTemplate();
+    }
+
+    ngOnInit(): void {
+        this.filterSub = this.filterForm.valueChanges.pipe(
+            debounceTime(400),
+            startWith(this.filterForm.value),
+        ).subscribe(() => {
+            this.currentPage = 1;
+            this.loadUsers();
+        });
+    }
+
+    ngOnDestroy(): void {
+        this.filterSub?.unsubscribe();
+    }
+
+    clearFilters(): void { this.filterForm.reset(); }
+    clearFilter(key: string): void { this.filterForm.get(key)?.setValue(''); }
+
+    get hasActiveFilters(): boolean {
+        return Object.values(this.filterForm.value as Record<string, string>)
+            .some(v => !!v && v.trim() !== '');
+    }
+
+    onPageChange(page: number): void {
+        if (page < 1 || page > this.totalPages) return;
+        this.currentPage = page;
+        this.loadUsers();
+    }
+
+    loadUsers(): void {
+        this.loading = true;
+        const v = this.filterForm.value as Record<string, string>;
+
+        const filters: TenantUsersFilterParams = {};
+        if (v['name'])         filters.name    = v['name'];
+        if (v['email'])        filters.email   = v['email'];
+        if (v['company_name']) filters.company = v['company_name'];
+        if (v['status'])       filters.status  = v['status'] as 'active' | 'inactive';
+
+        this.tenantService.getTenantUsers(this.currentPage - 1, this.pageSize, filters).subscribe({
+            next: (result) => {
+                this.pagedUsers = result.items;
+                this.total      = result.total;
+                this.totalPages = result.total_pages;
+                this.loading    = false;
+            },
+            error: () => {
+                this.notification.push(this.translate.instant('admin.tenants.users.notifications.load-error'), 'error');
+                this.loading = false;
+            },
+        });
+    }
+
+    getUserDisplayName(user: TenantUser): string {
+        return `${user.first_name} ${user.last_name}`;
+    }
+
+    getInitials(user: TenantUser): string {
+        return `${user.first_name?.[0] ?? ''}${user.last_name?.[0] ?? ''}`.toUpperCase();
+    }
+
+    getCellValue(user: TenantUser, key: string): any {
+        if (key === 'name') return this.getUserDisplayName(user);
+        return (user as any)[key] ?? '';
+    }
+
+    toggleActive(user: TenantUser): void {
+        this.tenantService.toggleTenantUserActive(user.id).subscribe({
+            next: () => {
+                this.loadUsers();
+                this.notification.push(
+                    this.translate.instant(
+                        !user.is_active
+                            ? 'admin.tenants.users.notifications.toggle-activated'
+                            : 'admin.tenants.users.notifications.toggle-deactivated'
+                    ),
+                    'success',
+                );
+            },
+            error: () => {
+                this.notification.push(this.translate.instant('admin.tenants.users.notifications.toggle-error'), 'error');
+            },
+        });
+    }
+
+    private buildGridTemplate(): string {
+        const widths = this.tableConfig.columns.map(c => c.width ?? '1fr');
+        if (this.tableConfig.editable || this.tableConfig.deletable) widths.push('90px');
+        return widths.join(' ');
+    }
+}

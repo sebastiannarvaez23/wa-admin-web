@@ -1,0 +1,230 @@
+<!-- ── Page header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h2>{{ 'admin.tenants.companies.title' | translate }}</h2>
+        <p class="subtitle">{{ 'admin.tenants.companies.subtitle' | translate }}</p>
+    </div>
+</div>
+
+<!-- ── Table shell ──────────────────────────────────────────────────────── -->
+<div class="table-shell">
+
+    <div class="table-scrollable">
+
+        <!-- Column headers -->
+        <div class="table-head" [style.grid-template-columns]="gridTemplate">
+            <span *ngFor="let col of tableConfig.columns" class="col-header"
+                [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
+                {{ col.label | translate }}
+                <i *ngIf="col.filterable && filterForm.get(col.key)?.value"
+                    class="bx bx-filter-alt filter-active-badge"></i>
+            </span>
+            <span *ngIf="tableConfig.editable || tableConfig.deletable" class="col-header">
+                {{ 'admin.tenants.companies.table.actions' | translate }}
+            </span>
+        </div>
+
+        <!-- Filter row -->
+        <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
+            <ng-container *ngFor="let col of tableConfig.columns">
+                <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
+                    <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
+                        <i class="bx bx-search filter-icon"></i>
+                        <input [formControlName]="col.key" class="filter-input" autocomplete="off"
+                            [placeholder]="'admin.tenants.companies.filter.placeholder' | translate">
+                        <button *ngIf="filterForm.get(col.key)?.value" class="filter-clear-btn" type="button"
+                            (click)="clearFilter(col.key)">
+                            <i class="bx bx-x"></i>
+                        </button>
+                    </div>
+                </div>
+                <ng-template #selectOrSpacer>
+                    <div class="filter-cell" *ngIf="col.filterable && col.filterType === 'select'; else filterSpacer">
+                        <select [formControlName]="col.key" class="filter-select"
+                            [class.has-value]="filterForm.get(col.key)?.value">
+                            <option *ngFor="let opt of col.filterOptions" [value]="opt.value">
+                                {{ opt.label | translate }}
+                            </option>
+                        </select>
+                    </div>
+                    <ng-template #filterSpacer>
+                        <div class="filter-cell filter-spacer"></div>
+                    </ng-template>
+                </ng-template>
+            </ng-container>
+            <div class="filter-cell filter-actions-cell" *ngIf="tableConfig.editable || tableConfig.deletable">
+                <button *ngIf="hasActiveFilters" class="clear-all-btn" type="button" (click)="clearFilters()">
+                    <i class="bx bx-filter-alt"></i>
+                    {{ 'admin.tenants.companies.filter.clear' | translate }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="loading">
+            <i class="bx bx-loader-alt bx-spin"></i>
+            <span>{{ 'admin.tenants.companies.loading' | translate }}</span>
+        </div>
+
+        <!-- Data rows -->
+        <ng-container *ngIf="!loading">
+            <div class="table-row" *ngFor="let tenant of pagedTenants" [style.grid-template-columns]="gridTemplate">
+
+                <ng-container *ngFor="let col of tableConfig.columns">
+                    <ng-container [ngSwitch]="col.type">
+
+                        <!-- text -->
+                        <span *ngSwitchCase="'text'" class="cell-text">
+                            {{ getCellValue(tenant, col.key) }}
+                        </span>
+
+                        <!-- muted -->
+                        <span *ngSwitchCase="'muted'" class="cell-muted">
+                            {{ getCellValue(tenant, col.key) }}
+                        </span>
+
+                        <!-- subscription-badge -->
+                        <div *ngSwitchCase="'subscription-badge'" class="badge-cell">
+                            <span class="subscription-badge" [ngClass]="getSubscriptionClass(tenant)">
+                                {{ getSubscriptionLabel(tenant) }}
+                            </span>
+                        </div>
+
+                        <!-- status-badge -->
+                        <span *ngSwitchCase="'status-badge'" class="status-badge" [class.active]="tenant.is_active"
+                            [class.inactive]="!tenant.is_active">
+                            <i class="bx" [ngClass]="tenant.is_active ? 'bxs-circle' : 'bx-circle'"></i>
+                            {{ (tenant.is_active
+                            ? 'admin.tenants.companies.status.active'
+                            : 'admin.tenants.companies.status.inactive') | translate }}
+                        </span>
+
+                    </ng-container>
+                </ng-container>
+
+                <!-- Action buttons -->
+                <div *ngIf="tableConfig.editable || tableConfig.deletable" class="row-actions">
+                    <button *ngIf="tableConfig.editable" class="icon-btn edit" (click)="openEdit(tenant)"
+                        [title]="'common.edit' | translate">
+                        <i class="bx bx-edit"></i>
+                    </button>
+                    <button *ngIf="tableConfig.deletable" class="icon-btn" [class.toggle-on]="tenant.is_active"
+                        [class.toggle-off]="!tenant.is_active" (click)="toggleActive(tenant)"
+                        [title]="(tenant.is_active ? 'admin.tenants.companies.actions.deactivate' : 'admin.tenants.companies.actions.activate') | translate">
+                        <i class="bx" [ngClass]="tenant.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="pagedTenants.length === 0">
+                <i class="bx" [ngClass]="hasActiveFilters ? 'bx-search-alt' : 'bx-buildings'"></i>
+                <span>
+                    {{ (hasActiveFilters
+                    ? 'admin.tenants.companies.empty.filtered'
+                    : 'admin.tenants.companies.empty.no-companies') | translate }}
+                </span>
+                <button *ngIf="hasActiveFilters" class="clear-filters-link" type="button" (click)="clearFilters()">
+                    {{ 'admin.tenants.companies.filter.clear-all' | translate }}
+                </button>
+            </div>
+
+        </ng-container>
+
+    </div>
+
+    <!-- Paginator -->
+    <div class="paginator" *ngIf="total > 0">
+        <span class="record-count">
+            <strong>{{ total }}</strong>
+            {{ (total === 1 ? 'admin.tenants.companies.paginator.record' : 'admin.tenants.companies.paginator.records')
+            | translate }}
+        </span>
+        <div class="page-nav" *ngIf="totalPages > 1">
+            <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(1)">
+                <i class="bx bx-chevrons-left"></i>
+            </button>
+            <button class="page-btn" [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+                <i class="bx bx-chevron-left"></i>
+            </button>
+            <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+            <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+                <i class="bx bx-chevron-right"></i>
+            </button>
+            <button class="page-btn" [disabled]="currentPage === totalPages" (click)="onPageChange(totalPages)">
+                <i class="bx bx-chevrons-right"></i>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- ── Create / Edit modal ──────────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ (editingTenant
+                ? 'admin.tenants.companies.modal.edit-title'
+                : 'admin.tenants.companies.modal.create-title') | translate }}</h3>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <form [formGroup]="form" class="modal-form" autocomplete="off">
+            <div class="form-row-2">
+                <wa-form-field formControlName="name" [label]="'admin.tenants.companies.modal.name-label' | translate"
+                    [placeholder]="'admin.tenants.companies.modal.name-placeholder' | translate"
+                    [invalid]="isInvalid('name')"
+                    [errorMessage]="'admin.tenants.companies.modal.name-error' | translate">
+                </wa-form-field>
+                <wa-form-field formControlName="nit" [label]="'admin.tenants.companies.modal.nit-label' | translate"
+                    [placeholder]="'admin.tenants.companies.modal.nit-placeholder' | translate"
+                    [invalid]="isInvalid('nit')" [errorMessage]="'admin.tenants.companies.modal.nit-error' | translate">
+                </wa-form-field>
+            </div>
+
+            <wa-form-field formControlName="schema_name"
+                [label]="'admin.tenants.companies.modal.schema-label' | translate"
+                [placeholder]="'admin.tenants.companies.modal.schema-placeholder' | translate"
+                [invalid]="isInvalid('schema_name')"
+                [errorMessage]="'admin.tenants.companies.modal.schema-error' | translate"
+                [inputStyle]="{ 'text-transform': 'lowercase' }">
+            </wa-form-field>
+
+            <wa-form-field formControlName="address" [label]="'admin.tenants.companies.modal.address-label' | translate"
+                [placeholder]="'admin.tenants.companies.modal.address-placeholder' | translate"
+                [invalid]="isInvalid('address')"
+                [errorMessage]="'admin.tenants.companies.modal.address-error' | translate">
+            </wa-form-field>
+
+            <div class="form-row-3">
+                <wa-form-field formControlName="country"
+                    [label]="'admin.tenants.companies.modal.country-label' | translate"
+                    [placeholder]="'admin.tenants.companies.modal.country-placeholder' | translate"
+                    [invalid]="isInvalid('country')"
+                    [errorMessage]="'admin.tenants.companies.modal.country-error' | translate">
+                </wa-form-field>
+                <wa-form-field formControlName="state" [label]="'admin.tenants.companies.modal.state-label' | translate"
+                    [placeholder]="'admin.tenants.companies.modal.state-placeholder' | translate"
+                    [invalid]="isInvalid('state')"
+                    [errorMessage]="'admin.tenants.companies.modal.state-error' | translate">
+                </wa-form-field>
+                <wa-form-field formControlName="city" [label]="'admin.tenants.companies.modal.city-label' | translate"
+                    [placeholder]="'admin.tenants.companies.modal.city-placeholder' | translate"
+                    [invalid]="isInvalid('city')"
+                    [errorMessage]="'admin.tenants.companies.modal.city-error' | translate">
+                </wa-form-field>
+            </div>
+        </form>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" [disabled]="saving" (clicked)="closeModal()">
+                {{ 'admin.tenants.companies.modal.cancel' | translate }}
+            </wa-btn>
+            <wa-btn [loading]="saving" (clicked)="save()">
+                {{ 'admin.tenants.companies.modal.save' | translate }}
+            </wa-btn>
+        </div>
+    </div>
+</div>
