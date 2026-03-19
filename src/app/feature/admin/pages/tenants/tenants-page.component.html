@@ -14,9 +14,11 @@
     </div>
 
     <div class="page-content">
-        <wa-tenant-companies   *ngIf="activeTab === 'companies'"></wa-tenant-companies>
-        <wa-tenant-users       *ngIf="activeTab === 'users'"></wa-tenant-users>
-        <wa-tenant-permissions *ngIf="activeTab === 'permissions'"></wa-tenant-permissions>
+        <wa-tenant-companies     *ngIf="activeTab === 'companies'"></wa-tenant-companies>
+        <wa-tenant-users         *ngIf="activeTab === 'users'"></wa-tenant-users>
+        <wa-permissions-manager  *ngIf="activeTab === 'permissions'"
+                                 [dataSource]="permissionsDataSource">
+        </wa-permissions-manager>
 
         <!-- Params: under construction -->
         <div class="construction-state" *ngIf="activeTab === 'params'">

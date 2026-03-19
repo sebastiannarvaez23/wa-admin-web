@@ -13,7 +13,7 @@
 
         <!-- Column headers -->
         <div class="table-head" [style.grid-template-columns]="gridTemplate">
-            <span *ngFor="let col of tableConfig.columns" class="col-header"
+            <span *ngFor="let col of tableConfig.columns; trackBy: trackByKey" class="col-header"
                 [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
                 {{ col.label | translate }}
                 <i *ngIf="col.filterable && filterForm.get(col.key)?.value"
@@ -26,7 +26,7 @@
 
         <!-- Filter row -->
         <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
-            <ng-container *ngFor="let col of tableConfig.columns">
+            <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                 <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
                     <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
                         <i class="bx bx-search filter-icon"></i>
@@ -68,9 +68,9 @@
 
         <!-- Data rows -->
         <ng-container *ngIf="!loading">
-            <div class="table-row" *ngFor="let tenant of pagedTenants" [style.grid-template-columns]="gridTemplate">
+            <div class="table-row" *ngFor="let tenant of pagedTenants; trackBy: trackById" [style.grid-template-columns]="gridTemplate">
 
-                <ng-container *ngFor="let col of tableConfig.columns">
+                <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                     <ng-container [ngSwitch]="col.type">
 
                         <!-- text -->

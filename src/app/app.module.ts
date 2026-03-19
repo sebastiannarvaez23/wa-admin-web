@@ -10,6 +10,7 @@ import { API_URL } from 'wa-components-web';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { ApiResponseInterceptor } from './core/interceptors/api-response.interceptor';
+import { AuthInterceptor } from './core/interceptors/auth.interceptor';
 import { environment } from '../environments/environment';
 
 export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
@@ -36,6 +37,7 @@ export function HttpLoaderFactory(http: HttpClient): TranslateHttpLoader {
     ],
     providers: [
         { provide: API_URL, useValue: environment.apiUrl },
+        { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
         { provide: HTTP_INTERCEPTORS, useClass: ApiResponseInterceptor, multi: true },
     ],
     bootstrap: [AppComponent],

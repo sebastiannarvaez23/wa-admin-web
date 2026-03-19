@@ -140,6 +140,11 @@
           "module-placeholder": "Select module",
           "module-error": "Module is required",
           "category": "Category"
+        },
+        "delete-dialog": {
+          "title": "Delete feature",
+          "message": "Are you sure you want to delete the feature \"{{label}}\"? This action cannot be undone.",
+          "confirm": "Yes, delete"
         }
       },
       "table": {
@@ -179,7 +184,8 @@
       "actions": {
         "edit": "Edit",
         "activate": "Activate",
-        "deactivate": "Deactivate"
+        "deactivate": "Deactivate",
+        "delete": "Delete"
       },
       "empty": {
         "filtered": "No features found with the applied filters",

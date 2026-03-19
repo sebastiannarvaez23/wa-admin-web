@@ -18,7 +18,7 @@
 
         <!-- Column headers (sticky top: 0) -->
         <div class="table-head" [style.grid-template-columns]="gridTemplate">
-            <span *ngFor="let col of tableConfig.columns" class="col-header"
+            <span *ngFor="let col of tableConfig.columns; trackBy: trackByKey" class="col-header"
                 [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
                 {{ col.label | translate }}
                 <i *ngIf="col.filterable && filterForm.get(col.key)?.value" class="bx bx-filter-alt filter-active-badge"
@@ -31,7 +31,7 @@
 
         <!-- Filter row (sticky top: 44px) -->
         <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
-            <ng-container *ngFor="let col of tableConfig.columns">
+            <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
 
                 <!-- Text filter -->
                 <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
@@ -80,9 +80,9 @@
 
         <!-- Data rows -->
         <ng-container *ngIf="!loading">
-            <div class="table-row" *ngFor="let user of pagedUsers" [style.grid-template-columns]="gridTemplate">
+            <div class="table-row" *ngFor="let user of pagedUsers; trackBy: trackById" [style.grid-template-columns]="gridTemplate">
 
-                <ng-container *ngFor="let col of tableConfig.columns">
+                <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                     <ng-container [ngSwitch]="col.type">
 
                         <!-- user-cell -->
@@ -249,7 +249,7 @@
                     <option value="">
                         {{ 'admin.users-roles.users.modal.role-placeholder' | translate }}
                     </option>
-                    <option *ngFor="let role of roles" [value]="role.id">{{ role.name }}</option>
+                    <option *ngFor="let role of roles; trackBy: trackById" [value]="role.id">{{ role.name }}</option>
                 </select>
                 <span class="select-error" *ngIf="isInvalid('rol_id')">{{
                     'admin.users-roles.users.modal.role-placeholder' | translate }}</span>

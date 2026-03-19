@@ -24,7 +24,7 @@
     <!-- Subscriptions list -->
     <div class="subscriptions-list" *ngIf="!loading">
 
-        <div class="subscription-card" *ngFor="let sub of subscriptions"
+        <div class="subscription-card" *ngFor="let sub of subscriptions; trackBy: trackById"
             [class.inactive-card]="!sub.is_active">
 
             <!-- Tier badge -->
@@ -173,7 +173,7 @@
         </div>
 
         <div class="modules-scroll" *ngIf="modulesSubscription">
-            <div class="module-row" *ngFor="let mod of modulesSubscription.modules">
+            <div class="module-row" *ngFor="let mod of modulesSubscription.modules; trackBy: trackByCode">
                 <div class="module-info">
                     <i class="bx" [ngClass]="mod.icon"></i>
                     <div class="module-text">
@@ -224,12 +224,12 @@
 
         <div class="modal-body" *ngIf="currentDetailModule">
             <ng-container *ngIf="currentDetailGroups.length > 0; else noFeatures">
-                <div class="feature-group" *ngFor="let group of currentDetailGroups">
+                <div class="feature-group" *ngFor="let group of currentDetailGroups; trackBy: trackByCategory">
                     <div class="feature-category-header">
                         <i class="bx" [ngClass]="group.category === 'ai' ? 'bx-brain' : 'bx-list-ul'"></i>
                         <span>{{ (group.category === 'ai' ? 'admin.subscriptions.feature-categories.ai' : 'admin.subscriptions.feature-categories.features') | translate }}</span>
                     </div>
-                    <div class="feature-item" *ngFor="let feature of group.features">
+                    <div class="feature-item" *ngFor="let feature of group.features; trackBy: trackByKey">
                         <span class="feature-label">{{ feature.label }}</span>
                         <label class="toggle-switch">
                             <input type="checkbox" [(ngModel)]="feature.enabled">

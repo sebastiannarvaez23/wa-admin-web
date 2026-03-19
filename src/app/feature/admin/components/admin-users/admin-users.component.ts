@@ -1,30 +1,27 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, inject, OnInit } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
 import { debounceTime, startWith } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
-import {
-    AdminUser,
-    AdminUserRol,
-    CreateUserPayload,
-    UpdateUserPayload,
-    UsersFilterParams,
-    UserColumnConfig,
-    UserTableConfig,
-} from '../../interfaces/admin-users.interfaces';
-import { AdminUserManagementService } from '../../services/admin-user-management.service';
 import { NotificationService } from 'wa-components-web';
 import { isFieldInvalid } from '../../../../core/utils/form.utils';
+import { extractError } from '../../../../core/utils/error.utils';
+import { ColumnConfig, TableConfig } from '../../../../core/interfaces/table.interfaces';
+import { UserService } from '../../../platform/users/services/user.service';
+import { AdminUser, CreateUserPayload, UpdateUserPayload, UsersFilterParams } from '../../../platform/users/interfaces/user.interfaces';
+import { RoleSummary } from '../../../platform/roles/interfaces/role.interfaces';
+import { RoleService } from '../../../platform/roles/services/role.service';
 
 @Component({
     selector: 'wa-admin-users',
     templateUrl: './admin-users.component.html',
     styleUrls: ['../admin-shared.css', './admin-users.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AdminUsersComponent implements OnInit, OnDestroy {
+export class AdminUsersComponent implements OnInit {
 
-    readonly tableConfig: UserTableConfig = {
+    readonly tableConfig: TableConfig = {
         columns: [
             { key: 'name',     label: 'admin.users-roles.users.table.name',     filterable: true, type: 'user-cell',    width: '2fr'   },
             { key: 'email',    label: 'admin.users-roles.users.table.email',    filterable: true, type: 'text',         width: '1.5fr' },
@@ -47,29 +44,31 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
 
     readonly gridTemplate: string;
 
-    pagedUsers: AdminUser[]    = [];
-    roles:      AdminUserRol[] = [];
-    total:      number = 0;
-    totalPages: number = 0;
+    pagedUsers: AdminUser[]   = [];
+    roles:      RoleSummary[] = [];
+    total:      number        = 0;
+    totalPages: number        = 0;
 
     loading = false;
     saving  = false;
 
     readonly pageSize = 10;
-    currentPage      = 1;
+    currentPage       = 1;
 
-    showModal   = false;
+    showModal    = false;
     editingUser: AdminUser | null = null;
-    form: FormGroup;
+    form:        FormGroup;
+    filterForm:  FormGroup;
 
-    filterForm: FormGroup;
-    private filterSub?: Subscription;
+    private readonly destroyRef = inject(DestroyRef);
+    private readonly cdr        = inject(ChangeDetectorRef);
 
     constructor(
-        private fb: FormBuilder,
-        private userService: AdminUserManagementService,
+        private fb:          FormBuilder,
+        private userService: UserService,
+        private roleService: RoleService,
         private notification: NotificationService,
-        private translate: TranslateService,
+        private translate:   TranslateService,
     ) {
         this.form = this.fb.group({
             first_name: ['', [Validators.required, Validators.minLength(2)]],
@@ -91,9 +90,10 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        this.filterSub = this.filterForm.valueChanges.pipe(
+        this.filterForm.valueChanges.pipe(
             debounceTime(400),
             startWith(this.filterForm.value),
+            takeUntilDestroyed(this.destroyRef),
         ).subscribe(() => {
             this.currentPage = 1;
             this.loadUsers();
@@ -102,12 +102,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         this.loadRoles();
     }
 
-    ngOnDestroy(): void {
-        this.filterSub?.unsubscribe();
-    }
-
     clearFilters(): void { this.filterForm.reset(); }
-
     clearFilter(key: string): void { this.filterForm.get(key)?.setValue(''); }
 
     get hasActiveFilters(): boolean {
@@ -115,7 +110,7 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
             .some(v => !!v && v.trim() !== '');
     }
 
-    get filterableColumns(): UserColumnConfig[] {
+    get filterableColumns(): ColumnConfig[] {
         return this.tableConfig.columns.filter(c => c.filterable);
     }
 
@@ -127,15 +122,16 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
     }
 
     loadRoles(): void {
-        this.userService.getRoles().subscribe({
-            next: (roles) => (this.roles = roles),
-            error: () => {},
-        });
+        this.roleService.getRoles()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: roles => { this.roles = roles; this.cdr.markForCheck(); },
+            });
     }
 
     loadUsers(): void {
         this.loading = true;
-        const v = this.filterForm.value as Record<string, string>;
+        const v      = this.filterForm.value as Record<string, string>;
 
         const filters: UsersFilterParams = {};
         if (v['name'])     filters.name     = v['name'];
@@ -144,18 +140,22 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         if (v['role'])     filters.role     = v['role'];
         if (v['status'])   filters.status   = v['status'] as 'active' | 'inactive';
 
-        this.userService.getUsers(this.currentPage - 1, this.pageSize, filters).subscribe({
-            next: (result) => {
-                this.pagedUsers = result.items;
-                this.total      = result.total;
-                this.totalPages = result.total_pages;
-                this.loading    = false;
-            },
-            error: () => {
-                this.notification.push(this.translate.instant('admin.users-roles.users.notifications.load-error'), 'error');
-                this.loading = false;
-            },
-        });
+        this.userService.getUsers(this.currentPage - 1, this.pageSize, filters)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: result => {
+                    this.pagedUsers = result.items;
+                    this.total      = result.total;
+                    this.totalPages = result.total_pages;
+                    this.loading    = false;
+                    this.cdr.markForCheck();
+                },
+                error: () => {
+                    this.notification.push(this.translate.instant('admin.users-roles.users.notifications.load-error'), 'error');
+                    this.loading = false;
+                    this.cdr.markForCheck();
+                },
+            });
     }
 
     getInitials(user: AdminUser): string {
@@ -169,9 +169,12 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         return 'viewer';
     }
 
-    getCellValue(user: AdminUser, key: string): any {
-        return (user as any)[key] ?? '';
+    getCellValue(user: AdminUser, key: string): unknown {
+        return (user as unknown as Record<string, unknown>)[key] ?? '';
     }
+
+    trackById(_: number, item: { id: string }): string { return item.id; }
+    trackByKey(_: number, item: ColumnConfig): string  { return item.key; }
 
     openCreate(): void {
         this.editingUser = null;
@@ -210,25 +213,30 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         if (this.editingUser) {
             const payload: UpdateUserPayload = {};
             (['first_name', 'last_name', 'email', 'telephone'] as const).forEach(f => {
-                if (value[f] !== (this.editingUser as any)[f]) (payload as any)[f] = value[f];
+                if (value[f] !== (this.editingUser as unknown as Record<string, unknown>)[f]) {
+                    (payload as Record<string, unknown>)[f] = value[f];
+                }
             });
             if (value['password']) payload.password = value['password'];
             if (value['rol_id'] && value['rol_id'] !== this.editingUser.rol?.id) payload.rol_id = value['rol_id'];
 
-            this.userService.updateUser(this.editingUser.id, payload).subscribe({
-                next: () => {
-                    this.loadUsers();
-                    this.notification.push(this.translate.instant('admin.users-roles.users.notifications.update-success'), 'success');
-                    this.saving = false;
-                    this.closeModal();
-                },
-                error: (err) => {
-                    this.notification.push(this.extractError(err, this.translate.instant('admin.users-roles.users.notifications.update-error')), 'error');
-                    this.saving = false;
-                },
-            });
+            this.userService.updateUser(this.editingUser.id, payload)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
+                    next: () => {
+                        this.loadUsers();
+                        this.notification.push(this.translate.instant('admin.users-roles.users.notifications.update-success'), 'success');
+                        this.saving = false;
+                        this.closeModal();
+                    },
+                    error: err => {
+                        this.notification.push(extractError(err, this.translate.instant('admin.users-roles.users.notifications.update-error')), 'error');
+                        this.saving = false;
+                        this.cdr.markForCheck();
+                    },
+                });
         } else {
-            this.userService.createUser({
+            const createPayload: CreateUserPayload = {
                 first_name: value['first_name'],
                 last_name:  value['last_name'],
                 email:      value['email'],
@@ -236,39 +244,45 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
                 telephone:  value['telephone'],
                 password:   value['password'],
                 rol_id:     value['rol_id'] || undefined,
-            }).subscribe({
-                next: () => {
-                    this.currentPage = 1;
-                    this.loadUsers();
-                    this.notification.push(this.translate.instant('admin.users-roles.users.notifications.create-success'), 'success');
-                    this.saving = false;
-                    this.closeModal();
-                },
-                error: (err) => {
-                    this.notification.push(this.extractError(err, this.translate.instant('admin.users-roles.users.notifications.create-error')), 'error');
-                    this.saving = false;
-                },
-            });
+            };
+            this.userService.createUser(createPayload)
+                .pipe(takeUntilDestroyed(this.destroyRef))
+                .subscribe({
+                    next: () => {
+                        this.currentPage = 1;
+                        this.loadUsers();
+                        this.notification.push(this.translate.instant('admin.users-roles.users.notifications.create-success'), 'success');
+                        this.saving = false;
+                        this.closeModal();
+                    },
+                    error: err => {
+                        this.notification.push(extractError(err, this.translate.instant('admin.users-roles.users.notifications.create-error')), 'error');
+                        this.saving = false;
+                        this.cdr.markForCheck();
+                    },
+                });
         }
     }
 
     toggleActive(user: AdminUser): void {
-        this.userService.toggleActive(user.id).subscribe({
-            next: () => {
-                this.loadUsers();
-                this.notification.push(
-                    this.translate.instant(
-                        !user.is_active
-                            ? 'admin.users-roles.users.notifications.toggle-activated'
-                            : 'admin.users-roles.users.notifications.toggle-deactivated'
-                    ),
-                    'success',
-                );
-            },
-            error: (err) => {
-                this.notification.push(this.extractError(err, this.translate.instant('admin.users-roles.users.notifications.toggle-error')), 'error');
-            },
-        });
+        this.userService.toggleActive(user.id)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: () => {
+                    this.loadUsers();
+                    this.notification.push(
+                        this.translate.instant(
+                            !user.is_active
+                                ? 'admin.users-roles.users.notifications.toggle-activated'
+                                : 'admin.users-roles.users.notifications.toggle-deactivated',
+                        ),
+                        'success',
+                    );
+                },
+                error: err => {
+                    this.notification.push(extractError(err, this.translate.instant('admin.users-roles.users.notifications.toggle-error')), 'error');
+                },
+            });
     }
 
     isInvalid(field: string): boolean { return isFieldInvalid(this.form, field); }
@@ -277,14 +291,5 @@ export class AdminUsersComponent implements OnInit, OnDestroy {
         const widths = this.tableConfig.columns.map(c => c.width ?? '1fr');
         if (this.tableConfig.editable || this.tableConfig.deletable) widths.push('90px');
         return widths.join(' ');
-    }
-
-    private extractError(err: any, fallback: string): string {
-        if (err?.error?.detail) return err.error.detail;
-        if (err?.error && typeof err.error === 'object') {
-            const key = Object.keys(err.error)[0];
-            if (key) { const v = err.error[key]; return Array.isArray(v) ? v[0] : String(v); }
-        }
-        return fallback;
     }
 }

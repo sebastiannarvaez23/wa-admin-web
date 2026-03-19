@@ -25,7 +25,7 @@
                 </button>
             </div>
 
-            <div *ngFor="let sec of sections" class="section-item"
+            <div *ngFor="let sec of sections; trackBy: trackById" class="section-item"
                 [class.selected]="sec.id === selectedSectionId"
                 [class.inactive]="!sec.is_active"
                 (click)="selectSection(sec)">
@@ -101,7 +101,7 @@
             <!-- Module cards -->
             <div class="modules-panel-scroll" *ngIf="!modulesLoading">
 
-                <div class="module-card" *ngFor="let mod of filteredModules"
+                <div class="module-card" *ngFor="let mod of filteredModules; trackBy: trackById"
                     [class.inactive-card]="!mod.is_active">
 
                     <div class="mod-icon-badge">
@@ -287,7 +287,7 @@
                     <label class="select-label">{{ 'admin.features.modules.form.section' | translate }}</label>
                     <select formControlName="section_id" class="native-select" [class.invalid]="isModuleInvalid('section_id')">
                         <option value="">{{ 'admin.features.modules.form.section-placeholder' | translate }}</option>
-                        <option *ngFor="let sec of sections" [value]="sec.id">{{ sec.name }}</option>
+                        <option *ngFor="let sec of sections; trackBy: trackById" [value]="sec.id">{{ sec.name }}</option>
                     </select>
                     <span class="select-error" *ngIf="isModuleInvalid('section_id')">
                         {{ 'admin.features.modules.form.section-error' | translate }}
@@ -345,7 +345,7 @@
             <ng-container *ngIf="!moduleFeaturesLoading">
 
                 <div class="features-list" *ngIf="moduleFeatures.length > 0">
-                    <div class="feature-item" *ngFor="let feat of moduleFeatures"
+                    <div class="feature-item" *ngFor="let feat of moduleFeatures; trackBy: trackById"
                         [class.inactive]="!feat.is_active">
 
                         <div class="feature-item-info">
@@ -367,16 +367,20 @@
                         </span>
 
                         <div class="feature-item-actions">
-                            <button class="icon-btn edit" (click)="openEditFeature(feat)"
-                                [title]="'admin.features.actions.edit' | translate">
-                                <i class="bx bx-edit"></i>
-                            </button>
                             <button class="icon-btn"
                                 [class.toggle-on]="feat.is_active"
                                 [class.toggle-off]="!feat.is_active"
                                 (click)="toggleFeatureActive(feat)"
                                 [title]="(feat.is_active ? 'admin.features.actions.deactivate' : 'admin.features.actions.activate') | translate">
                                 <i class="bx" [ngClass]="feat.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
+                            </button>
+                            <button class="icon-btn edit" (click)="openEditFeature(feat)"
+                                [title]="'admin.features.actions.edit' | translate">
+                                <i class="bx bx-edit"></i>
+                            </button>
+                            <button class="icon-btn delete" (click)="confirmDeleteFeature(feat)"
+                                [title]="'admin.features.actions.delete' | translate">
+                                <i class="bx bx-trash"></i>
                             </button>
                         </div>
 

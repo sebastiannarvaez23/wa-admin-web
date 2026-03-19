@@ -16,10 +16,9 @@ import { FeaturesPageComponent } from './pages/features/features-page.component'
 import { UsersRolesPageComponent } from './pages/users-roles/users-roles-page.component';
 import { TenantsPageComponent } from './pages/tenants/tenants-page.component';
 import { AdminUsersComponent } from './components/admin-users/admin-users.component';
-import { AdminPermissionsComponent } from './components/admin-permissions/admin-permissions.component';
 import { TenantCompaniesComponent } from './components/tenant-companies/tenant-companies.component';
 import { TenantUsersComponent } from './components/tenant-users/tenant-users.component';
-import { TenantPermissionsComponent } from './components/tenant-permissions/tenant-permissions.component';
+import { PermissionsManagerComponent } from '../platform/roles/components/permissions-manager/permissions-manager.component';
 
 @NgModule({
     declarations: [
@@ -31,10 +30,10 @@ import { TenantPermissionsComponent } from './components/tenant-permissions/tena
         UsersRolesPageComponent,
         TenantsPageComponent,
         AdminUsersComponent,
-        AdminPermissionsComponent,
         TenantCompaniesComponent,
         TenantUsersComponent,
-        TenantPermissionsComponent,
+        // Generic permissions manager — replaces AdminPermissionsComponent and TenantPermissionsComponent
+        PermissionsManagerComponent,
     ],
     imports: [
         CommonModule,

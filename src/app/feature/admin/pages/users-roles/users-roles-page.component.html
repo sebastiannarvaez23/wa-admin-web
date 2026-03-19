@@ -14,8 +14,10 @@
     </div>
 
     <div class="page-content">
-        <wa-admin-users       *ngIf="activeTab === 'users'"></wa-admin-users>
-        <wa-admin-permissions *ngIf="activeTab === 'permissions'"></wa-admin-permissions>
+        <wa-admin-users          *ngIf="activeTab === 'users'"></wa-admin-users>
+        <wa-permissions-manager  *ngIf="activeTab === 'permissions'"
+                                 [dataSource]="permissionsDataSource">
+        </wa-permissions-manager>
     </div>
 
 </div>

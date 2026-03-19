@@ -44,6 +44,15 @@ export class AdminFunctionalitiesService {
         );
     }
 
+    // ── Delete ───────────────────────────────────────────────────────────────
+
+    deleteFunctionality(id: string): Observable<void> {
+        return this.http.delete<void>(
+            `${this.base}${id}/`,
+            { headers: this.headers },
+        );
+    }
+
     // ── Update (also used for toggling is_active) ─────────────────────────────
 
     updateFunctionality(id: string, payload: UpdateFunctionalityPayload): Observable<AdminFunctionality> {
