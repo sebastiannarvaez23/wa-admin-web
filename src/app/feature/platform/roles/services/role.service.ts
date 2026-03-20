@@ -20,12 +20,12 @@ import {
 @Injectable({ providedIn: 'root' })
 export class RoleService implements PermissionsDataSource {
 
-    private readonly base = `${environment.apiUrl}/platform-admin/roles/`;
+    private readonly base = `${environment.apiUrl}/platform/roles/`;
 
     constructor(private http: HttpClient) {}
 
     getModules(): Observable<PlatformModule[]> {
-        return this.http.get<PlatformModule[]>(`${environment.apiUrl}/platform-admin/modules/`);
+        return this.http.get<PlatformModule[]>(`${environment.apiUrl}/platform/modules/`);
     }
 
     getRoles(): Observable<RoleWithPermissions[]> {

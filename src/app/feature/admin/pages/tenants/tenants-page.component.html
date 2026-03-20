@@ -17,7 +17,10 @@
         <wa-tenant-companies     *ngIf="activeTab === 'companies'"></wa-tenant-companies>
         <wa-tenant-users         *ngIf="activeTab === 'users'"></wa-tenant-users>
         <wa-permissions-manager  *ngIf="activeTab === 'permissions'"
-                                 [dataSource]="permissionsDataSource">
+                                 [dataSource]="permissionsDataSource"
+                                 [titleKey]="'admin.tenants.permissions.title'"
+                                 [subtitleKey]="'admin.tenants.permissions.subtitle'"
+                                 [allowEditGeneric]="true">
         </wa-permissions-manager>
 
         <!-- Params: under construction -->

@@ -25,7 +25,7 @@ export class TenantRoleService implements PermissionsDataSource {
     constructor(private http: HttpClient) {}
 
     getModules(): Observable<PlatformModule[]> {
-        return this.http.get<PlatformModule[]>(`${environment.apiUrl}/modules/`);
+        return this.http.get<PlatformModule[]>(`${environment.apiUrl}/platform/modules/`);
     }
 
     getRoles(): Observable<RoleWithPermissions[]> {

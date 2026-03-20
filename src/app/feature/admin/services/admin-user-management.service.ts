@@ -23,7 +23,7 @@ export class AdminUserManagementService {
     constructor(private http: HttpClient, private session: SessionService) {}
 
     private get base(): string {
-        return `${environment.apiUrl}/platform-admin/users/`;
+        return `${environment.apiUrl}/platform/users/`;
     }
 
     private get headers() {
@@ -34,7 +34,7 @@ export class AdminUserManagementService {
 
     getModules(): Observable<AdminModule[]> {
         return this.http.get<AdminModule[]>(
-            `${environment.apiUrl}/platform-admin/modules/`,
+            `${environment.apiUrl}/platform/modules/`,
             { headers: this.headers },
         );
     }
@@ -43,7 +43,7 @@ export class AdminUserManagementService {
 
     getRoles(): Observable<AdminUserRol[]> {
         return this.http.get<AdminUserRol[]>(
-            `${environment.apiUrl}/platform-admin/roles/`,
+            `${environment.apiUrl}/platform/roles/`,
             { headers: this.headers },
         );
     }
@@ -57,7 +57,7 @@ export class AdminUserManagementService {
 
     createRole(payload: CreateRolePayload): Observable<AdminUserRol> {
         return this.http.post<AdminUserRol>(
-            `${environment.apiUrl}/platform-admin/roles/`,
+            `${environment.apiUrl}/platform/roles/`,
             payload,
             { headers: this.headers },
         );
@@ -65,7 +65,7 @@ export class AdminUserManagementService {
 
     updateRole(id: string, payload: UpdateRolePayload): Observable<AdminUserRol> {
         return this.http.patch<AdminUserRol>(
-            `${environment.apiUrl}/platform-admin/roles/${id}/`,
+            `${environment.apiUrl}/platform/roles/${id}/`,
             payload,
             { headers: this.headers },
         );
@@ -73,7 +73,7 @@ export class AdminUserManagementService {
 
     updateRoleFeatures(id: string, featureKeys: string[], moduleCodes: string[]): Observable<AdminUserRol> {
         return this.http.put<AdminUserRol>(
-            `${environment.apiUrl}/platform-admin/roles/${id}/features/`,
+            `${environment.apiUrl}/platform/roles/${id}/features/`,
             { feature_keys: featureKeys, module_codes: moduleCodes },
             { headers: this.headers },
         );
@@ -81,7 +81,7 @@ export class AdminUserManagementService {
 
     toggleCompanyAccess(id: string, is_active: boolean): Observable<AdminUserRol> {
         return this.http.patch<AdminUserRol>(
-            `${environment.apiUrl}/platform-admin/roles/${id}/access/`,
+            `${environment.apiUrl}/platform/roles/${id}/access/`,
             { is_active },
             { headers: this.headers },
         );

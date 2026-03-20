@@ -46,6 +46,9 @@ export class PermissionsManagerComponent implements OnInit {
 
     /** Injected by parent — either RoleService or TenantRoleService. */
     @Input() dataSource!: PermissionsDataSource;
+    @Input() titleKey  = 'admin.users-roles.permissions.title';
+    @Input() subtitleKey = 'admin.users-roles.permissions.subtitle';
+    @Input() allowEditGeneric = false;
 
     modules:         PlatformModule[]     = [];
     rolePermissions: RolePermissionRow[]  = [];

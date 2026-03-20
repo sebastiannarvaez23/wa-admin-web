@@ -34,7 +34,7 @@ export class AdminAuthService {
 
     login(username: string, password: string): Observable<void> {
         return this.http
-            .post<PlatformLoginResponse>(`${this.apiUrl}/platform-auth/login/`, { username, password })
+            .post<PlatformLoginResponse>(`${this.apiUrl}/platform/auth/login/`, { username, password })
             .pipe(
                 tap(response => {
                     this.session.save({

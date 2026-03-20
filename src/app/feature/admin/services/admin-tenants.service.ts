@@ -25,7 +25,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AdminTenantsService {
 
-    private readonly base = `${environment.apiUrl}/platform-admin/tenants/`;
+    private readonly base = `${environment.apiUrl}/companies/`;
 
     constructor(private http: HttpClient, private session: SessionService) {}
 
@@ -86,7 +86,7 @@ export class AdminTenantsService {
 
     getModules(): Observable<AdminModule[]> {
         return this.http.get<AdminModule[]>(
-            `${environment.apiUrl}/modules/`,
+            `${environment.apiUrl}/platform/modules/`,
             { headers: this.headers },
         );
     }

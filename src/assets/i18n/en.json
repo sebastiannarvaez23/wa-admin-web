@@ -302,8 +302,44 @@
         "role-name-placeholder": "e.g. Supervisor",
         "role-description": "Description",
         "role-description-placeholder": "Role description",
-        "modules": {},
-        "modules-descriptions": {},
+        "modules": {
+          "dashboard": "Dashboard",
+          "orders": "Orders",
+          "reception": "Reception",
+          "location": "Warehouses",
+          "inventories": "Inventories",
+          "picking": "Picking",
+          "packing": "Packing",
+          "dispatches": "Dispatches",
+          "shipping": "Shipping",
+          "third_parties": "Third Parties",
+          "users_roles": "Users & Roles",
+          "tasks": "Tasks",
+          "integrations": "Integrations",
+          "automation": "Automation",
+          "analytics": "Analytics",
+          "audit": "Audit",
+          "settings": "Settings"
+        },
+        "modules-descriptions": {
+          "dashboard": "General overview of the warehouse status",
+          "orders": "Customer order management",
+          "reception": "Incoming goods reception and verification",
+          "location": "Warehouse, location and inventory position management",
+          "inventories": "Inventory control and tracking",
+          "picking": "Product picking process",
+          "packing": "Order packing and preparation",
+          "dispatches": "Dispatch and outbound coordination",
+          "shipping": "Shipping management and tracking",
+          "third_parties": "Customer, supplier and carrier management",
+          "users_roles": "User management and role assignment",
+          "tasks": "Operational task management",
+          "integrations": "External system connections",
+          "automation": "Rules and automated workflows",
+          "analytics": "Reports and performance indicators",
+          "audit": "Operation logging and traceability",
+          "settings": "General system configuration"
+        },
         "feature-categories": {
           "features": "Features",
           "ai": "Artificial Intelligence"
@@ -317,6 +353,10 @@
         "users": "Users",
         "permissions": "Permissions",
         "params": "Parameters"
+      },
+      "permissions": {
+        "title": "Generic Roles",
+        "subtitle": "Configure universal roles that apply to all companies on the platform"
       },
       "companies": {
         "title": "Company Management",
@@ -482,6 +522,7 @@
       "modules-count": "modules",
       "configure-modules": "Configure modules and access",
       "configure-features": "Configure features",
+      "configure-limits": "Configure usage limits per module",
       "modules-modal": {
         "title": "Modules and access",
         "done": "Done"

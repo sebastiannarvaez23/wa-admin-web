@@ -13,7 +13,7 @@ import {
 export class FunctionalityService {
 
     // Maps to security_features table — /company-features/ endpoint
-    private readonly base = `${environment.apiUrl}/company-features/`;
+    private readonly base = `${environment.apiUrl}/platform/functionalities/`;
 
     constructor(private http: HttpClient) {}
 

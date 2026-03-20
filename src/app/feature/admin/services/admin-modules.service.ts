@@ -18,7 +18,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class AdminModulesService {
 
-    private readonly base = `${environment.apiUrl}/modules/`;
+    private readonly base = `${environment.apiUrl}/platform/modules/`;
 
     constructor(private http: HttpClient, private session: SessionService) {}
 
@@ -96,14 +96,14 @@ export class AdminModulesService {
 
     getSections(): Observable<AdminSection[]> {
         return this.http.get<AdminSection[]>(
-            `${environment.apiUrl}/platform-sections/`,
+            `${environment.apiUrl}/platform/sections/`,
             { headers: this.headers },
         );
     }
 
     createSection(payload: CreateSectionPayload): Observable<AdminSection> {
         return this.http.post<AdminSection>(
-            `${environment.apiUrl}/platform-sections/create/`,
+            `${environment.apiUrl}/platform/sections/`,
             payload,
             { headers: this.headers },
         );
@@ -111,7 +111,7 @@ export class AdminModulesService {
 
     updateSection(id: string, payload: UpdateSectionPayload): Observable<AdminSection> {
         return this.http.patch<AdminSection>(
-            `${environment.apiUrl}/platform-sections/${id}/`,
+            `${environment.apiUrl}/platform/sections/${id}/`,
             payload,
             { headers: this.headers },
         );
@@ -119,7 +119,7 @@ export class AdminModulesService {
 
     toggleSection(id: string): Observable<AdminSection> {
         return this.http.post<AdminSection>(
-            `${environment.apiUrl}/platform-sections/${id}/toggle/`,
+            `${environment.apiUrl}/platform/sections/${id}/toggle/`,
             {},
             { headers: this.headers },
         );
@@ -127,7 +127,7 @@ export class AdminModulesService {
 
     deleteSection(id: string): Observable<void> {
         return this.http.delete<void>(
-            `${environment.apiUrl}/platform-sections/${id}/`,
+            `${environment.apiUrl}/platform/sections/${id}/`,
             { headers: this.headers },
         );
     }

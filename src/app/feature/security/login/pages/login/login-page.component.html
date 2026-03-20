@@ -14,7 +14,7 @@
 
                 <h1 class="login-title">{{ 'security.auth.subtitle' | translate }}</h1>
 
-                <form [formGroup]="form" autocomplete="new-password">
+                <form [formGroup]="form" autocomplete="new-password" (ngSubmit)="login()">
                     <wa-form-field formControlName="username"
                         [label]="'security.auth.form.user' | translate"
                         [placeholder]="'security.auth.form.placeholder-user' | translate"
@@ -27,19 +27,19 @@
                         [placeholder]="'security.auth.form.placeholder-password' | translate"
                         [invalid]="isInvalid('password')">
                     </wa-password-input>
+
+                    <div class="error-banner" *ngIf="errorMessage">
+                        <i class="pi pi-exclamation-triangle"></i> {{ errorMessage }}
+                    </div>
+
+                    <div class="login-actions">
+                        <wa-btn type="submit" [loading]="loading" (clicked)="login()">
+                            {{ loading
+                                ? ('security.auth.form.logging-in' | translate)
+                                : ('security.auth.form.login' | translate) }}
+                        </wa-btn>
+                    </div>
                 </form>
-
-                <div class="error-banner" *ngIf="errorMessage">
-                    <i class="pi pi-exclamation-triangle"></i> {{ errorMessage }}
-                </div>
-
-                <div class="login-actions">
-                    <wa-btn [loading]="loading" (clicked)="login()">
-                        {{ loading
-                            ? ('security.auth.form.logging-in' | translate)
-                            : ('security.auth.form.login' | translate) }}
-                    </wa-btn>
-                </div>
 
             </div>
         </wa-card-primary>

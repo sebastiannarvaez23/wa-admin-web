@@ -14,7 +14,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class ModuleService {
 
-    private readonly base = `${environment.apiUrl}/modules/`;
+    private readonly base = `${environment.apiUrl}/platform/modules/`;
 
     constructor(private http: HttpClient) {}
 

@@ -1,3 +1,28 @@
+/* ---- Section base (from settings-shared) ---- */
+.tab-section { padding: 4px 0; }
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 4px;
+    color: var(--primary-color);
+}
+
+.subtitle { font-size: 0.82rem; color: var(--text-secondary); margin: 0; }
+
+/* ---- Animations ---- */
+@keyframes fade-in    { from { opacity: 0; }                            to { opacity: 1; } }
+@keyframes overlay-in { from { opacity: 0; }                            to { opacity: 1; } }
+@keyframes modal-in   { from { opacity: 0; transform: scale(0.93) translateY(8px); }
+                        to   { opacity: 1; transform: scale(1) translateY(0); } }
+
 /* ---- Main layout container ---- */
 .permissions-layout {
     display: grid;
@@ -89,17 +114,9 @@
     pointer-events: none;
 }
 
-.avatar.admin {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-}
-
-.avatar.operator {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-.avatar.viewer {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
+.avatar.admin    { background: #4a148c; }
+.avatar.operator { background: #1565c0; }
+.avatar.viewer   { background: #e65100; }
 
 .role-info {
     flex: 1;
@@ -232,17 +249,9 @@
     flex-shrink: 0;
 }
 
-.avatar-lg.admin {
-    background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-}
-
-.avatar-lg.operator {
-    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-}
-
-.avatar-lg.viewer {
-    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
+.avatar-lg.admin    { background: #4a148c; }
+.avatar-lg.operator { background: #1565c0; }
+.avatar-lg.viewer   { background: #e65100; }
 
 .panel-role-name {
     font-size: 0.9rem;
@@ -261,6 +270,16 @@
     align-items: center;
     gap: 10px;
     flex-shrink: 0;
+}
+
+.saved-msg {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #22c55e;
+    animation: fade-in 0.3s ease;
 }
 
 .readonly-badge {
@@ -462,6 +481,19 @@
 }
 
 /* ---- Modal Styles ---- */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: overlay-in 0.2s ease;
+}
+
 .modal-card {
     background: var(--very-white);
     border-radius: 12px;
@@ -763,5 +795,9 @@
 
     .no-selection {
         padding: 40px 20px;
+    }
+
+    .modal-overlay {
+        padding: 16px;
     }
 }

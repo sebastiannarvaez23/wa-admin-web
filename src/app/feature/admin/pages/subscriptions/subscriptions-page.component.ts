@@ -130,6 +130,12 @@ export class SubscriptionsPageComponent implements OnInit {
         return getTotalModulesCount();
     }
 
+    // ── Limits modal (placeholder) ──────────────────────────────────────────────
+
+    openLimitsModal(sub: Subscription): void {
+        // TODO: implement limits modal
+    }
+
     // ── Feature detail modal ──────────────────────────────────────────────────
 
     openFeatureDetail(mod: SubscriptionModule): void {

@@ -11,7 +11,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class TenantUserService {
 
-    private readonly base = `${environment.apiUrl}/platform-admin/tenants/users/`;
+    private readonly base = `${environment.apiUrl}/companies/users/`;
 
     constructor(private http: HttpClient) {}
 

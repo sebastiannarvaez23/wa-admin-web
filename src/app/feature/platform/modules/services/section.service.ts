@@ -12,7 +12,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class SectionService {
 
-    private readonly base = `${environment.apiUrl}/platform-sections/`;
+    private readonly base = `${environment.apiUrl}/platform/sections/`;
 
     constructor(private http: HttpClient) {}
 
@@ -21,7 +21,7 @@ export class SectionService {
     }
 
     createSection(payload: CreateSectionPayload): Observable<PlatformSection> {
-        return this.http.post<PlatformSection>(`${this.base}create/`, payload);
+        return this.http.post<PlatformSection>(this.base, payload);
     }
 
     updateSection(id: string, payload: UpdateSectionPayload): Observable<PlatformSection> {

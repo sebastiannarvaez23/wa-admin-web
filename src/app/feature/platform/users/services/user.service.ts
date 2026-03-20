@@ -14,7 +14,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class UserService {
 
-    private readonly base = `${environment.apiUrl}/platform-admin/users/`;
+    private readonly base = `${environment.apiUrl}/platform/users/`;
 
     constructor(private http: HttpClient) {}
 
@@ -41,6 +41,6 @@ export class UserService {
     }
 
     toggleActive(id: string): Observable<AdminUser> {
-        return this.http.post<AdminUser>(`${this.base}${id}/toggle-active/`, {});
+        return this.http.post<AdminUser>(`${this.base}${id}/deactivate/`, {});
     }
 }

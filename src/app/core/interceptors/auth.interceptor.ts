@@ -11,8 +11,8 @@ import { SessionService } from 'wa-components-web';
 
 // Endpoints that use the 'Token' prefix (platform admin user/role management)
 const TOKEN_PREFIX_PATTERNS = [
-    '/platform-admin/users',
-    '/platform-admin/roles',
+    '/platform/users',
+    '/platform/roles',
 ];
 
 @Injectable()
@@ -23,7 +23,7 @@ export class AuthInterceptor implements HttpInterceptor {
     intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         const token = this.session.token;
 
-        if (!token || req.url.includes('/platform-auth/login/')) {
+        if (!token || req.url.includes('/platform/auth/login/')) {
             return next.handle(req);
         }
 

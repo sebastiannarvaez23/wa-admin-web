@@ -76,6 +76,10 @@
                     [title]="'admin.subscriptions.configure-modules' | translate">
                     <i class="bx bx-shield-quarter"></i>
                 </button>
+                <button class="action-btn config" (click)="openLimitsModal(sub)"
+                    [title]="'admin.subscriptions.configure-limits' | translate">
+                    <i class="bx bx-slider-alt"></i>
+                </button>
                 <button class="action-btn delete" (click)="confirmDelete(sub)">
                     <i class="bx bx-trash"></i>
                 </button>

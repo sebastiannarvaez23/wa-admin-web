@@ -303,8 +303,44 @@
         "role-name-placeholder": "Ej. Supervisor",
         "role-description": "Descripción",
         "role-description-placeholder": "Descripción del rol",
-        "modules": {},
-        "modules-descriptions": {},
+        "modules": {
+          "dashboard": "Inicio",
+          "orders": "Pedidos",
+          "reception": "Recepción",
+          "location": "Almacenes",
+          "inventories": "Inventarios",
+          "picking": "Picking",
+          "packing": "Empaque",
+          "dispatches": "Despachos",
+          "shipping": "Envíos",
+          "third_parties": "Terceros",
+          "users_roles": "Usuarios y Roles",
+          "tasks": "Tareas",
+          "integrations": "Integraciones",
+          "automation": "Automatización",
+          "analytics": "Analítica",
+          "audit": "Auditoría",
+          "settings": "Configuración"
+        },
+        "modules-descriptions": {
+          "dashboard": "Visualización general del estado del almacén",
+          "orders": "Gestión de pedidos de clientes",
+          "reception": "Recepción y verificación de mercancía entrante",
+          "location": "Gestión de almacenes, ubicaciones y posiciones de inventario",
+          "inventories": "Control y seguimiento del inventario",
+          "picking": "Proceso de recolección de productos",
+          "packing": "Preparación y empaque de pedidos",
+          "dispatches": "Coordinación de despachos y salidas",
+          "shipping": "Gestión de envíos y seguimiento",
+          "third_parties": "Administración de clientes, proveedores y transportistas",
+          "users_roles": "Gestión de usuarios y asignación de roles",
+          "tasks": "Administración de tareas operativas",
+          "integrations": "Conexión con sistemas externos",
+          "automation": "Reglas y flujos de trabajo automáticos",
+          "analytics": "Reportes e indicadores de desempeño",
+          "audit": "Registro y trazabilidad de operaciones",
+          "settings": "Configuración general del sistema"
+        },
         "feature-categories": {
           "features": "Funcionalidades",
           "ai": "Inteligencia Artificial"
@@ -318,6 +354,10 @@
         "users": "Usuarios",
         "permissions": "Permisos",
         "params": "Parámetros"
+      },
+      "permissions": {
+        "title": "Roles genéricos",
+        "subtitle": "Configura los roles universales que se aplican a todas las empresas de la plataforma"
       },
       "companies": {
         "title": "Gestión de empresas",
@@ -483,6 +523,7 @@
       "modules-count": "módulos",
       "configure-modules": "Configurar módulos y accesos",
       "configure-features": "Configurar funcionalidades",
+      "configure-limits": "Configurar límites de uso por módulo",
       "modules-modal": {
         "title": "Módulos y accesos",
         "done": "Listo"

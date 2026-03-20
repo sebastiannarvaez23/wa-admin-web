@@ -2,8 +2,8 @@
 
     <div class="section-header">
         <div>
-            <h2>{{ 'admin.users-roles.permissions.title' | translate }}</h2>
-            <p class="subtitle">{{ 'admin.users-roles.permissions.subtitle' | translate }}</p>
+            <h2>{{ titleKey | translate }}</h2>
+            <p class="subtitle">{{ subtitleKey | translate }}</p>
         </div>
         <wa-btn (clicked)="openCreateRoleModal()">
             <i class="bx bx-plus"></i>
@@ -32,7 +32,7 @@
                     <span class="role-description">{{ row.role.description ?? '' }}</span>
                 </div>
                 <div class="role-actions">
-                    <button class="role-action-btn" *ngIf="!row.role.is_generic"
+                    <button class="role-action-btn" *ngIf="!row.role.is_generic || allowEditGeneric"
                         (click)="openEditRoleModal(row.role, $event)"
                         [title]="'admin.users-roles.permissions.edit-role-btn' | translate">
                         <i class="bx bx-edit"></i>
@@ -66,11 +66,11 @@
                         <i class="bx bx-check-circle"></i>
                         {{ 'admin.users-roles.permissions.saved' | translate }}
                     </span>
-                    <wa-btn *ngIf="!saved && !selectedRow.role.is_generic" (clicked)="savePermissions()">
+                    <wa-btn *ngIf="!saved && (!selectedRow.role.is_generic || allowEditGeneric)" (clicked)="savePermissions()">
                         <i class="bx bx-save"></i>
                         {{ 'admin.users-roles.permissions.save' | translate }}
                     </wa-btn>
-                    <span class="readonly-badge" *ngIf="selectedRow.role.is_generic">
+                    <span class="readonly-badge" *ngIf="selectedRow.role.is_generic && !allowEditGeneric">
                         <i class="bx bx-lock-alt"></i>
                         {{ 'admin.users-roles.permissions.readonly-role' | translate }}
                     </span>

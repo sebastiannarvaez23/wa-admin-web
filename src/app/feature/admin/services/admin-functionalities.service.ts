@@ -14,7 +14,7 @@ import {
 export class AdminFunctionalitiesService {
 
     // security_features table — company-features endpoint
-    private readonly base = `${environment.apiUrl}/company-features/`;
+    private readonly base = `${environment.apiUrl}/platform/functionalities/`;
 
     constructor(private http: HttpClient, private session: SessionService) {}
 
@@ -48,7 +48,7 @@ export class AdminFunctionalitiesService {
 
     deleteFunctionality(id: string): Observable<void> {
         return this.http.delete<void>(
-            `${this.base}${id}/`,
+            `${environment.apiUrl}/platform/functionalities/${id}/`,
             { headers: this.headers },
         );
     }
@@ -57,7 +57,7 @@ export class AdminFunctionalitiesService {
 
     updateFunctionality(id: string, payload: UpdateFunctionalityPayload): Observable<AdminFunctionality> {
         return this.http.patch<AdminFunctionality>(
-            `${this.base}${id}/`,
+            `${environment.apiUrl}/platform/functionalities/${id}/`,
             payload,
             { headers: this.headers },
         );
