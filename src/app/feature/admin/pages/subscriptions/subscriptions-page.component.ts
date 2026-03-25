@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, Elem
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService } from 'wa-components-web';
-import { forkJoin, Observable, of } from 'rxjs';
+import { DialogService, DropdownOption } from 'wa-components-web';
+import { forkJoin, Observable } from 'rxjs';
 
-import { DropdownOption } from 'wa-components-web';
 import { isFieldInvalid } from 'src/app/core/utils/form.utils';
 import { AvailableFunctionality, ModuleLimit, SubscriptionLimitValue, Subscription, SubscriptionFeature, SubscriptionModule } from '../../../platform/subscriptions/interfaces/subscription.interfaces';
 import { getTotalModulesCount, SubscriptionService, CreateSubscriptionPayload, UpdateSubscriptionPayload, buildModuleLimits } from '../../../platform/subscriptions/services/subscription.service';
@@ -23,45 +22,45 @@ export class SubscriptionsPageComponent implements OnInit {
     subscriptions: Subscription[] = [];
     loading = false;
 
-    showModal            = false;
+    showModal = false;
     editingSubscription: Subscription | null = null;
-    saving               = false;
-    form!:               FormGroup;
+    saving = false;
+    form!: FormGroup;
 
-    showModulesModal      = false;
-    modulesSubscription:  Subscription | null = null;
+    showModulesModal = false;
+    modulesSubscription: Subscription | null = null;
 
-    showLimitsModal      = false;
-    limitsSubscription:  Subscription | null = null;
-    moduleLimits:        ModuleLimit[] = [];
-    loadingLimits        = false;
-    savingLimits         = false;
-    activeModuleCode:    string | null = null;             // accordion: módulo expandido
-    limitEditMap         = new Map<SubscriptionLimitValue, string>(); // label pendiente mientras edita
-    pendingLimits        = new Set<SubscriptionLimitValue>();          // topes nuevos sin confirmar
+    showLimitsModal = false;
+    limitsSubscription: Subscription | null = null;
+    moduleLimits: ModuleLimit[] = [];
+    loadingLimits = false;
+    savingLimits = false;
+    activeModuleCode: string | null = null;             // accordion: módulo expandido
+    limitEditMap = new Map<SubscriptionLimitValue, string>(); // label pendiente mientras edita
+    pendingLimits = new Set<SubscriptionLimitValue>();          // topes nuevos sin confirmar
     private limitCounter = 0;
 
     showFeatureDetailModal = false;
-    currentDetailModule:   SubscriptionModule | null = null;
-    currentDetailGroups:   { category: string; features: SubscriptionFeature[] }[] = [];
+    currentDetailModule: SubscriptionModule | null = null;
+    currentDetailGroups: { category: string; features: SubscriptionFeature[] }[] = [];
 
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
-        private fb:                     FormBuilder,
-        private translate:              TranslateService,
-        private subscriptionService:    SubscriptionService,
-        private subscriptionLimitSvc:   SubscriptionLimitService,
-        private functionalityService:   FunctionalityService,
-        private cdr:                    ChangeDetectorRef,
-        private dialog:                 DialogService,
-        private elRef:                  ElementRef,
+        private fb: FormBuilder,
+        private translate: TranslateService,
+        private subscriptionService: SubscriptionService,
+        private subscriptionLimitSvc: SubscriptionLimitService,
+        private functionalityService: FunctionalityService,
+        private cdr: ChangeDetectorRef,
+        private dialog: DialogService,
+        private elRef: ElementRef,
     ) {
         this.form = this.fb.group({
-            code:        ['', [Validators.required, Validators.minLength(2)]],
-            name:        ['', [Validators.required, Validators.minLength(2)]],
+            code: ['', [Validators.required, Validators.minLength(2)]],
+            name: ['', [Validators.required, Validators.minLength(2)]],
             description: ['', [Validators.required]],
-            price:       [0,  [Validators.required, Validators.min(0)]],
+            price: [0, [Validators.required, Validators.min(0)]],
         });
     }
 
@@ -106,7 +105,7 @@ export class SubscriptionsPageComponent implements OnInit {
     }
 
     closeModal(): void {
-        this.showModal           = false;
+        this.showModal = false;
         this.editingSubscription = null;
     }
 
@@ -128,13 +127,13 @@ export class SubscriptionsPageComponent implements OnInit {
 
         if (sub.is_active) {
             this.dialog.confirm({
-                type:         'warning',
-                title:        this.translate.instant('admin.subscriptions.deactivate-dialog.title'),
-                message:      this.translate.instant('admin.subscriptions.deactivate-dialog.message', { name: sub.name }),
+                type: 'warning',
+                title: this.translate.instant('admin.subscriptions.deactivate-dialog.title'),
+                message: this.translate.instant('admin.subscriptions.deactivate-dialog.message', { name: sub.name }),
                 confirmLabel: this.translate.instant('admin.subscriptions.deactivate-dialog.confirm'),
-                cancelLabel:  this.translate.instant('dialog.common.cancel'),
+                cancelLabel: this.translate.instant('dialog.common.cancel'),
             }).pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe(confirmed => { if (confirmed) { doToggle(); } });
+                .subscribe((confirmed: boolean) => { if (confirmed) { doToggle(); } });
         } else {
             doToggle();
         }
@@ -173,11 +172,11 @@ export class SubscriptionsPageComponent implements OnInit {
 
     openModulesModal(sub: Subscription): void {
         this.modulesSubscription = sub;
-        this.showModulesModal    = true;
+        this.showModulesModal = true;
     }
 
     closeModulesModal(): void {
-        this.showModulesModal    = false;
+        this.showModulesModal = false;
         this.modulesSubscription = null;
     }
 
@@ -202,20 +201,20 @@ export class SubscriptionsPageComponent implements OnInit {
 
     openLimitsModal(sub: Subscription): void {
         this.limitsSubscription = sub;
-        this.loadingLimits      = true;
-        this.showLimitsModal    = true;
+        this.loadingLimits = true;
+        this.showLimitsModal = true;
         this.cdr.markForCheck();
 
         this.subscriptionLimitSvc.getBySubscription(sub.id)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (backendLimits) => {
-                    this.moduleLimits  = buildModuleLimits(sub.modules, backendLimits);
+                    this.moduleLimits = buildModuleLimits(sub.modules, backendLimits);
                     this.loadingLimits = false;
                     this.cdr.markForCheck();
                 },
                 error: () => {
-                    this.moduleLimits  = buildModuleLimits(sub.modules, []);
+                    this.moduleLimits = buildModuleLimits(sub.modules, []);
                     this.loadingLimits = false;
                     this.cdr.markForCheck();
                 },
@@ -239,11 +238,11 @@ export class SubscriptionsPageComponent implements OnInit {
     }
 
     closeLimitsModal(): void {
-        this.showLimitsModal    = false;
+        this.showLimitsModal = false;
         this.limitsSubscription = null;
-        this.moduleLimits       = [];
-        this.loadingLimits      = false;
-        this.activeModuleCode   = null;
+        this.moduleLimits = [];
+        this.loadingLimits = false;
+        this.activeModuleCode = null;
         this.limitEditMap.clear();
         this.pendingLimits.clear();
     }
@@ -259,7 +258,7 @@ export class SubscriptionsPageComponent implements OnInit {
 
     getLimitBadge(ml: ModuleLimit): string {
         const defined = ml.limits.filter(l => l.value !== null).length;
-        const total   = ml.limits.length;
+        const total = ml.limits.length;
         if (defined === 0) {
             return this.translate.instant('admin.subscriptions.limits-modal.badge-none');
         }
@@ -311,9 +310,9 @@ export class SubscriptionsPageComponent implements OnInit {
                     ml.loadingFunctionalities = false;
 
                     const lv: SubscriptionLimitValue = {
-                        key:      '',
-                        value:    1,
-                        name:     '',
+                        key: '',
+                        value: 1,
+                        name: '',
                         _trackId: `tmp_${++this.limitCounter}`,
                     };
                     ml.limits = [...ml.limits, lv];
@@ -338,8 +337,8 @@ export class SubscriptionsPageComponent implements OnInit {
         const func = ml.availableFunctionalities?.find(f => f.id === functionalityId);
         if (!func) { return; }
         lv.functionalityId = func.id;
-        lv.key             = func.key;
-        lv.label           = func.label;
+        lv.key = func.key;
+        lv.label = func.label;
         this.cdr.markForCheck();
     }
 
@@ -357,30 +356,30 @@ export class SubscriptionsPageComponent implements OnInit {
                 return;
             }
             this.subscriptionLimitSvc.create({
-                subscription:  this.limitsSubscription!.id,
+                subscription: this.limitsSubscription!.id,
                 functionality: lv.functionalityId,
-                name:          lv.name ?? '',
-                max_value:     lv.value,
+                name: lv.name ?? '',
+                max_value: lv.value,
             }).pipe(takeUntilDestroyed(this.destroyRef))
-              .subscribe({
-                  next: (created) => {
-                      // Reemplazar el objeto pendiente por uno limpio (sin _trackId)
-                      // para que Angular destruya el formulario y cree la vista desde cero
-                      const savedLv: SubscriptionLimitValue = {
-                          key:             created.functionality_key,
-                          value:           created.max_value,
-                          id:              created.id,
-                          functionalityId: created.functionality_id,
-                          label:           created.functionality_label,
-                          name:            created.name,
-                      };
-                      ml.limits = ml.limits.map(l => l === lv ? savedLv : l);
-                      this.pendingLimits.delete(lv);
-                      this.limitEditMap.delete(lv);
-                      this.cdr.markForCheck();
-                  },
-                  error: () => { this.cdr.markForCheck(); },
-              });
+                .subscribe({
+                    next: (created) => {
+                        // Reemplazar el objeto pendiente por uno limpio (sin _trackId)
+                        // para que Angular destruya el formulario y cree la vista desde cero
+                        const savedLv: SubscriptionLimitValue = {
+                            key: created.functionality_key,
+                            value: created.max_value,
+                            id: created.id,
+                            functionalityId: created.functionality_id,
+                            label: created.functionality_label,
+                            name: created.name,
+                        };
+                        ml.limits = ml.limits.map(l => l === lv ? savedLv : l);
+                        this.pendingLimits.delete(lv);
+                        this.limitEditMap.delete(lv);
+                        this.cdr.markForCheck();
+                    },
+                    error: () => { this.cdr.markForCheck(); },
+                });
         } else {
             // Tope existente: PATCH nombre via API
             if (!lv.id) { return; }
@@ -420,25 +419,25 @@ export class SubscriptionsPageComponent implements OnInit {
         }
 
         this.dialog.confirm({
-            type:         'warning',
-            title:        this.translate.instant('admin.subscriptions.limits-modal.delete-dialog.title'),
-            message:      this.translate.instant('admin.subscriptions.limits-modal.delete-dialog.message',
-                              { label: this.getLimitDisplayLabel(ml, lv) }),
+            type: 'warning',
+            title: this.translate.instant('admin.subscriptions.limits-modal.delete-dialog.title'),
+            message: this.translate.instant('admin.subscriptions.limits-modal.delete-dialog.message',
+                { label: this.getLimitDisplayLabel(ml, lv) }),
             confirmLabel: this.translate.instant('admin.subscriptions.limits-modal.delete-dialog.confirm'),
-            cancelLabel:  this.translate.instant('dialog.common.cancel'),
+            cancelLabel: this.translate.instant('dialog.common.cancel'),
         }).pipe(takeUntilDestroyed(this.destroyRef))
-          .subscribe(confirmed => {
-              if (!confirmed) { return; }
-              this.subscriptionLimitSvc.delete(lv.id!)
-                  .pipe(takeUntilDestroyed(this.destroyRef))
-                  .subscribe({
-                      next: () => {
-                          ml.limits = ml.limits.filter(l => l !== lv);
-                          this.cdr.markForCheck();
-                      },
-                      error: () => { this.cdr.markForCheck(); },
-                  });
-          });
+            .subscribe((confirmed: boolean) => {
+                if (!confirmed) { return; }
+                this.subscriptionLimitSvc.delete(lv.id!)
+                    .pipe(takeUntilDestroyed(this.destroyRef))
+                    .subscribe({
+                        next: () => {
+                            ml.limits = ml.limits.filter(l => l !== lv);
+                            this.cdr.markForCheck();
+                        },
+                        error: () => { this.cdr.markForCheck(); },
+                    });
+            });
     }
 
     // ── Save: PATCH (valor cambiado) / DELETE (sin límite) ────────────────────
@@ -495,8 +494,8 @@ export class SubscriptionsPageComponent implements OnInit {
 
     closeFeatureDetail(): void {
         this.showFeatureDetailModal = false;
-        this.currentDetailModule   = null;
-        this.currentDetailGroups   = [];
+        this.currentDetailModule = null;
+        this.currentDetailGroups = [];
     }
 
     isInvalid(field: string): boolean {
@@ -504,9 +503,9 @@ export class SubscriptionsPageComponent implements OnInit {
     }
 
     getPriceClass(price: number): string {
-        if (price === 0)   return 'tier-free';
-        if (price < 50)    return 'tier-basic';
-        if (price < 150)   return 'tier-pro';
+        if (price === 0) return 'tier-free';
+        if (price < 50) return 'tier-basic';
+        if (price < 150) return 'tier-pro';
         return 'tier-enterprise';
     }
 }
