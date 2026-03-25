@@ -1,24 +1,24 @@
 import { Injectable } from '@angular/core';
 import {
+    HttpErrorResponse,
     HttpInterceptor,
     HttpRequest,
     HttpHandler,
     HttpEvent,
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 import { SessionService } from 'wa-components-web';
-
-// Endpoints that use the 'Token' prefix (platform admin user/role management)
-const TOKEN_PREFIX_PATTERNS = [
-    '/platform/users',
-    '/platform/roles',
-];
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    constructor(private session: SessionService) {}
+    constructor(
+        private session: SessionService,
+        private router:  Router,
+    ) {}
 
     intercept(req: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
         const token = this.session.token;
@@ -27,11 +27,16 @@ export class AuthInterceptor implements HttpInterceptor {
             return next.handle(req);
         }
 
-        const useTokenPrefix = TOKEN_PREFIX_PATTERNS.some(p => req.url.includes(p));
-        const prefix = useTokenPrefix ? 'Token' : 'AdminToken';
-
         return next.handle(
-            req.clone({ setHeaders: { Authorization: `${prefix} ${token}` } }),
+            req.clone({ setHeaders: { Authorization: `AdminToken ${token}` } }),
+        ).pipe(
+            catchError((err: HttpErrorResponse) => {
+                if (err.status === 401) {
+                    this.session.clear();
+                    this.router.navigate(['/security/login']);
+                }
+                return throwError(() => err);
+            }),
         );
     }
 }

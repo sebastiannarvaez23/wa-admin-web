@@ -80,9 +80,6 @@
                     [title]="'admin.subscriptions.configure-limits' | translate">
                     <i class="bx bx-slider-alt"></i>
                 </button>
-                <button class="action-btn delete" (click)="confirmDelete(sub)">
-                    <i class="bx bx-trash"></i>
-                </button>
             </div>
         </div>
 
@@ -204,6 +201,172 @@
             <wa-btn (clicked)="closeModulesModal()">
                 <i class="bx bx-check"></i>
                 {{ 'admin.subscriptions.modules-modal.done' | translate }}
+            </wa-btn>
+        </div>
+
+    </div>
+</div>
+
+<!-- ================================================================ -->
+<!-- Limits modal (granular topes por módulo)                        -->
+<!-- ================================================================ -->
+<div class="modal-overlay" *ngIf="showLimitsModal" (click)="closeLimitsModal()">
+    <div class="modal-card limits-modal" (click)="$event.stopPropagation()">
+
+        <div class="modal-header">
+            <h3>
+                <i class="bx bx-slider-alt"></i>
+                {{ 'admin.subscriptions.limits-modal.title' | translate }}
+                <span class="features-modal-sub" *ngIf="limitsSubscription">— {{ limitsSubscription.name }}</span>
+            </h3>
+            <button class="modal-close" (click)="closeLimitsModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="limits-hint">
+            <i class="bx bx-info-circle"></i>
+            <span>{{ 'admin.subscriptions.limits-modal.hint' | translate }}</span>
+        </div>
+
+        <!-- Loading state mientras se cargan los topes desde el backend -->
+        <div class="limits-loading" *ngIf="loadingLimits">
+            <i class="bx bx-loader-alt bx-spin"></i>
+            <span>{{ 'admin.subscriptions.limits-modal.loading' | translate }}</span>
+        </div>
+
+        <ng-container *ngIf="!loadingLimits">
+            <ng-container *ngIf="moduleLimits.length > 0; else noLimitModules">
+                <div class="modules-scroll">
+                    <wa-expandable-limit-row
+                        *ngFor="let ml of moduleLimits; trackBy: trackByModuleCode"
+                        [icon]="ml.moduleIcon"
+                        [name]="ml.moduleName"
+                        [badge]="getLimitBadge(ml)"
+                        [expanded]="activeModuleCode === ml.moduleCode"
+                        (toggle)="onModuleToggle(ml)">
+
+                        <div class="limit-fields" *ngIf="activeModuleCode === ml.moduleCode">
+                            <div class="limit-field" *ngFor="let lv of ml.limits; trackBy: trackByLimitValue">
+
+                                <!-- Área del label: select+nombre (nuevo), input nombre (edición) o texto (vista) -->
+                                <ng-container *ngIf="isPendingLimit(lv); else editOrViewMode">
+                                    <div class="limit-pending-fields">
+                                        <wa-dropdown
+                                            [options]="functionalityOptions(ml)"
+                                            [placeholder]="'admin.subscriptions.limits-modal.select-placeholder' | translate"
+                                            [ngModel]="lv.functionalityId ?? null"
+                                            (ngModelChange)="onFunctionalitySelect(lv, $event, ml)">
+                                        </wa-dropdown>
+                                        <input class="limit-name-input"
+                                            [value]="lv.name ?? ''"
+                                            (input)="lv.name = $any($event.target).value"
+                                            [placeholder]="'admin.subscriptions.limits-modal.name-placeholder' | translate">
+                                    </div>
+                                </ng-container>
+                                <ng-template #editOrViewMode>
+                                    <ng-container *ngIf="isLimitEditing(lv); else viewModeTpl">
+                                        <input #nameInput
+                                            class="limit-label-input"
+                                            [value]="limitEditMap.get(lv) ?? ''"
+                                            (input)="limitEditMap.set(lv, nameInput.value)"
+                                            (keyup.enter)="confirmEditLimit(ml, lv)"
+                                            (keyup.escape)="cancelEditLimit(ml, lv)"
+                                            [placeholder]="'admin.subscriptions.limits-modal.name-placeholder' | translate">
+                                    </ng-container>
+                                    <ng-template #viewModeTpl>
+                                        <div class="limit-field-label">
+                                            <span class="limit-func-name">{{ lv.name || ('admin.subscriptions.limits-modal.unnamed' | translate) }}</span>
+                                            <span class="limit-func-key" *ngIf="lv.label">{{ lv.label }}</span>
+                                        </div>
+                                    </ng-template>
+                                </ng-template>
+
+                                <div class="limit-field-controls">
+                                    <!-- "Sin límite" checkbox -->
+                                    <label class="unlimited-label">
+                                        <input type="checkbox"
+                                            [checked]="lv.value === null"
+                                            (change)="setUnlimited(lv, $any($event.target).checked)">
+                                        <span>{{ 'admin.subscriptions.limits-modal.unlimited' | translate }}</span>
+                                    </label>
+                                    <!-- Input numérico -->
+                                    <div class="limit-input-wrap" [class.disabled]="lv.value === null">
+                                        <input type="number"
+                                            class="limit-input"
+                                            [value]="lv.value ?? ''"
+                                            [disabled]="lv.value === null"
+                                            min="0"
+                                            (input)="onLimitChange(lv, $event)"
+                                            [placeholder]="'admin.subscriptions.limits-modal.placeholder' | translate">
+                                    </div>
+                                    <!-- Botones de acción -->
+                                    <div class="limit-actions">
+                                        <ng-container *ngIf="!isLimitEditing(lv); else editActionsTpl">
+                                            <button class="limit-action-btn edit-btn"
+                                                type="button"
+                                                (click)="startEditLimit(lv)"
+                                                [title]="'admin.subscriptions.limits-modal.edit-tooltip' | translate">
+                                                <i class="bx bx-edit-alt"></i>
+                                            </button>
+                                        </ng-container>
+                                        <ng-template #editActionsTpl>
+                                            <button class="limit-action-btn confirm-btn"
+                                                type="button"
+                                                [disabled]="isPendingLimit(lv) && !lv.functionalityId"
+                                                (click)="confirmEditLimit(ml, lv)"
+                                                [title]="'admin.subscriptions.limits-modal.confirm-edit' | translate">
+                                                <i class="bx bx-check"></i>
+                                            </button>
+                                            <button class="limit-action-btn cancel-btn"
+                                                type="button"
+                                                (click)="cancelEditLimit(ml, lv)"
+                                                [title]="'dialog.common.cancel' | translate">
+                                                <i class="bx bx-x"></i>
+                                            </button>
+                                        </ng-template>
+                                        <button class="limit-action-btn delete-btn"
+                                            type="button"
+                                            (click)="removeLimit(ml, lv)"
+                                            [title]="'admin.subscriptions.limits-modal.delete-tooltip' | translate">
+                                            <i class="bx bx-trash"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Fila "Añadir tope" -->
+                            <div class="limit-add-row">
+                                <button class="limit-add-btn" type="button"
+                                    [disabled]="ml.loadingFunctionalities"
+                                    (click)="addLimit(ml)">
+                                    <i class="bx"
+                                        [ngClass]="ml.loadingFunctionalities ? 'bx-loader-alt bx-spin' : 'bx-plus'"></i>
+                                    {{ 'admin.subscriptions.limits-modal.add-limit' | translate }}
+                                </button>
+                            </div>
+                        </div>
+
+                    </wa-expandable-limit-row>
+                </div>
+            </ng-container>
+
+            <ng-template #noLimitModules>
+                <div class="no-features">
+                    <i class="bx bx-grid-alt"></i>
+                    <span>{{ 'admin.subscriptions.limits-modal.no-modules' | translate }}</span>
+                </div>
+            </ng-template>
+        </ng-container>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" (clicked)="closeLimitsModal()">
+                {{ 'dialog.common.cancel' | translate }}
+            </wa-btn>
+            <wa-btn (clicked)="saveLimits()" [loading]="savingLimits">
+                <i class="bx bx-check"></i>
+                {{ 'admin.subscriptions.limits-modal.save' | translate }}
             </wa-btn>
         </div>
 

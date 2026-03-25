@@ -1,3 +1,28 @@
+export interface SubscriptionLimitValue {
+    key:              string;
+    value:            number | null; // null = sin límite
+    name?:            string;        // nombre personalizado del tope
+    label?:           string;        // functionality_label (read-only, viene del backend)
+    id?:              string;        // UUID del backend (undefined si aún no está guardado)
+    functionalityId?: string;        // UUID de la Functionality en el backend
+    _trackId?:        string;        // ID interno para trackBy (topes nuevos sin key definitivo)
+}
+
+export interface ModuleLimit {
+    moduleCode:               string;
+    moduleName:               string;
+    moduleIcon:               string;
+    limits:                   SubscriptionLimitValue[];
+    availableFunctionalities?: AvailableFunctionality[]; // opciones para "Añadir tope"
+    loadingFunctionalities?:  boolean;
+}
+
+export interface AvailableFunctionality {
+    id:    string;
+    key:   string;
+    label: string;
+}
+
 export interface SubscriptionFeature {
     key:      string;
     label:    string;

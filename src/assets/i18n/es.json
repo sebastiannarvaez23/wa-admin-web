@@ -520,6 +520,11 @@
       "status-inactive": "Inactiva",
       "activate": "Activar",
       "deactivate": "Desactivar",
+      "deactivate-dialog": {
+        "title": "Desactivar suscripción",
+        "message": "El plan \"{{name}}\" dejará de ofrecerse a nuevas empresas. Las empresas que ya cuenten con esta suscripción activa podrán continuar operando con normalidad.",
+        "confirm": "Desactivar"
+      },
       "modules-count": "módulos",
       "configure-modules": "Configurar módulos y accesos",
       "configure-features": "Configurar funcionalidades",
@@ -527,6 +532,49 @@
       "modules-modal": {
         "title": "Módulos y accesos",
         "done": "Listo"
+      },
+      "limits-modal": {
+        "title": "Topes por módulo",
+        "hint": "Expande cada módulo para definir topes granulares. Activa \"Sin límite\" para no restringir un tope en particular.",
+        "unlimited": "Sin límite",
+        "placeholder": "Tope máx.",
+        "save": "Guardar topes",
+        "no-modules": "Esta suscripción no tiene módulos habilitados. Activa módulos desde la configuración de accesos.",
+        "badge-none": "Sin topes",
+        "badge-count": "{{defined}}/{{total}} con tope",
+        "add-limit": "Añadir tope",
+        "name-placeholder": "Nombre del tope...",
+        "unnamed": "Sin nombre",
+        "edit-tooltip": "Editar nombre",
+        "delete-tooltip": "Eliminar tope",
+        "confirm-edit": "Confirmar",
+        "loading": "Cargando topes configurados...",
+        "select-placeholder": "Selecciona una funcionalidad...",
+        "no-functionalities": "No hay funcionalidades disponibles para añadir",
+        "delete-dialog": {
+          "title": "Eliminar tope",
+          "message": "¿Seguro que deseas eliminar el tope de «{{label}}»? Esta acción no se puede deshacer.",
+          "confirm": "Sí, eliminar"
+        }
+      },
+      "limits": {
+        "dashboard":     { "max_widgets": "Widgets en el tablero", "max_kpi_cards": "Tarjetas KPI visibles" },
+        "orders":        { "max_orders_per_day": "Pedidos creados por día", "max_items_per_order": "Ítems por pedido", "max_open_orders": "Pedidos abiertos simultáneos" },
+        "reception":     { "max_receptions_per_day": "Recepciones por día", "max_items_per_reception": "Ítems por recepción" },
+        "location":      { "max_warehouses": "Bodegas activas", "max_zones_per_warehouse": "Zonas por bodega", "max_locations": "Ubicaciones totales" },
+        "inventories":   { "max_skus": "SKUs registrados", "max_adjustments_per_day": "Ajustes por día", "max_transfers_per_month": "Transferencias por mes" },
+        "picking":       { "max_tasks_per_user": "Tareas activas por operario", "max_items_per_task": "Ítems por tarea", "max_concurrent_waves": "Olas simultáneas" },
+        "packing":       { "max_tasks_per_user": "Tareas activas por operario", "max_items_per_task": "Ítems por tarea de empaque" },
+        "dispatches":    { "max_dispatches_per_day": "Despachos por día", "max_orders_per_dispatch": "Pedidos por despacho" },
+        "shipping":      { "max_carriers": "Transportadoras configuradas", "max_active_shipments": "Envíos activos simultáneos" },
+        "third_parties": { "max_clients": "Clientes registrados", "max_suppliers": "Proveedores registrados", "max_carriers": "Transportistas registrados" },
+        "users_roles":   { "max_users": "Usuarios activos", "max_roles": "Roles personalizados" },
+        "tasks":         { "max_active_tasks": "Tareas activas totales", "max_tasks_per_user": "Tareas asignadas por usuario", "max_recurring_tasks": "Tareas recurrentes" },
+        "integrations":  { "max_webhooks": "Webhooks configurados", "max_api_requests_per_day": "Solicitudes API por día", "max_integrations": "Integraciones activas" },
+        "automation":    { "max_rules": "Reglas de automatización", "max_executions_per_day": "Ejecuciones por día", "max_chained_actions": "Acciones encadenadas por regla" },
+        "analytics":     { "max_dashboards": "Dashboards personalizados", "max_exports_per_month": "Exportaciones por mes", "max_data_retention_days": "Días de retención de datos" },
+        "audit":         { "max_log_retention_days": "Días de retención de logs", "max_exported_logs": "Exportaciones de logs por mes" },
+        "settings":      { "max_warehouses": "Bodegas configurables", "max_templates": "Plantillas de documentos" }
       },
       "features-modal": {
         "apply": "Aplicar"

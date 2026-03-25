@@ -519,6 +519,11 @@
       "status-inactive": "Inactive",
       "activate": "Activate",
       "deactivate": "Deactivate",
+      "deactivate-dialog": {
+        "title": "Deactivate subscription",
+        "message": "The \"{{name}}\" plan will no longer be offered to new companies. Companies that already have this subscription active will continue to operate normally.",
+        "confirm": "Deactivate"
+      },
       "modules-count": "modules",
       "configure-modules": "Configure modules and access",
       "configure-features": "Configure features",
@@ -526,6 +531,35 @@
       "modules-modal": {
         "title": "Modules and access",
         "done": "Done"
+      },
+      "limits-modal": {
+        "title": "Module limits",
+        "hint": "Expand each module to set granular limits. Enable \"Unlimited\" to remove a specific restriction.",
+        "unlimited": "Unlimited",
+        "placeholder": "Max limit",
+        "save": "Save limits",
+        "no-modules": "This subscription has no enabled modules. Enable modules from the access configuration.",
+        "badge-none": "No limits",
+        "badge-count": "{{defined}}/{{total}} with limit"
+      },
+      "limits": {
+        "dashboard":     { "max_widgets": "Dashboard widgets", "max_kpi_cards": "Visible KPI cards" },
+        "orders":        { "max_orders_per_day": "Orders created per day", "max_items_per_order": "Items per order", "max_open_orders": "Simultaneous open orders" },
+        "reception":     { "max_receptions_per_day": "Receptions per day", "max_items_per_reception": "Items per reception" },
+        "location":      { "max_warehouses": "Active warehouses", "max_zones_per_warehouse": "Zones per warehouse", "max_locations": "Total locations" },
+        "inventories":   { "max_skus": "Registered SKUs", "max_adjustments_per_day": "Adjustments per day", "max_transfers_per_month": "Transfers per month" },
+        "picking":       { "max_tasks_per_user": "Active tasks per operator", "max_items_per_task": "Items per task", "max_concurrent_waves": "Concurrent waves" },
+        "packing":       { "max_tasks_per_user": "Active tasks per operator", "max_items_per_task": "Items per packing task" },
+        "dispatches":    { "max_dispatches_per_day": "Dispatches per day", "max_orders_per_dispatch": "Orders per dispatch" },
+        "shipping":      { "max_carriers": "Configured carriers", "max_active_shipments": "Simultaneous active shipments" },
+        "third_parties": { "max_clients": "Registered clients", "max_suppliers": "Registered suppliers", "max_carriers": "Registered carriers" },
+        "users_roles":   { "max_users": "Active users", "max_roles": "Custom roles" },
+        "tasks":         { "max_active_tasks": "Total active tasks", "max_tasks_per_user": "Tasks assigned per user", "max_recurring_tasks": "Recurring tasks" },
+        "integrations":  { "max_webhooks": "Configured webhooks", "max_api_requests_per_day": "API requests per day", "max_integrations": "Active integrations" },
+        "automation":    { "max_rules": "Automation rules", "max_executions_per_day": "Executions per day", "max_chained_actions": "Chained actions per rule" },
+        "analytics":     { "max_dashboards": "Custom dashboards", "max_exports_per_month": "Exports per month", "max_data_retention_days": "Data retention days" },
+        "audit":         { "max_log_retention_days": "Log retention days", "max_exported_logs": "Log exports per month" },
+        "settings":      { "max_warehouses": "Configurable warehouses", "max_templates": "Document templates" }
       },
       "features-modal": {
         "apply": "Apply"
