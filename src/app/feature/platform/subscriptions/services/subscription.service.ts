@@ -381,6 +381,7 @@ export function buildModuleLimits(
             functionalityId: bl.functionality_id,
             label:           bl.functionality_label,
             name:            bl.name,
+            validationType:  bl.validation_type,
         });
     }
 

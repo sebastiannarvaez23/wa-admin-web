@@ -1,3 +1,5 @@
+export type LimitValidationType = 'daily' | 'lifetime';
+
 export interface SubscriptionLimitValue {
     key:              string;
     value:            number | null; // null = sin límite
@@ -5,6 +7,7 @@ export interface SubscriptionLimitValue {
     label?:           string;        // functionality_label (read-only, viene del backend)
     id?:              string;        // UUID del backend (undefined si aún no está guardado)
     functionalityId?: string;        // UUID de la Functionality en el backend
+    validationType?:  LimitValidationType; // tipo de validación del tope
     _trackId?:        string;        // ID interno para trackBy (topes nuevos sin key definitivo)
 }
 

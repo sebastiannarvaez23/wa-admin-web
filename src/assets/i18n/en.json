@@ -540,7 +540,12 @@
         "save": "Save limits",
         "no-modules": "This subscription has no enabled modules. Enable modules from the access configuration.",
         "badge-none": "No limits",
-        "badge-count": "{{defined}}/{{total}} with limit"
+        "badge-count": "{{defined}}/{{total}} with limit",
+        "validation-type": {
+          "placeholder": "Validation type...",
+          "daily": "Daily",
+          "lifetime": "Lifetime"
+        }
       },
       "limits": {
         "dashboard":     { "max_widgets": "Dashboard widgets", "max_kpi_cards": "Visible KPI cards" },

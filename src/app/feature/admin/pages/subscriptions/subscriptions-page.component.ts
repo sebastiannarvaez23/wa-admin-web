@@ -6,7 +6,7 @@ import { DialogService, DropdownOption } from 'wa-components-web';
 import { forkJoin, Observable } from 'rxjs';
 
 import { isFieldInvalid } from 'src/app/core/utils/form.utils';
-import { AvailableFunctionality, ModuleLimit, SubscriptionLimitValue, Subscription, SubscriptionFeature, SubscriptionModule } from '../../../platform/subscriptions/interfaces/subscription.interfaces';
+import { AvailableFunctionality, LimitValidationType, ModuleLimit, SubscriptionLimitValue, Subscription, SubscriptionFeature, SubscriptionModule } from '../../../platform/subscriptions/interfaces/subscription.interfaces';
 import { getTotalModulesCount, SubscriptionService, CreateSubscriptionPayload, UpdateSubscriptionPayload, buildModuleLimits } from '../../../platform/subscriptions/services/subscription.service';
 import { SubscriptionLimitService } from '../../../platform/subscriptions/services/subscription-limit.service';
 import { FunctionalityService } from '../../../platform/functionalities/services/functionality.service';
@@ -44,6 +44,7 @@ export class SubscriptionsPageComponent implements OnInit {
     currentDetailModule: SubscriptionModule | null = null;
     currentDetailGroups: { category: string; features: SubscriptionFeature[] }[] = [];
 
+    validationTypeOptions: DropdownOption[] = [];
     private readonly destroyRef = inject(DestroyRef);
 
     constructor(
@@ -65,6 +66,11 @@ export class SubscriptionsPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        this.validationTypeOptions = [
+            { value: 'daily',    label: this.translate.instant('admin.subscriptions.limits-modal.validation-type.daily') },
+            { value: 'lifetime', label: this.translate.instant('admin.subscriptions.limits-modal.validation-type.lifetime') },
+        ];
+
         this.loading = true;
         this.subscriptionService.getSubscriptions().subscribe({
             next: (data) => {
@@ -313,6 +319,7 @@ export class SubscriptionsPageComponent implements OnInit {
                         key: '',
                         value: 1,
                         name: '',
+                        validationType: undefined,
                         _trackId: `tmp_${++this.limitCounter}`,
                     };
                     ml.limits = [...ml.limits, lv];
@@ -333,6 +340,11 @@ export class SubscriptionsPageComponent implements OnInit {
             .map((f: AvailableFunctionality) => ({ value: f.id, label: f.label }));
     }
 
+    onValidationTypeSelect(lv: SubscriptionLimitValue, value: LimitValidationType): void {
+        lv.validationType = value;
+        this.cdr.markForCheck();
+    }
+
     onFunctionalitySelect(lv: SubscriptionLimitValue, functionalityId: string, ml: ModuleLimit): void {
         const func = ml.availableFunctionalities?.find(f => f.id === functionalityId);
         if (!func) { return; }
@@ -347,7 +359,7 @@ export class SubscriptionsPageComponent implements OnInit {
     confirmEditLimit(ml: ModuleLimit, lv: SubscriptionLimitValue): void {
         if (this.pendingLimits.has(lv)) {
             // Nuevo tope: POST inmediato al backend
-            if (!lv.functionalityId) { return; }
+            if (!lv.functionalityId || !lv.validationType) { return; }
             if (lv.value === null) {
                 // Sin límite seleccionado: quitar el estado pendiente sin POST
                 this.pendingLimits.delete(lv);
@@ -360,6 +372,7 @@ export class SubscriptionsPageComponent implements OnInit {
                 functionality: lv.functionalityId,
                 name: lv.name ?? '',
                 max_value: lv.value,
+                validation_type: lv.validationType,
             }).pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                     next: (created) => {
@@ -372,6 +385,7 @@ export class SubscriptionsPageComponent implements OnInit {
                             functionalityId: created.functionality_id,
                             label: created.functionality_label,
                             name: created.name,
+                            validationType: created.validation_type,
                         };
                         ml.limits = ml.limits.map(l => l === lv ? savedLv : l);
                         this.pendingLimits.delete(lv);

@@ -1,3 +1,5 @@
+import { LimitValidationType } from './subscription.interfaces';
+
 export interface SubscriptionLimitApiItem {
     id:                       string;
     subscription_id:          string;
@@ -8,18 +10,21 @@ export interface SubscriptionLimitApiItem {
     functionality_module_code: string;
     name:                     string;
     max_value:                number;
+    validation_type:          LimitValidationType;
     created_at:               string;
     updated_at:               string;
 }
 
 export interface CreateSubscriptionLimitPayload {
-    subscription:  string;
-    functionality: string;
-    name:          string;
-    max_value:     number;
+    subscription:    string;
+    functionality:   string;
+    name:            string;
+    max_value:       number;
+    validation_type: LimitValidationType;
 }
 
 export interface UpdateSubscriptionLimitPayload {
-    name?:      string;
-    max_value?: number;
+    name?:            string;
+    max_value?:       number;
+    validation_type?: LimitValidationType;
 }

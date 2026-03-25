@@ -551,6 +551,11 @@
         "loading": "Cargando topes configurados...",
         "select-placeholder": "Selecciona una funcionalidad...",
         "no-functionalities": "No hay funcionalidades disponibles para añadir",
+        "validation-type": {
+          "placeholder": "Tipo de validación...",
+          "daily": "Diaria",
+          "lifetime": "Por suscripción"
+        },
         "delete-dialog": {
           "title": "Eliminar tope",
           "message": "¿Seguro que deseas eliminar el tope de «{{label}}»? Esta acción no se puede deshacer.",

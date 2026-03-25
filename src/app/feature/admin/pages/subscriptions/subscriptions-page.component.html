@@ -252,12 +252,22 @@
                                 <!-- Área del label: select+nombre (nuevo), input nombre (edición) o texto (vista) -->
                                 <ng-container *ngIf="isPendingLimit(lv); else editOrViewMode">
                                     <div class="limit-pending-fields">
-                                        <wa-dropdown
-                                            [options]="functionalityOptions(ml)"
-                                            [placeholder]="'admin.subscriptions.limits-modal.select-placeholder' | translate"
-                                            [ngModel]="lv.functionalityId ?? null"
-                                            (ngModelChange)="onFunctionalitySelect(lv, $event, ml)">
-                                        </wa-dropdown>
+                                        <div class="limit-pending-row">
+                                            <wa-dropdown
+                                                class="limit-pending-functionality"
+                                                [options]="functionalityOptions(ml)"
+                                                [placeholder]="'admin.subscriptions.limits-modal.select-placeholder' | translate"
+                                                [ngModel]="lv.functionalityId ?? null"
+                                                (ngModelChange)="onFunctionalitySelect(lv, $event, ml)">
+                                            </wa-dropdown>
+                                            <wa-dropdown
+                                                class="limit-pending-validation-type"
+                                                [options]="validationTypeOptions"
+                                                [placeholder]="'admin.subscriptions.limits-modal.validation-type.placeholder' | translate"
+                                                [ngModel]="lv.validationType ?? null"
+                                                (ngModelChange)="onValidationTypeSelect(lv, $event)">
+                                            </wa-dropdown>
+                                        </div>
                                         <input class="limit-name-input"
                                             [value]="lv.name ?? ''"
                                             (input)="lv.name = $any($event.target).value"
@@ -278,6 +288,9 @@
                                         <div class="limit-field-label">
                                             <span class="limit-func-name">{{ lv.name || ('admin.subscriptions.limits-modal.unnamed' | translate) }}</span>
                                             <span class="limit-func-key" *ngIf="lv.label">{{ lv.label }}</span>
+                                            <span class="limit-validation-badge" *ngIf="lv.validationType">
+                                                {{ 'admin.subscriptions.limits-modal.validation-type.' + lv.validationType | translate }}
+                                            </span>
                                         </div>
                                     </ng-template>
                                 </ng-template>
@@ -313,7 +326,7 @@
                                         <ng-template #editActionsTpl>
                                             <button class="limit-action-btn confirm-btn"
                                                 type="button"
-                                                [disabled]="isPendingLimit(lv) && !lv.functionalityId"
+                                                [disabled]="isPendingLimit(lv) && (!lv.functionalityId || !lv.validationType)"
                                                 (click)="confirmEditLimit(ml, lv)"
                                                 [title]="'admin.subscriptions.limits-modal.confirm-edit' | translate">
                                                 <i class="bx bx-check"></i>

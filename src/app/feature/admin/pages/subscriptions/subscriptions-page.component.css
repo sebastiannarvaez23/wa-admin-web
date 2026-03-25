@@ -88,7 +88,7 @@
 .no-features i { font-size: 2rem; }
 
 /* ---- Limits modal ---- */
-.limits-modal { max-width: 560px; }
+.limits-modal { max-width: 780px; }
 .limits-modal .modal-header h3 { display: flex; align-items: center; gap: 8px; }
 .limits-modal .modal-header h3 > i { font-size: 1.15rem; }
 
@@ -105,6 +105,7 @@
 .limit-field-label { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
 .limit-func-name { font-size: .82rem; color: var(--primary-color); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .limit-func-key { font-size: .68rem; font-family: 'Courier New', monospace; font-weight: 600; color: var(--text-secondary); background: rgba(0,0,0,.05); padding: 1px 5px; border-radius: 3px; width: fit-content; }
+.limit-validation-badge { font-size: .66rem; font-weight: 600; color: var(--primary-color); background: color-mix(in srgb, var(--primary-color) 10%, transparent); padding: 1px 7px; border-radius: 10px; width: fit-content; }
 
 .limit-field-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
 
@@ -136,9 +137,11 @@
 .limit-add-btn[disabled] { opacity: .5; cursor: default; }
 .limit-add-btn i { font-size: .9rem; }
 
-/* ---- Pending fields wrapper (tope nuevo: dropdown + nombre) ---- */
+/* ---- Pending fields wrapper (tope nuevo: dropdowns + nombre) ---- */
 .limit-pending-fields { display: flex; flex-direction: column; gap: 0; flex: 1; min-width: 0; }
-.limit-pending-fields wa-dropdown { margin: 0 0 4px; }
+.limit-pending-row { display: flex; gap: 8px; margin-bottom: 4px; }
+.limit-pending-functionality { flex: 3; min-width: 0; }
+.limit-pending-validation-type { flex: 0 0 160px; }
 
 /* ---- Name input (tope nuevo) ---- */
 .limit-name-input { width: 100%; padding: 4px 8px; border: 1.5px solid var(--surface-border); border-radius: 6px; font-size: .82rem; color: var(--primary-color); background: var(--very-white); outline: none; box-sizing: border-box; }
