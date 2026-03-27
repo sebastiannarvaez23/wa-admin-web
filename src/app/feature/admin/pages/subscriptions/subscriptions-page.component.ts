@@ -2,11 +2,10 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, DestroyRef, Elem
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
-import { DialogService, DropdownOption } from 'wa-components-web';
-import { forkJoin, Observable } from 'rxjs';
+import { DialogService, DropdownOption, NotificationService } from 'wa-components-web';
 
 import { isFieldInvalid } from 'src/app/core/utils/form.utils';
-import { AvailableFunctionality, LimitValidationType, ModuleLimit, SubscriptionLimitValue, Subscription, SubscriptionFeature, SubscriptionModule } from '../../../platform/subscriptions/interfaces/subscription.interfaces';
+import { AvailableFunctionality, LimitValidationType, ModuleLimit, SubscriptionLimitValue, Subscription, SubscriptionFunctionality, SubscriptionModule } from '../../../platform/subscriptions/interfaces/subscription.interfaces';
 import { getTotalModulesCount, SubscriptionService, CreateSubscriptionPayload, UpdateSubscriptionPayload, buildModuleLimits } from '../../../platform/subscriptions/services/subscription.service';
 import { SubscriptionLimitService } from '../../../platform/subscriptions/services/subscription-limit.service';
 import { FunctionalityService } from '../../../platform/functionalities/services/functionality.service';
@@ -29,20 +28,26 @@ export class SubscriptionsPageComponent implements OnInit {
 
     showModulesModal = false;
     modulesSubscription: Subscription | null = null;
+    savingModules = false;
+    private modulesSnapshot: Set<string> | null = null;
+
+    savingFeatures = false;
+    private featuresSnapshot: Set<string> | null = null;
 
     showLimitsModal = false;
     limitsSubscription: Subscription | null = null;
     moduleLimits: ModuleLimit[] = [];
     loadingLimits = false;
-    savingLimits = false;
     activeModuleCode: string | null = null;             // accordion: módulo expandido
     limitEditMap = new Map<SubscriptionLimitValue, string>(); // label pendiente mientras edita
     pendingLimits = new Set<SubscriptionLimitValue>();          // topes nuevos sin confirmar
+    savingLimits = new Set<SubscriptionLimitValue>();            // topes en proceso de guardado
     private limitCounter = 0;
 
     showFeatureDetailModal = false;
+    loadingFeatures = false;
     currentDetailModule: SubscriptionModule | null = null;
-    currentDetailGroups: { category: string; features: SubscriptionFeature[] }[] = [];
+    currentDetailGroups: { category: string; features: SubscriptionFunctionality[] }[] = [];
 
     validationTypeOptions: DropdownOption[] = [];
     private readonly destroyRef = inject(DestroyRef);
@@ -55,6 +60,7 @@ export class SubscriptionsPageComponent implements OnInit {
         private functionalityService: FunctionalityService,
         private cdr: ChangeDetectorRef,
         private dialog: DialogService,
+        private notification: NotificationService,
         private elRef: ElementRef,
     ) {
         this.form = this.fb.group({
@@ -123,9 +129,17 @@ export class SubscriptionsPageComponent implements OnInit {
                     next: (saved) => {
                         const idx = this.subscriptions.findIndex(s => s.id === saved.id);
                         if (idx !== -1) { this.subscriptions[idx] = saved; }
+                        this.notification.push(
+                            this.translate.instant('admin.subscriptions.notifications.toggle-success'),
+                            'success',
+                        );
                         this.cdr.markForCheck();
                     },
                     error: () => {
+                        this.notification.push(
+                            this.translate.instant('admin.subscriptions.notifications.toggle-error'),
+                            'error',
+                        );
                         this.cdr.markForCheck();
                     },
                 });
@@ -165,10 +179,20 @@ export class SubscriptionsPageComponent implements OnInit {
                 }
                 this.saving = false;
                 this.closeModal();
+                this.notification.push(
+                    this.translate.instant(this.editingSubscription
+                        ? 'admin.subscriptions.notifications.update-success'
+                        : 'admin.subscriptions.notifications.create-success'),
+                    'success',
+                );
                 this.cdr.markForCheck();
             },
             error: () => {
                 this.saving = false;
+                this.notification.push(
+                    this.translate.instant('admin.subscriptions.notifications.save-error'),
+                    'error',
+                );
                 this.cdr.markForCheck();
             },
         });
@@ -178,12 +202,18 @@ export class SubscriptionsPageComponent implements OnInit {
 
     openModulesModal(sub: Subscription): void {
         this.modulesSubscription = sub;
+        this.modulesSnapshot = new Set(sub.modules.filter(m => m.hasAccess).map(m => m.code));
         this.showModulesModal = true;
     }
 
     closeModulesModal(): void {
+        if (this.modulesSubscription && this.hasModulesChanged(this.modulesSubscription)) {
+            this.saveModules(this.modulesSubscription);
+            return;
+        }
         this.showModulesModal = false;
         this.modulesSubscription = null;
+        this.modulesSnapshot = null;
     }
 
     toggleModuleAccess(mod: SubscriptionModule): void {
@@ -193,6 +223,45 @@ export class SubscriptionsPageComponent implements OnInit {
         } else {
             mod.hasAccess = true;
         }
+    }
+
+    private hasModulesChanged(sub: Subscription): boolean {
+        if (!this.modulesSnapshot) { return false; }
+        const current = new Set(sub.modules.filter(m => m.hasAccess).map(m => m.code));
+        if (current.size !== this.modulesSnapshot.size) { return true; }
+        for (const code of current) { if (!this.modulesSnapshot.has(code)) { return true; } }
+        return false;
+    }
+
+    private saveModules(sub: Subscription): void {
+        const moduleCodes = sub.modules.filter(m => m.hasAccess).map(m => m.code);
+
+        this.savingModules = true;
+        this.cdr.markForCheck();
+
+        this.subscriptionService.updateModules(sub.id, moduleCodes)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: () => {
+                    this.savingModules = false;
+                    this.notification.push(
+                        this.translate.instant('admin.subscriptions.notifications.modules-success'),
+                        'success',
+                    );
+                    this.showModulesModal = false;
+                    this.modulesSubscription = null;
+                    this.modulesSnapshot = null;
+                    this.cdr.markForCheck();
+                },
+                error: () => {
+                    this.savingModules = false;
+                    this.notification.push(
+                        this.translate.instant('admin.subscriptions.notifications.modules-error'),
+                        'error',
+                    );
+                    this.cdr.markForCheck();
+                },
+            });
     }
 
     getActiveModulesCount(sub: Subscription): number {
@@ -251,6 +320,7 @@ export class SubscriptionsPageComponent implements OnInit {
         this.activeModuleCode = null;
         this.limitEditMap.clear();
         this.pendingLimits.clear();
+        this.savingLimits.clear();
     }
 
     setUnlimited(lv: SubscriptionLimitValue, unlimited: boolean): void {
@@ -284,12 +354,16 @@ export class SubscriptionsPageComponent implements OnInit {
         return this.pendingLimits.has(lv);
     }
 
+    isSavingLimit(lv: SubscriptionLimitValue): boolean {
+        return this.savingLimits.has(lv);
+    }
+
     private scrollToLastLimitField(): void {
         // Esperar a que Angular renderice la nueva fila antes de scrollear
         setTimeout(() => {
-            const fields = this.elRef.nativeElement.querySelectorAll('.limit-field') as NodeListOf<HTMLElement>;
-            if (fields.length > 0) {
-                fields[fields.length - 1].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            const addRow = this.elRef.nativeElement.querySelector('.limit-add-row') as HTMLElement;
+            if (addRow) {
+                addRow.scrollIntoView({ behavior: 'smooth', block: 'end' });
             }
         }, 50);
     }
@@ -305,13 +379,16 @@ export class SubscriptionsPageComponent implements OnInit {
         ml.loadingFunctionalities = true;
         this.cdr.markForCheck();
 
+        // Solo las features habilitadas en esta suscripción son elegibles para topes
+        const enabledKeys = new Set(this.limitsSubscription?.enabledFeatureKeys ?? []);
+
         this.functionalityService.getFunctionalities(ml.moduleCode)
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: (functionalities) => {
                     const usedKeys = new Set(ml.limits.map(l => l.key));
                     ml.availableFunctionalities = functionalities
-                        .filter(f => f.is_active && !usedKeys.has(f.key))
+                        .filter(f => f.is_active && enabledKeys.has(f.key) && !usedKeys.has(f.key))
                         .map(f => ({ id: f.id, key: f.key, label: f.label }));
                     ml.loadingFunctionalities = false;
 
@@ -367,6 +444,8 @@ export class SubscriptionsPageComponent implements OnInit {
                 this.cdr.markForCheck();
                 return;
             }
+            this.savingLimits.add(lv);
+            this.cdr.markForCheck();
             this.subscriptionLimitSvc.create({
                 subscription: this.limitsSubscription!.id,
                 functionality: lv.functionalityId,
@@ -376,8 +455,6 @@ export class SubscriptionsPageComponent implements OnInit {
             }).pipe(takeUntilDestroyed(this.destroyRef))
                 .subscribe({
                     next: (created) => {
-                        // Reemplazar el objeto pendiente por uno limpio (sin _trackId)
-                        // para que Angular destruya el formulario y cree la vista desde cero
                         const savedLv: SubscriptionLimitValue = {
                             key: created.functionality_key,
                             value: created.max_value,
@@ -389,10 +466,22 @@ export class SubscriptionsPageComponent implements OnInit {
                         };
                         ml.limits = ml.limits.map(l => l === lv ? savedLv : l);
                         this.pendingLimits.delete(lv);
+                        this.savingLimits.delete(lv);
                         this.limitEditMap.delete(lv);
+                        this.notification.push(
+                            this.translate.instant('admin.subscriptions.notifications.limit-create-success'),
+                            'success',
+                        );
                         this.cdr.markForCheck();
                     },
-                    error: () => { this.cdr.markForCheck(); },
+                    error: () => {
+                        this.savingLimits.delete(lv);
+                        this.notification.push(
+                            this.translate.instant('admin.subscriptions.notifications.limit-save-error'),
+                            'error',
+                        );
+                        this.cdr.markForCheck();
+                    },
                 });
         } else {
             // Tope existente: PATCH nombre via API
@@ -404,9 +493,19 @@ export class SubscriptionsPageComponent implements OnInit {
                     next: (updated) => {
                         lv.name = updated.name;
                         this.limitEditMap.delete(lv);
+                        this.notification.push(
+                            this.translate.instant('admin.subscriptions.notifications.limit-update-success'),
+                            'success',
+                        );
                         this.cdr.markForCheck();
                     },
-                    error: () => { this.cdr.markForCheck(); },
+                    error: () => {
+                        this.notification.push(
+                            this.translate.instant('admin.subscriptions.notifications.limit-save-error'),
+                            'error',
+                        );
+                        this.cdr.markForCheck();
+                    },
                 });
         }
     }
@@ -447,63 +546,113 @@ export class SubscriptionsPageComponent implements OnInit {
                     .subscribe({
                         next: () => {
                             ml.limits = ml.limits.filter(l => l !== lv);
+                            this.notification.push(
+                                this.translate.instant('admin.subscriptions.notifications.limit-delete-success'),
+                                'success',
+                            );
                             this.cdr.markForCheck();
                         },
-                        error: () => { this.cdr.markForCheck(); },
+                        error: () => {
+                            this.notification.push(
+                                this.translate.instant('admin.subscriptions.notifications.limit-delete-error'),
+                                'error',
+                            );
+                            this.cdr.markForCheck();
+                        },
                     });
             });
-    }
-
-    // ── Save: PATCH (valor cambiado) / DELETE (sin límite) ────────────────────
-
-    saveLimits(): void {
-        if (!this.limitsSubscription) { return; }
-
-        const ops: Observable<unknown>[] = [];
-
-        for (const ml of this.moduleLimits) {
-            for (const lv of ml.limits) {
-                if (!lv.id || this.pendingLimits.has(lv)) { continue; }
-
-                if (lv.value === null) {
-                    ops.push(this.subscriptionLimitSvc.delete(lv.id));
-                } else {
-                    ops.push(this.subscriptionLimitSvc.update(lv.id, { max_value: lv.value, name: lv.name }));
-                }
-            }
-        }
-
-        if (!ops.length) {
-            this.closeLimitsModal();
-            return;
-        }
-
-        this.savingLimits = true;
-        forkJoin(ops).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
-            next: () => {
-                this.savingLimits = false;
-                this.closeLimitsModal();
-                this.cdr.markForCheck();
-            },
-            error: () => {
-                this.savingLimits = false;
-                this.cdr.markForCheck();
-            },
-        });
     }
 
     // ── Feature detail modal ──────────────────────────────────────────────────
 
     openFeatureDetail(mod: SubscriptionModule): void {
         this.currentDetailModule = mod;
-        const map = new Map<string, SubscriptionFeature[]>();
-        for (const f of mod.features) {
-            if (!map.has(f.category)) map.set(f.category, []);
-            map.get(f.category)!.push(f);
-        }
-        this.currentDetailGroups = Array.from(map.entries())
-            .map(([category, features]) => ({ category, features }));
+        this.currentDetailGroups = [];
+        this.loadingFeatures = true;
         this.showFeatureDetailModal = true;
+        this.cdr.markForCheck();
+
+        const enabledKeys = new Set(this.modulesSubscription?.enabledFeatureKeys ?? []);
+        this.featuresSnapshot = new Set(enabledKeys);
+
+        this.functionalityService.getFunctionalities(mod.code)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: (functionalities) => {
+                    const realFeatures: SubscriptionFunctionality[] = functionalities
+                        .filter(f => f.is_active)
+                        .map(f => ({
+                            key:      f.key,
+                            label:    f.label,
+                            enabled:  enabledKeys.has(f.key),
+                            category: f.category,
+                        }));
+
+                    // Reemplazar las features del módulo con las reales del backend
+                    mod.features = realFeatures;
+
+                    const map = new Map<string, SubscriptionFunctionality[]>();
+                    for (const f of realFeatures) {
+                        if (!map.has(f.category)) map.set(f.category, []);
+                        map.get(f.category)!.push(f);
+                    }
+                    this.currentDetailGroups = Array.from(map.entries())
+                        .map(([category, features]) => ({ category, features }));
+                    this.loadingFeatures = false;
+                    this.cdr.markForCheck();
+                },
+                error: () => {
+                    this.loadingFeatures = false;
+                    this.cdr.markForCheck();
+                },
+            });
+    }
+
+    applyFeatureDetail(): void {
+        if (!this.modulesSubscription) { this.closeFeatureDetail(); return; }
+
+        const sub = this.modulesSubscription;
+        const featureKeys = sub.modules
+            .filter(m => m.hasAccess)
+            .flatMap(m => m.features.filter(f => f.enabled).map(f => f.key));
+
+        // Check if features actually changed
+        const changed = (() => {
+            if (!this.featuresSnapshot) { return true; }
+            const current = new Set(featureKeys);
+            if (current.size !== this.featuresSnapshot.size) { return true; }
+            for (const key of current) { if (!this.featuresSnapshot.has(key)) { return true; } }
+            return false;
+        })();
+
+        if (!changed) { this.closeFeatureDetail(); return; }
+
+        sub.enabledFeatureKeys = featureKeys;
+        this.savingFeatures = true;
+        this.cdr.markForCheck();
+
+        this.subscriptionService.updateFeatures(sub.id, featureKeys)
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: () => {
+                    this.savingFeatures = false;
+                    this.featuresSnapshot = null;
+                    this.notification.push(
+                        this.translate.instant('admin.subscriptions.notifications.features-success'),
+                        'success',
+                    );
+                    this.closeFeatureDetail();
+                    this.cdr.markForCheck();
+                },
+                error: () => {
+                    this.savingFeatures = false;
+                    this.notification.push(
+                        this.translate.instant('admin.subscriptions.notifications.features-error'),
+                        'error',
+                    );
+                    this.cdr.markForCheck();
+                },
+            });
     }
 
     closeFeatureDetail(): void {

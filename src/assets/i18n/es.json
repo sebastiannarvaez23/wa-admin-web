@@ -531,7 +531,8 @@
       "configure-limits": "Configurar límites de uso por módulo",
       "modules-modal": {
         "title": "Módulos y accesos",
-        "done": "Listo"
+        "done": "Listo",
+        "saving": "Aplicando..."
       },
       "limits-modal": {
         "title": "Topes por módulo",
@@ -539,6 +540,7 @@
         "unlimited": "Sin límite",
         "placeholder": "Tope máx.",
         "save": "Guardar topes",
+        "done": "Listo",
         "no-modules": "Esta suscripción no tiene módulos habilitados. Activa módulos desde la configuración de accesos.",
         "badge-none": "Sin topes",
         "badge-count": "{{defined}}/{{total}} con tope",
@@ -582,13 +584,30 @@
         "settings":      { "max_warehouses": "Bodegas configurables", "max_templates": "Plantillas de documentos" }
       },
       "features-modal": {
-        "apply": "Aplicar"
+        "apply": "Aplicar",
+        "saving": "Guardando..."
       },
       "feature-categories": {
         "features": "Funcionalidades",
         "ai": "Inteligencia Artificial"
       },
       "no-features": "No hay funcionalidades definidas para este módulo.",
+      "notifications": {
+        "create-success": "Suscripción creada exitosamente",
+        "update-success": "Suscripción actualizada exitosamente",
+        "save-error": "Error al guardar la suscripción",
+        "toggle-success": "Estado de la suscripción actualizado",
+        "toggle-error": "Error al cambiar el estado de la suscripción",
+        "modules-success": "Permisos de módulos guardados exitosamente",
+        "modules-error": "Error al guardar los permisos de módulos",
+        "features-success": "Funcionalidades guardadas exitosamente",
+        "features-error": "Error al guardar las funcionalidades",
+        "limit-create-success": "Tope creado exitosamente",
+        "limit-update-success": "Tope actualizado exitosamente",
+        "limit-save-error": "Error al guardar el tope",
+        "limit-delete-success": "Tope eliminado exitosamente",
+        "limit-delete-error": "Error al eliminar el tope"
+      },
       "modal": {
         "add-title": "Nueva suscripción",
         "edit-title": "Editar suscripción",

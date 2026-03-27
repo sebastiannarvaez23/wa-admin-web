@@ -15,8 +15,8 @@ interface SubscriptionApiResponse {
     price:            string;
     logo:             string;
     is_active:        boolean;
-    enabled_modules:  string[];
-    enabled_features: string[];
+    modules:          string[];
+    features:         string[];
     created_at:       string;
     updated_at:       string;
 }
@@ -282,6 +282,7 @@ const SEED_SUBSCRIPTIONS: Subscription[] = [
             ['dashboard', 'inventories', 'settings'],
             ['dashboard.view-summary', 'dashboard.alerts-notifications', 'inventories.real-time-view', 'inventories.adjustments', 'settings.company-config'],
         ),
+        enabledFeatureKeys: ['dashboard.view-summary', 'dashboard.alerts-notifications', 'inventories.real-time-view', 'inventories.adjustments', 'settings.company-config'],
         created_at: '2024-01-01', updated_at: '2024-01-01',
     },
     {
@@ -299,6 +300,16 @@ const SEED_SUBSCRIPTIONS: Subscription[] = [
              'third_parties.client-management', 'third_parties.supplier-management', 'third_parties.contact-info',
              'settings.company-config', 'settings.warehouse-management', 'settings.notifications-config'],
         ),
+        enabledFeatureKeys: [
+            'dashboard.view-summary', 'dashboard.real-time-metrics', 'dashboard.alerts-notifications', 'dashboard.kpis',
+            'orders.create', 'orders.edit', 'orders.view-status', 'orders.inventory-validation',
+            'reception.create', 'reception.edit', 'reception.quality-control',
+            'inventories.real-time-view', 'inventories.adjustments', 'inventories.physical-counts', 'inventories.movement-history',
+            'picking.create-tasks', 'picking.assign-tasks', 'picking.traceability',
+            'dispatches.create', 'dispatches.edit', 'dispatches.carrier-assignment',
+            'third_parties.client-management', 'third_parties.supplier-management', 'third_parties.contact-info',
+            'settings.company-config', 'settings.warehouse-management', 'settings.notifications-config',
+        ],
         created_at: '2024-01-01', updated_at: '2024-01-01',
     },
     {
@@ -309,6 +320,7 @@ const SEED_SUBSCRIPTIONS: Subscription[] = [
             MODULES_CATALOG.map(m => m.code),
             MODULES_CATALOG.flatMap(m => m.features.filter(f => f.category === 'features').map(f => `${m.code}.${f.key}`)),
         ),
+        enabledFeatureKeys: MODULES_CATALOG.flatMap(m => m.features.filter(f => f.category === 'features').map(f => `${m.code}.${f.key}`)),
         created_at: '2024-01-01', updated_at: '2024-01-01',
     },
     {
@@ -319,6 +331,7 @@ const SEED_SUBSCRIPTIONS: Subscription[] = [
             MODULES_CATALOG.map(m => m.code),
             MODULES_CATALOG.flatMap(m => m.features.map(f => `${m.code}.${f.key}`)),
         ),
+        enabledFeatureKeys: MODULES_CATALOG.flatMap(m => m.features.map(f => `${m.code}.${f.key}`)),
         created_at: '2024-01-01', updated_at: '2024-01-01',
     },
 ];
@@ -406,16 +419,17 @@ export class SubscriptionService {
 
     private mapResponse(item: SubscriptionApiResponse): Subscription {
         return {
-            id:          item.id,
-            code:        item.code,
-            name:        item.name,
-            description: item.description,
-            price:       Number(item.price),
-            logo:        item.logo,
-            is_active:   item.is_active,
-            modules:     buildModules(item.enabled_modules, item.enabled_features),
-            created_at:  item.created_at,
-            updated_at:  item.updated_at,
+            id:                  item.id,
+            code:                item.code,
+            name:                item.name,
+            description:         item.description,
+            price:               Number(item.price),
+            logo:                item.logo,
+            is_active:           item.is_active,
+            modules:             buildModules(item.modules, item.features),
+            enabledFeatureKeys:  [...item.features],
+            created_at:          item.created_at,
+            updated_at:          item.updated_at,
         };
     }
 
@@ -434,6 +448,20 @@ export class SubscriptionService {
     updateSubscription(id: string, payload: UpdateSubscriptionPayload): Observable<Subscription> {
         return this.http.patch<SubscriptionApiResponse>(`${this.base}${id}/`, payload).pipe(
             map(item => this.mapResponse(item)),
+        );
+    }
+
+    updateModules(subscriptionId: string, moduleCodes: string[]): Observable<unknown> {
+        return this.http.put(
+            `${environment.apiUrl}/billing/subscription-modules/${subscriptionId}/`,
+            { module_codes: moduleCodes },
+        );
+    }
+
+    updateFeatures(subscriptionId: string, featureKeys: string[]): Observable<unknown> {
+        return this.http.put(
+            `${environment.apiUrl}/billing/subscription-functionalities/${subscriptionId}/`,
+            { functionality_keys: featureKeys },
         );
     }
 

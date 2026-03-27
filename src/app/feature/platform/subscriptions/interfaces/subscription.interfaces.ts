@@ -26,7 +26,7 @@ export interface AvailableFunctionality {
     label: string;
 }
 
-export interface SubscriptionFeature {
+export interface SubscriptionFunctionality {
     key:      string;
     label:    string;
     enabled:  boolean;
@@ -39,18 +39,19 @@ export interface SubscriptionModule {
     description: string;
     icon:        string;
     hasAccess:   boolean;
-    features:    SubscriptionFeature[];
+    features:    SubscriptionFunctionality[];
 }
 
 export interface Subscription {
-    id:          string;
-    code:        string;
-    name:        string;
-    description: string;
-    price:       number;
-    logo:        string;
-    is_active:   boolean;
-    modules:     SubscriptionModule[];
-    created_at:  string;
-    updated_at:  string;
+    id:                  string;
+    code:                string;
+    name:                string;
+    description:         string;
+    price:               number;
+    logo:                string;
+    is_active:           boolean;
+    modules:             SubscriptionModule[];
+    enabledFeatureKeys:  string[];   // claves reales del backend (e.g. "settings.company-config")
+    created_at:          string;
+    updated_at:          string;
 }

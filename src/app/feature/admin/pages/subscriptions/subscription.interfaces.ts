@@ -17,10 +17,10 @@ export interface SubscriptionModule {
     description: string;
     icon: string;
     hasAccess: boolean;
-    features: SubscriptionFeature[];
+    features: SubscriptionFunctionality[];
 }
 
-export interface SubscriptionFeature {
+export interface SubscriptionFunctionality {
     key: string;
     label: string;
     enabled: boolean;

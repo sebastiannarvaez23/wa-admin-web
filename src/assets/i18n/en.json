@@ -530,7 +530,8 @@
       "configure-limits": "Configure usage limits per module",
       "modules-modal": {
         "title": "Modules and access",
-        "done": "Done"
+        "done": "Done",
+        "saving": "Applying..."
       },
       "limits-modal": {
         "title": "Module limits",
@@ -538,6 +539,7 @@
         "unlimited": "Unlimited",
         "placeholder": "Max limit",
         "save": "Save limits",
+        "done": "Done",
         "no-modules": "This subscription has no enabled modules. Enable modules from the access configuration.",
         "badge-none": "No limits",
         "badge-count": "{{defined}}/{{total}} with limit",
@@ -567,13 +569,30 @@
         "settings":      { "max_warehouses": "Configurable warehouses", "max_templates": "Document templates" }
       },
       "features-modal": {
-        "apply": "Apply"
+        "apply": "Apply",
+        "saving": "Saving..."
       },
       "feature-categories": {
         "features": "Features",
         "ai": "Artificial Intelligence"
       },
       "no-features": "No features defined for this module.",
+      "notifications": {
+        "create-success": "Subscription created successfully",
+        "update-success": "Subscription updated successfully",
+        "save-error": "Error saving subscription",
+        "toggle-success": "Subscription status updated",
+        "toggle-error": "Error updating subscription status",
+        "modules-success": "Module permissions saved successfully",
+        "modules-error": "Error saving module permissions",
+        "features-success": "Features saved successfully",
+        "features-error": "Error saving features",
+        "limit-create-success": "Limit created successfully",
+        "limit-update-success": "Limit updated successfully",
+        "limit-save-error": "Error saving limit",
+        "limit-delete-success": "Limit deleted successfully",
+        "limit-delete-error": "Error deleting limit"
+      },
       "modal": {
         "add-title": "New subscription",
         "edit-title": "Edit subscription",
