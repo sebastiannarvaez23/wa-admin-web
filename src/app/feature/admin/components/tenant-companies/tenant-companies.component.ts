@@ -24,7 +24,7 @@ export class TenantCompaniesComponent implements OnInit {
             { key: 'name',         label: 'admin.tenants.companies.table.name',         filterable: true,  type: 'text',               width: '2fr'   },
             { key: 'nit',          label: 'admin.tenants.companies.table.nit',          filterable: true,  type: 'muted',              width: '1.2fr' },
             { key: 'city',         label: 'admin.tenants.companies.table.city',         filterable: true,  type: 'text',               width: '1fr'   },
-            { key: 'subscription', label: 'admin.tenants.companies.table.subscription', filterable: false, type: 'subscription-badge', width: '1fr'   },
+            { key: 'subscription', label: 'admin.tenants.companies.table.subscription', filterable: true,  type: 'subscription-badge', width: '1fr'   },
             {
                 key: 'status', label: 'admin.tenants.companies.table.status', filterable: true,
                 type: 'status-badge', width: '0.8fr',
@@ -115,10 +115,11 @@ export class TenantCompaniesComponent implements OnInit {
         const v      = this.filterForm.value as Record<string, string>;
 
         const filters: TenantsFilterParams = {};
-        if (v['name'])   filters.name   = v['name'];
-        if (v['nit'])    filters.nit    = v['nit'];
-        if (v['city'])   filters.city   = v['city'];
-        if (v['status']) filters.status = v['status'] as 'active' | 'inactive';
+        if (v['name'])         filters.name         = v['name'];
+        if (v['nit'])          filters.nit          = v['nit'];
+        if (v['city'])         filters.city         = v['city'];
+        if (v['subscription']) filters.subscription = v['subscription'];
+        if (v['status'])       filters.status       = v['status'] as 'active' | 'inactive';
 
         this.tenantService.getTenants(this.currentPage - 1, this.pageSize, filters)
             .pipe(takeUntilDestroyed(this.destroyRef))

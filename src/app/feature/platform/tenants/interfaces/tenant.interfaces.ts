@@ -32,10 +32,11 @@ export interface PaginatedTenantsResponse {
 }
 
 export interface TenantsFilterParams {
-    name?:   string;
-    nit?:    string;
-    city?:   string;
-    status?: 'active' | 'inactive';
+    name?:         string;
+    nit?:          string;
+    city?:         string;
+    subscription?: string;
+    status?:       'active' | 'inactive';
 }
 
 export interface CreateTenantPayload {

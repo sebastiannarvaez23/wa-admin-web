@@ -23,10 +23,11 @@ export class TenantService {
             page:      String(page),
             page_size: String(pageSize),
         };
-        if (filters.name)   params['name']   = filters.name;
-        if (filters.nit)    params['nit']    = filters.nit;
-        if (filters.city)   params['city']   = filters.city;
-        if (filters.status) params['status'] = filters.status;
+        if (filters.name)         params['name']         = filters.name;
+        if (filters.nit)          params['nit']          = filters.nit;
+        if (filters.city)         params['city']         = filters.city;
+        if (filters.subscription) params['subscription'] = filters.subscription;
+        if (filters.status)       params['status']       = filters.status;
 
         return this.http.get<PaginatedTenantsResponse>(this.base, { params });
     }
