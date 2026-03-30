@@ -38,6 +38,7 @@ export class LayoutPageComponent {
             options: [
                 { name: 'sidebar.tenants', link: '/admin/tenants', icon: 'bx-buildings' },
                 { name: 'sidebar.users-roles', link: '/admin/users', icon: 'bx-user-check' },
+                { name: 'sidebar.communications', link: '/admin/communications', icon: 'bx-broadcast' },
                 { name: 'sidebar.security', link: '/admin/security', icon: 'bx-shield' },
             ],
         },

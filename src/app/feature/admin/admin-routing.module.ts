@@ -9,6 +9,7 @@ import { SubscriptionsPageComponent } from './pages/subscriptions/subscriptions-
 import { FeaturesPageComponent } from './pages/features/features-page.component';
 import { UsersRolesPageComponent } from './pages/users-roles/users-roles-page.component';
 import { TenantsPageComponent } from './pages/tenants/tenants-page.component';
+import { CommunicationsPageComponent } from './pages/communications/communications-page.component';
 import { authGuard } from 'src/app/core/guards/auth.guard';
 
 const routes: Routes = [
@@ -33,6 +34,9 @@ const routes: Routes = [
             { path: 'billing',       component: ModuleInConstructionPageComponent },
             { path: 'features',      component: FeaturesPageComponent },
             { path: 'ai-features',   component: ModuleInConstructionPageComponent },
+
+            // Comunicaciones
+            { path: 'communications', component: CommunicationsPageComponent },
 
             // Soporte
             { path: 'support', component: ModuleInConstructionPageComponent },

@@ -9,6 +9,7 @@
     "billing": "Facturación",
     "features": "Funcionalidades",
     "ai": "IA",
+    "communications": "Comunicaciones",
     "support": "Soporte",
     "docs": "Documentación",
     "analytics": "Analíticas",
@@ -16,6 +17,7 @@
     "group": {
       "platform": "Plataforma",
       "commercial": "Comercial",
+      "communications": "Comunicaciones",
       "support": "Soporte",
       "analytics": "Analítica",
       "system": "Sistema"
@@ -251,13 +253,13 @@
           "create-title": "Nuevo usuario",
           "edit-title": "Editar usuario",
           "first-name-label": "Nombre",
-          "first-name-placeholder": "Ej. Juan",
+          "first-name-placeholder": "Ej. Rafael",
           "first-name-error": "El nombre es requerido (mín. 2 caracteres)",
           "last-name-label": "Apellido",
           "last-name-placeholder": "Ej. Pérez",
           "last-name-error": "El apellido es requerido (mín. 2 caracteres)",
           "email-label": "Correo electrónico",
-          "email-placeholder": "Ej. juan@empresa.com",
+          "email-placeholder": "Ej. rafael@empresa.com",
           "email-error": "Correo electrónico inválido",
           "username-label": "Usuario",
           "username-placeholder": "Ej. jperez",
@@ -565,23 +567,83 @@
         }
       },
       "limits": {
-        "dashboard":     { "max_widgets": "Widgets en el tablero", "max_kpi_cards": "Tarjetas KPI visibles" },
-        "orders":        { "max_orders_per_day": "Pedidos creados por día", "max_items_per_order": "Ítems por pedido", "max_open_orders": "Pedidos abiertos simultáneos" },
-        "reception":     { "max_receptions_per_day": "Recepciones por día", "max_items_per_reception": "Ítems por recepción" },
-        "location":      { "max_warehouses": "Bodegas activas", "max_zones_per_warehouse": "Zonas por bodega", "max_locations": "Ubicaciones totales" },
-        "inventories":   { "max_skus": "SKUs registrados", "max_adjustments_per_day": "Ajustes por día", "max_transfers_per_month": "Transferencias por mes" },
-        "picking":       { "max_tasks_per_user": "Tareas activas por operario", "max_items_per_task": "Ítems por tarea", "max_concurrent_waves": "Olas simultáneas" },
-        "packing":       { "max_tasks_per_user": "Tareas activas por operario", "max_items_per_task": "Ítems por tarea de empaque" },
-        "dispatches":    { "max_dispatches_per_day": "Despachos por día", "max_orders_per_dispatch": "Pedidos por despacho" },
-        "shipping":      { "max_carriers": "Transportadoras configuradas", "max_active_shipments": "Envíos activos simultáneos" },
-        "third_parties": { "max_clients": "Clientes registrados", "max_suppliers": "Proveedores registrados", "max_carriers": "Transportistas registrados" },
-        "users_roles":   { "max_users": "Usuarios activos", "max_roles": "Roles personalizados" },
-        "tasks":         { "max_active_tasks": "Tareas activas totales", "max_tasks_per_user": "Tareas asignadas por usuario", "max_recurring_tasks": "Tareas recurrentes" },
-        "integrations":  { "max_webhooks": "Webhooks configurados", "max_api_requests_per_day": "Solicitudes API por día", "max_integrations": "Integraciones activas" },
-        "automation":    { "max_rules": "Reglas de automatización", "max_executions_per_day": "Ejecuciones por día", "max_chained_actions": "Acciones encadenadas por regla" },
-        "analytics":     { "max_dashboards": "Dashboards personalizados", "max_exports_per_month": "Exportaciones por mes", "max_data_retention_days": "Días de retención de datos" },
-        "audit":         { "max_log_retention_days": "Días de retención de logs", "max_exported_logs": "Exportaciones de logs por mes" },
-        "settings":      { "max_warehouses": "Bodegas configurables", "max_templates": "Plantillas de documentos" }
+        "dashboard": {
+          "max_widgets": "Widgets en el tablero",
+          "max_kpi_cards": "Tarjetas KPI visibles"
+        },
+        "orders": {
+          "max_orders_per_day": "Pedidos creados por día",
+          "max_items_per_order": "Ítems por pedido",
+          "max_open_orders": "Pedidos abiertos simultáneos"
+        },
+        "reception": {
+          "max_receptions_per_day": "Recepciones por día",
+          "max_items_per_reception": "Ítems por recepción"
+        },
+        "location": {
+          "max_warehouses": "Bodegas activas",
+          "max_zones_per_warehouse": "Zonas por bodega",
+          "max_locations": "Ubicaciones totales"
+        },
+        "inventories": {
+          "max_skus": "SKUs registrados",
+          "max_adjustments_per_day": "Ajustes por día",
+          "max_transfers_per_month": "Transferencias por mes"
+        },
+        "picking": {
+          "max_tasks_per_user": "Tareas activas por operario",
+          "max_items_per_task": "Ítems por tarea",
+          "max_concurrent_waves": "Olas simultáneas"
+        },
+        "packing": {
+          "max_tasks_per_user": "Tareas activas por operario",
+          "max_items_per_task": "Ítems por tarea de empaque"
+        },
+        "dispatches": {
+          "max_dispatches_per_day": "Despachos por día",
+          "max_orders_per_dispatch": "Pedidos por despacho"
+        },
+        "shipping": {
+          "max_carriers": "Transportadoras configuradas",
+          "max_active_shipments": "Envíos activos simultáneos"
+        },
+        "third_parties": {
+          "max_clients": "Clientes registrados",
+          "max_suppliers": "Proveedores registrados",
+          "max_carriers": "Transportistas registrados"
+        },
+        "users_roles": {
+          "max_users": "Usuarios activos",
+          "max_roles": "Roles personalizados"
+        },
+        "tasks": {
+          "max_active_tasks": "Tareas activas totales",
+          "max_tasks_per_user": "Tareas asignadas por usuario",
+          "max_recurring_tasks": "Tareas recurrentes"
+        },
+        "integrations": {
+          "max_webhooks": "Webhooks configurados",
+          "max_api_requests_per_day": "Solicitudes API por día",
+          "max_integrations": "Integraciones activas"
+        },
+        "automation": {
+          "max_rules": "Reglas de automatización",
+          "max_executions_per_day": "Ejecuciones por día",
+          "max_chained_actions": "Acciones encadenadas por regla"
+        },
+        "analytics": {
+          "max_dashboards": "Dashboards personalizados",
+          "max_exports_per_month": "Exportaciones por mes",
+          "max_data_retention_days": "Días de retención de datos"
+        },
+        "audit": {
+          "max_log_retention_days": "Días de retención de logs",
+          "max_exported_logs": "Exportaciones de logs por mes"
+        },
+        "settings": {
+          "max_warehouses": "Bodegas configurables",
+          "max_templates": "Plantillas de documentos"
+        }
       },
       "features-modal": {
         "apply": "Aplicar",
@@ -627,6 +689,138 @@
         "price": "Precio mensual (USD)",
         "price-placeholder": "0.00",
         "price-error": "El precio debe ser mayor o igual a 0"
+      }
+    },
+    "communications": {
+      "title": "Comunicaciones",
+      "tabs": {
+        "templates": "Plantillas de correo",
+        "sent": "Correos enviados"
+      },
+      "emails": {
+        "title": "Plantillas de correo",
+        "subtitle": "Administra las plantillas de correo electr\u00f3nico de la plataforma",
+        "new-template": "Nueva plantilla",
+        "manage-senders": "Remitentes",
+        "loading": "Cargando plantillas...",
+        "table": {
+          "code": "C\u00f3digo",
+          "name": "Nombre",
+          "subject": "Asunto",
+          "sender": "Remitente",
+          "status": "Estado",
+          "actions": "Acciones"
+        },
+        "filter": {
+          "placeholder": "Buscar...",
+          "clear": "Limpiar",
+          "clear-all": "Limpiar todos los filtros",
+          "status": {
+            "all": "Todos",
+            "active": "Activo",
+            "inactive": "Inactivo"
+          }
+        },
+        "status": {
+          "active": "Activa",
+          "inactive": "Inactiva"
+        },
+        "actions": {
+          "edit": "Editar",
+          "delete": "Eliminar"
+        },
+        "empty": {
+          "filtered": "No se encontraron plantillas con los filtros aplicados",
+          "no-templates": "No hay plantillas de correo registradas"
+        },
+        "paginator": {
+          "record": "registro",
+          "records": "registros"
+        },
+        "delete-dialog": {
+          "title": "Eliminar plantilla",
+          "message": "\u00bfEst\u00e1s seguro de que deseas eliminar la plantilla \"{{name}}\"? Esta acci\u00f3n no se puede deshacer.",
+          "confirm": "S\u00ed, eliminar"
+        },
+        "modal": {
+          "create-title": "Nueva plantilla de correo",
+          "edit-title": "Editar plantilla de correo",
+          "code-label": "C\u00f3digo",
+          "code-placeholder": "Ej. WELCOME_USER",
+          "code-error": "El c\u00f3digo es requerido (m\u00edn. 2 caracteres)",
+          "name-label": "Nombre",
+          "name-placeholder": "Ej. Bienvenida de usuario",
+          "name-error": "El nombre es requerido (m\u00edn. 2 caracteres)",
+          "subject-label": "Asunto",
+          "subject-placeholder": "Ej. Bienvenido a {{ company }}",
+          "subject-error": "El asunto es requerido",
+          "sender-label": "Remitente",
+          "sender-default": "Remitente por defecto del sistema",
+          "sender-hint": "Si no se selecciona, se usará el remitente por defecto",
+          "description-label": "Descripci\u00f3n interna",
+          "description-placeholder": "Notas sobre cu\u00e1ndo y c\u00f3mo se usa esta plantilla",
+          "html-template-label": "Plantilla HTML",
+          "html-template-placeholder": "<html>...",
+          "html-template-error": "La plantilla HTML es requerida",
+          "body-label": "Cuerpo texto plano (fallback)",
+          "body-placeholder": "Texto alternativo para clientes sin soporte HTML",
+          "is-active-label": "Plantilla activa",
+          "section-identity": "Identificación",
+          "section-sender": "Remitente",
+          "section-content": "Contenido",
+          "tab-code": "Código HTML",
+          "tab-preview": "Vista previa",
+          "tab-mock": "Datos mock",
+          "mock-hint": "Define los valores de prueba para las variables de la plantilla en formato JSON. Estos datos se usarán al activar la emulación en la vista previa.",
+          "emulate-label": "Emular",
+          "body-hint": "Texto alternativo que se muestra si el cliente de correo no soporta HTML",
+          "errors": {
+            "required": "Este campo es requerido",
+            "minlength": "Mínimo {{min}} caracteres",
+            "maxlength": "Máximo {{max}} caracteres",
+            "email": "Debe ser un correo electrónico válido",
+            "pattern-code": "Solo letras mayúsculas, números y guiones bajos"
+          },
+          "cancel": "Cancelar",
+          "save": "Guardar"
+        },
+        "notifications": {
+          "load-error": "Error al cargar las plantillas de correo",
+          "create-success": "Plantilla de correo creada exitosamente",
+          "create-error": "Error al crear la plantilla de correo",
+          "update-success": "Plantilla de correo actualizada exitosamente",
+          "update-error": "Error al actualizar la plantilla de correo",
+          "delete-success": "Plantilla de correo eliminada exitosamente",
+          "delete-error": "Error al eliminar la plantilla de correo"
+        }
+      },
+      "senders": {
+        "title": "Gestión de remitentes",
+        "form-title-add": "Agregar remitente",
+        "form-title-edit": "Editar remitente",
+        "code": "Código",
+        "name": "Nombre",
+        "email": "Correo",
+        "reply-to": "Responder a",
+        "default-badge": "Por defecto",
+        "set-default": "Establecer como predeterminado",
+        "delete": "Eliminar remitente",
+        "empty": "No hay remitentes configurados",
+        "delete-dialog": {
+          "title": "Eliminar remitente",
+          "message": "¿Estás seguro de que deseas eliminar el remitente \"{{name}}\"?",
+          "confirm": "Sí, eliminar"
+        },
+        "notifications": {
+          "load-error": "Error al cargar los remitentes",
+          "create-success": "Remitente creado exitosamente",
+          "create-error": "Error al crear el remitente",
+          "update-success": "Remitente actualizado exitosamente",
+          "update-error": "Error al actualizar el remitente",
+          "delete-success": "Remitente eliminado exitosamente",
+          "delete-error": "Error al eliminar el remitente",
+          "default-set": "Remitente predeterminado actualizado"
+        }
       }
     }
   },
@@ -681,6 +875,7 @@
     "login-success": "Sesión iniciada correctamente"
   },
   "common": {
+    "add": "Agregar",
     "edit": "Editar",
     "cancel": "Cancelar",
     "save": "Guardar",

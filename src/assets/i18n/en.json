@@ -9,6 +9,7 @@
     "billing": "Billing",
     "features": "Features",
     "ai": "AI",
+    "communications": "Communications",
     "support": "Support",
     "docs": "Documentation",
     "analytics": "Analytics",
@@ -16,6 +17,7 @@
     "group": {
       "platform": "Platform",
       "commercial": "Commercial",
+      "communications": "Communications",
       "support": "Support",
       "analytics": "Analytics"
     },
@@ -613,6 +615,138 @@
         "price-placeholder": "0.00",
         "price-error": "Price must be greater than or equal to 0"
       }
+    },
+    "communications": {
+      "title": "Communications",
+      "tabs": {
+        "templates": "Email templates",
+        "sent": "Sent emails"
+      },
+      "emails": {
+        "title": "Email Templates",
+        "subtitle": "Manage the platform's email templates",
+        "new-template": "New template",
+        "manage-senders": "Senders",
+        "loading": "Loading templates...",
+        "table": {
+          "code": "Code",
+          "name": "Name",
+          "subject": "Subject",
+          "sender": "Sender",
+          "status": "Status",
+          "actions": "Actions"
+        },
+        "filter": {
+          "placeholder": "Search...",
+          "clear": "Clear",
+          "clear-all": "Clear all filters",
+          "status": {
+            "all": "All",
+            "active": "Active",
+            "inactive": "Inactive"
+          }
+        },
+        "status": {
+          "active": "Active",
+          "inactive": "Inactive"
+        },
+        "actions": {
+          "edit": "Edit",
+          "delete": "Delete"
+        },
+        "empty": {
+          "filtered": "No templates found with the applied filters",
+          "no-templates": "No email templates registered"
+        },
+        "paginator": {
+          "record": "record",
+          "records": "records"
+        },
+        "delete-dialog": {
+          "title": "Delete template",
+          "message": "Are you sure you want to delete the template \"{{name}}\"? This action cannot be undone.",
+          "confirm": "Yes, delete"
+        },
+        "modal": {
+          "create-title": "New email template",
+          "edit-title": "Edit email template",
+          "code-label": "Code",
+          "code-placeholder": "e.g. WELCOME_USER",
+          "code-error": "Code is required (min. 2 characters)",
+          "name-label": "Name",
+          "name-placeholder": "e.g. User welcome",
+          "name-error": "Name is required (min. 2 characters)",
+          "subject-label": "Subject",
+          "subject-placeholder": "e.g. Welcome to {{ company }}",
+          "subject-error": "Subject is required",
+          "sender-label": "Sender",
+          "sender-default": "System default sender",
+          "sender-hint": "If not selected, the system default sender will be used",
+          "description-label": "Internal description",
+          "description-placeholder": "Notes about when and how this template is used",
+          "html-template-label": "HTML Template",
+          "html-template-placeholder": "<html>...",
+          "html-template-error": "HTML template is required",
+          "body-label": "Plain-text body (fallback)",
+          "body-placeholder": "Alternative text for clients without HTML support",
+          "is-active-label": "Template active",
+          "section-identity": "Identification",
+          "section-sender": "Sender",
+          "section-content": "Content",
+          "tab-code": "HTML Code",
+          "tab-preview": "Preview",
+          "tab-mock": "Mock data",
+          "mock-hint": "Define test values for template variables in JSON format. These values will be used when emulation is enabled in the preview.",
+          "emulate-label": "Emulate",
+          "body-hint": "Alternative text displayed if the email client doesn't support HTML",
+          "errors": {
+            "required": "This field is required",
+            "minlength": "Minimum {{min}} characters",
+            "maxlength": "Maximum {{max}} characters",
+            "email": "Must be a valid email address",
+            "pattern-code": "Only uppercase letters, numbers, and underscores"
+          },
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "notifications": {
+          "load-error": "Error loading email templates",
+          "create-success": "Email template created successfully",
+          "create-error": "Error creating email template",
+          "update-success": "Email template updated successfully",
+          "update-error": "Error updating email template",
+          "delete-success": "Email template deleted successfully",
+          "delete-error": "Error deleting email template"
+        }
+      },
+      "senders": {
+        "title": "Sender management",
+        "form-title-add": "Add sender",
+        "form-title-edit": "Edit sender",
+        "code": "Code",
+        "name": "Name",
+        "email": "Email",
+        "reply-to": "Reply to",
+        "default-badge": "Default",
+        "set-default": "Set as default",
+        "delete": "Delete sender",
+        "empty": "No senders configured",
+        "delete-dialog": {
+          "title": "Delete sender",
+          "message": "Are you sure you want to delete the sender \"{{name}}\"?",
+          "confirm": "Yes, delete"
+        },
+        "notifications": {
+          "load-error": "Error loading senders",
+          "create-success": "Sender created successfully",
+          "create-error": "Error creating sender",
+          "update-success": "Sender updated successfully",
+          "update-error": "Error updating sender",
+          "delete-success": "Sender deleted successfully",
+          "delete-error": "Error deleting sender",
+          "default-set": "Default sender updated"
+        }
+      }
     }
   },
   "settings": {
@@ -663,6 +797,7 @@
     }
   },
   "common": {
+    "add": "Add",
     "edit": "Edit",
     "cancel": "Cancel",
     "save": "Save",

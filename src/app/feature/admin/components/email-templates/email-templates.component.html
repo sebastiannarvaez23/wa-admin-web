@@ -1,0 +1,428 @@
+<!-- ── Page header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h2>{{ 'admin.communications.emails.title' | translate }}</h2>
+        <p class="subtitle">{{ 'admin.communications.emails.subtitle' | translate }}</p>
+    </div>
+    <div class="header-actions">
+        <wa-btn variant="secondary" (clicked)="showSendersModal = true">
+            <i class="bx bx-user-voice"></i>
+            {{ 'admin.communications.emails.manage-senders' | translate }}
+        </wa-btn>
+        <wa-btn (clicked)="openCreate()">
+            <i class="bx bx-plus"></i>
+            {{ 'admin.communications.emails.new-template' | translate }}
+        </wa-btn>
+    </div>
+</div>
+
+<!-- ── Table shell ──────────────────────────────────────────────────────── -->
+<div class="table-shell">
+
+    <div class="table-scrollable">
+
+        <!-- Column headers -->
+        <div class="table-head" [style.grid-template-columns]="gridTemplate">
+            <span *ngFor="let col of tableConfig.columns; trackBy: trackByKey" class="col-header"
+                [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
+                {{ col.label | translate }}
+                <i *ngIf="col.filterable && filterForm.get(col.key)?.value"
+                    class="bx bx-filter-alt filter-active-badge"></i>
+            </span>
+            <span *ngIf="tableConfig.editable || tableConfig.deletable" class="col-header">
+                {{ 'admin.communications.emails.table.actions' | translate }}
+            </span>
+        </div>
+
+        <!-- Filter row -->
+        <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
+            <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
+                <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
+                    <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
+                        <i class="bx bx-search filter-icon"></i>
+                        <input [formControlName]="col.key" class="filter-input" autocomplete="off"
+                            [placeholder]="'admin.communications.emails.filter.placeholder' | translate">
+                        <button *ngIf="filterForm.get(col.key)?.value" class="filter-clear-btn" type="button"
+                            (click)="clearFilter(col.key)">
+                            <i class="bx bx-x"></i>
+                        </button>
+                    </div>
+                </div>
+                <ng-template #selectOrSpacer>
+                    <div class="filter-cell" *ngIf="col.filterable && col.filterType === 'select'; else filterSpacer">
+                        <select [formControlName]="col.key" class="filter-select"
+                            [class.has-value]="filterForm.get(col.key)?.value">
+                            <option *ngFor="let opt of col.filterOptions" [value]="opt.value">
+                                {{ opt.label | translate }}
+                            </option>
+                        </select>
+                    </div>
+                    <ng-template #filterSpacer>
+                        <div class="filter-cell filter-spacer"></div>
+                    </ng-template>
+                </ng-template>
+            </ng-container>
+            <div class="filter-cell filter-actions-cell" *ngIf="tableConfig.editable || tableConfig.deletable">
+                <button *ngIf="hasActiveFilters" class="clear-all-btn" type="button" (click)="clearFilters()">
+                    <i class="bx bx-filter-alt"></i>
+                    {{ 'admin.communications.emails.filter.clear' | translate }}
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div class="loading-state" *ngIf="loading">
+            <i class="bx bx-loader-alt bx-spin"></i>
+            <span>{{ 'admin.communications.emails.loading' | translate }}</span>
+        </div>
+
+        <!-- Data rows -->
+        <ng-container *ngIf="!loading">
+            <div class="table-row" *ngFor="let item of filteredTemplates; trackBy: trackById"
+                [style.grid-template-columns]="gridTemplate">
+
+                <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
+                    <ng-container [ngSwitch]="col.type">
+
+                        <!-- text -->
+                        <span *ngSwitchCase="'text'" class="cell-text">
+                            {{ getCellValue(item, col.key) }}
+                        </span>
+
+                        <!-- muted -->
+                        <span *ngSwitchCase="'muted'" class="cell-muted">
+                            {{ getCellValue(item, col.key) }}
+                        </span>
+
+                        <!-- status-badge -->
+                        <span *ngSwitchCase="'status-badge'" class="status-badge"
+                            [class.active]="item.is_active"
+                            [class.inactive]="!item.is_active">
+                            <i class="bx" [ngClass]="item.is_active ? 'bxs-circle' : 'bx-circle'"></i>
+                            {{ (item.is_active
+                                ? 'admin.communications.emails.status.active'
+                                : 'admin.communications.emails.status.inactive') | translate }}
+                        </span>
+
+                    </ng-container>
+                </ng-container>
+
+                <!-- Action buttons -->
+                <div *ngIf="tableConfig.editable || tableConfig.deletable" class="row-actions">
+                    <button class="icon-btn toggle" [class.is-active]="item.is_active"
+                        (click)="toggleActive(item)"
+                        [title]="(item.is_active ? 'admin.communications.emails.status.active' : 'admin.communications.emails.status.inactive') | translate">
+                        <i class="bx" [class.bx-toggle-right]="item.is_active" [class.bx-toggle-left]="!item.is_active"></i>
+                    </button>
+                    <button *ngIf="tableConfig.editable" class="icon-btn edit" (click)="openEdit(item)"
+                        [title]="'common.edit' | translate">
+                        <i class="bx bx-edit"></i>
+                    </button>
+                    <button *ngIf="tableConfig.deletable" class="icon-btn delete" (click)="confirmDelete(item)"
+                        [title]="'admin.communications.emails.actions.delete' | translate">
+                        <i class="bx bx-trash"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div class="empty-state" *ngIf="filteredTemplates.length === 0">
+                <i class="bx" [ngClass]="hasActiveFilters ? 'bx-search-alt' : 'bx-envelope'"></i>
+                <span>
+                    {{ (hasActiveFilters
+                        ? 'admin.communications.emails.empty.filtered'
+                        : 'admin.communications.emails.empty.no-templates') | translate }}
+                </span>
+                <button *ngIf="hasActiveFilters" class="clear-filters-link" type="button" (click)="clearFilters()">
+                    {{ 'admin.communications.emails.filter.clear-all' | translate }}
+                </button>
+            </div>
+
+        </ng-container>
+
+    </div>
+
+    <!-- Record count -->
+    <div class="paginator" *ngIf="filteredTemplates.length > 0">
+        <span class="record-count">
+            <strong>{{ filteredTemplates.length }}</strong>
+            {{ (filteredTemplates.length === 1
+                ? 'admin.communications.emails.paginator.record'
+                : 'admin.communications.emails.paginator.records') | translate }}
+        </span>
+    </div>
+
+</div>
+
+<!-- ── Create / Edit modal ──────────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+    <div class="modal-card modal-split" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ (editingItem
+                ? 'admin.communications.emails.modal.edit-title'
+                : 'admin.communications.emails.modal.create-title') | translate }}</h3>
+            <button class="modal-close" (click)="closeModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-body-split" [formGroup]="form">
+
+            <!-- ── Left panel: Form fields ─────────────────────────────────── -->
+            <div class="panel-left">
+                <div class="panel-scroll">
+
+                    <!-- Identificacion -->
+                    <span class="form-section-label">{{ 'admin.communications.emails.modal.section-identity' | translate }}</span>
+
+                    <div class="form-row-2">
+                        <wa-form-field formControlName="code"
+                            [label]="'admin.communications.emails.modal.code-label' | translate"
+                            [placeholder]="'admin.communications.emails.modal.code-placeholder' | translate"
+                            [invalid]="isInvalid('code')"
+                            [errorMessage]="getFieldError('code')"
+                            [inputStyle]="{ 'text-transform': 'uppercase' }">
+                        </wa-form-field>
+                        <wa-form-field formControlName="name"
+                            [label]="'admin.communications.emails.modal.name-label' | translate"
+                            [placeholder]="'admin.communications.emails.modal.name-placeholder' | translate"
+                            [invalid]="isInvalid('name')"
+                            [errorMessage]="getFieldError('name')">
+                        </wa-form-field>
+                    </div>
+
+                    <wa-form-field formControlName="subject"
+                        [label]="'admin.communications.emails.modal.subject-label' | translate"
+                        [placeholder]="'admin.communications.emails.modal.subject-placeholder' | translate"
+                        [invalid]="isInvalid('subject')"
+                        [errorMessage]="getFieldError('subject')">
+                    </wa-form-field>
+
+                    <!-- Remitente -->
+                    <span class="form-section-label">{{ 'admin.communications.emails.modal.section-sender' | translate }}</span>
+
+                    <div class="select-wrapper">
+                        <label class="select-label">{{ 'admin.communications.emails.modal.sender-label' | translate }}</label>
+                        <select formControlName="sender" class="native-select">
+                            <option [ngValue]="null">{{ 'admin.communications.emails.modal.sender-default' | translate }}</option>
+                            <option *ngFor="let s of senders" [ngValue]="s.id">
+                                {{ s.name }} &lt;{{ s.email }}&gt;
+                            </option>
+                        </select>
+                        <span class="select-hint">{{ 'admin.communications.emails.modal.sender-hint' | translate }}</span>
+                    </div>
+
+                    <!-- Contenido -->
+                    <span class="form-section-label">{{ 'admin.communications.emails.modal.section-content' | translate }}</span>
+
+                    <wa-form-field formControlName="description"
+                        [label]="'admin.communications.emails.modal.description-label' | translate"
+                        [placeholder]="'admin.communications.emails.modal.description-placeholder' | translate">
+                    </wa-form-field>
+
+                    <!-- Plain-text body -->
+                    <div class="textarea-wrapper">
+                        <label class="textarea-label">
+                            {{ 'admin.communications.emails.modal.body-label' | translate }}
+                        </label>
+                        <textarea formControlName="body" class="textarea-input" rows="4"
+                            [placeholder]="'admin.communications.emails.modal.body-placeholder' | translate">
+                        </textarea>
+                        <span class="textarea-hint">
+                            {{ 'admin.communications.emails.modal.body-hint' | translate }}
+                        </span>
+                    </div>
+
+                    <!-- Active toggle -->
+                    <div class="toggle-row">
+                        <label class="toggle-label">{{ 'admin.communications.emails.modal.is-active-label' | translate }}</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" formControlName="is_active">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- ── Right panel: HTML code + preview ────────────────────────── -->
+            <div class="panel-right">
+
+                <!-- Tab bar -->
+                <div class="preview-tabs">
+                    <div class="preview-tabs-left">
+                        <button class="preview-tab" [class.active]="previewTab === 'code'"
+                            (click)="previewTab = 'code'">
+                            <i class="bx bx-code-alt"></i>
+                            {{ 'admin.communications.emails.modal.tab-code' | translate }}
+                        </button>
+                        <button class="preview-tab" [class.active]="previewTab === 'preview'"
+                            (click)="previewTab = 'preview'">
+                            <i class="bx bx-show"></i>
+                            {{ 'admin.communications.emails.modal.tab-preview' | translate }}
+                        </button>
+                        <button class="preview-tab" [class.active]="previewTab === 'mock'"
+                            (click)="previewTab = 'mock'">
+                            <i class="bx bx-data"></i>
+                            {{ 'admin.communications.emails.modal.tab-mock' | translate }}
+                        </button>
+                    </div>
+                    <div class="emulate-toggle" *ngIf="previewTab === 'preview'">
+                        <span class="emulate-label">{{ 'admin.communications.emails.modal.emulate-label' | translate }}</span>
+                        <label class="toggle-switch toggle-sm">
+                            <input type="checkbox" [checked]="emulateVars" (change)="emulateVars = !emulateVars; updatePreview()">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Code editor with syntax highlight -->
+                <div class="code-panel" *ngIf="previewTab === 'code'">
+                    <div class="code-editor-wrapper">
+                        <div class="line-numbers" #lineNumbersEl aria-hidden="true">
+                            <span *ngFor="let line of htmlLineNumbers">{{ line }}</span>
+                        </div>
+                        <div class="code-layers">
+                            <pre class="code-highlight" #highlightEl aria-hidden="true"><code [innerHTML]="highlightedHtml"></code></pre>
+                            <textarea formControlName="html_template" class="code-editor"
+                                [class.invalid]="isInvalid('html_template')"
+                                [placeholder]="'admin.communications.emails.modal.html-template-placeholder' | translate"
+                                (scroll)="syncScroll($event)"
+                                (keydown)="onCodeKeydown($event)"
+                                spellcheck="false">
+                            </textarea>
+                        </div>
+                    </div>
+                    <span class="textarea-error" *ngIf="isInvalid('html_template')">
+                        {{ 'admin.communications.emails.modal.html-template-error' | translate }}
+                    </span>
+                </div>
+
+                <!-- Live preview -->
+                <div class="preview-panel" *ngIf="previewTab === 'preview'">
+                    <iframe class="preview-iframe" [srcdoc]="previewHtml" sandbox="allow-same-origin"></iframe>
+                </div>
+
+                <!-- Mock data editor -->
+                <div class="mock-panel" *ngIf="previewTab === 'mock'">
+                    <span class="mock-hint">{{ 'admin.communications.emails.modal.mock-hint' | translate }}</span>
+                    <textarea formControlName="mock_data" class="mock-editor" spellcheck="false"
+                        placeholder='{ "variable_name": "value" }'></textarea>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" [disabled]="saving" (clicked)="closeModal()">
+                {{ 'admin.communications.emails.modal.cancel' | translate }}
+            </wa-btn>
+            <wa-btn [loading]="saving" (clicked)="save()">
+                {{ 'admin.communications.emails.modal.save' | translate }}
+            </wa-btn>
+        </div>
+    </div>
+</div>
+
+<!-- ── Senders management modal ───────────��────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showSendersModal" (click)="showSendersModal = false">
+    <div class="modal-card senders-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ 'admin.communications.senders.title' | translate }}</h3>
+            <button class="modal-close" (click)="showSendersModal = false">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="senders-body">
+            <div class="senders-toolbar">
+                <wa-btn variant="secondary" size="sm"
+                    (clicked)="showSenderForm = true; senderForm.reset(); editingSender = null">
+                    <i class="bx bx-plus"></i>
+                    {{ 'admin.communications.senders.form-title-add' | translate }}
+                </wa-btn>
+            </div>
+
+            <!-- Senders list -->
+            <div class="senders-list">
+                <div class="sender-item" *ngFor="let s of senders; trackBy: trackById"
+                    [class.is-default]="s.is_default">
+                    <div class="sender-info">
+                        <div class="sender-info-row">
+                            <span class="sender-name">{{ s.name }}</span>
+                            <span class="sender-email">&lt;{{ s.email }}&gt;</span>
+                        </div>
+                        <span class="sender-badge" *ngIf="s.is_default">
+                            <i class="bx bxs-star" style="font-size: 0.6rem"></i>
+                            {{ 'admin.communications.senders.default-badge' | translate }}
+                        </span>
+                    </div>
+                    <div class="sender-item-actions">
+                        <button class="icon-btn" (click)="setDefaultSender(s)"
+                            [title]="'admin.communications.senders.set-default' | translate"
+                            *ngIf="!s.is_default">
+                            <i class="bx bx-star"></i>
+                        </button>
+                        <button class="icon-btn edit" (click)="editSender(s)"
+                            [title]="'common.edit' | translate">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="icon-btn delete" (click)="deleteSender(s)"
+                            [title]="'admin.communications.senders.delete' | translate">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="senders-empty" *ngIf="senders.length === 0">
+                    <i class="bx bx-user-voice"></i>
+                    <span>{{ 'admin.communications.senders.empty' | translate }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Sender form modal ─────────────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showSenderForm" (click)="cancelEditSender()">
+    <div class="modal-card sender-form-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ (editingSender
+                ? 'admin.communications.senders.form-title-edit'
+                : 'admin.communications.senders.form-title-add') | translate }}</h3>
+            <button class="modal-close" (click)="cancelEditSender()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+        <form [formGroup]="senderForm" (ngSubmit)="saveSender()">
+            <div class="sender-form-body">
+                <wa-form-field formControlName="code"
+                    [label]="'admin.communications.senders.code' | translate"
+                    [placeholder]="'Ej. NOREPLY'"
+                    [inputStyle]="{ 'text-transform': 'uppercase' }">
+                </wa-form-field>
+                <wa-form-field formControlName="name"
+                    [label]="'admin.communications.senders.name' | translate"
+                    [placeholder]="'Ej. Warehouse Anywhere'">
+                </wa-form-field>
+                <wa-form-field formControlName="email"
+                    [label]="'admin.communications.senders.email' | translate"
+                    [placeholder]="'Ej. noreply@empresa.com'">
+                </wa-form-field>
+                <wa-form-field formControlName="reply_to"
+                    [label]="'admin.communications.senders.reply-to' | translate"
+                    [placeholder]="'Ej. soporte@empresa.com'">
+                </wa-form-field>
+            </div>
+            <div class="modal-footer">
+                <wa-btn variant="secondary" type="button" (clicked)="cancelEditSender()">
+                    {{ 'common.cancel' | translate }}
+                </wa-btn>
+                <wa-btn type="submit" [disabled]="senderForm.invalid || savingSender">
+                    <i class="bx" [ngClass]="editingSender ? 'bx-check' : 'bx-plus'"></i>
+                    {{ (editingSender ? 'common.save' : 'common.add') | translate }}
+                </wa-btn>
+            </div>
+        </form>
+    </div>
+</div>

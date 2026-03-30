@@ -1,0 +1,23 @@
+<span class="text">
+    <i class="bx bx-broadcast"></i>
+    {{ 'admin.communications.title' | translate }}
+</span>
+
+<div class="page-layout">
+
+    <div class="settings-tabs">
+        <button *ngFor="let tab of tabs" class="tab-btn" [class.active]="activeTab === tab.key"
+            (click)="setTab(tab.key)">
+            <i class="bx" [ngClass]="tab.icon"></i>
+            {{ tab.label | translate }}
+        </button>
+    </div>
+
+    <div class="page-content">
+        <wa-email-templates *ngIf="activeTab === 'emails'"></wa-email-templates>
+        <div *ngIf="activeTab === 'sent'">
+            <!-- Sent emails content -->
+        </div>
+    </div>
+
+</div>

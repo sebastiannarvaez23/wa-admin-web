@@ -19,6 +19,8 @@ import { AdminUsersComponent } from './components/admin-users/admin-users.compon
 import { TenantCompaniesComponent } from './components/tenant-companies/tenant-companies.component';
 import { TenantUsersComponent } from './components/tenant-users/tenant-users.component';
 import { PermissionsManagerComponent } from '../platform/roles/components/permissions-manager/permissions-manager.component';
+import { CommunicationsPageComponent } from './pages/communications/communications-page.component';
+import { EmailTemplatesComponent } from './components/email-templates/email-templates.component';
 
 @NgModule({
     declarations: [
@@ -34,6 +36,8 @@ import { PermissionsManagerComponent } from '../platform/roles/components/permis
         TenantUsersComponent,
         // Generic permissions manager — replaces AdminPermissionsComponent and TenantPermissionsComponent
         PermissionsManagerComponent,
+        CommunicationsPageComponent,
+        EmailTemplatesComponent,
     ],
     imports: [
         CommonModule,
