@@ -1,3 +1,5 @@
+import { PaginatedResponse } from '../../../../core/interfaces/pagination.interfaces';
+
 // ── Tenant / Company ──────────────────────────────────────────────────────────
 
 export interface TenantSubscription {
@@ -23,13 +25,7 @@ export interface Tenant {
     created:      string;
 }
 
-export interface PaginatedTenantsResponse {
-    items:       Tenant[];
-    total:       number;
-    page:        number;
-    page_size:   number;
-    total_pages: number;
-}
+export type PaginatedTenantsResponse = PaginatedResponse<Tenant>;
 
 export interface TenantsFilterParams {
     name?:         string;
@@ -73,13 +69,7 @@ export interface TenantUser {
     is_active:    boolean;
 }
 
-export interface PaginatedTenantUsersResponse {
-    items:       TenantUser[];
-    total:       number;
-    page:        number;
-    page_size:   number;
-    total_pages: number;
-}
+export type PaginatedTenantUsersResponse = PaginatedResponse<TenantUser>;
 
 export interface TenantUsersFilterParams {
     name?:    string;

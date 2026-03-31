@@ -801,7 +801,18 @@
     "edit": "Edit",
     "cancel": "Cancel",
     "save": "Save",
-    "apply": "Apply"
+    "apply": "Apply",
+    "paginator": {
+      "record": "record",
+      "records": "records",
+      "first": "First page",
+      "prev": "Previous page",
+      "next": "Next page",
+      "last": "Last page"
+    },
+    "table": {
+      "row-number": "#"
+    }
   },
   "dialog": {
     "common": {

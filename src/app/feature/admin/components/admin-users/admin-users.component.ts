@@ -8,6 +8,7 @@ import { NotificationService } from 'wa-components-web';
 import { isFieldInvalid } from '../../../../core/utils/form.utils';
 import { extractError } from '../../../../core/utils/error.utils';
 import { ColumnConfig, TableConfig } from '../../../../core/interfaces/table.interfaces';
+import { DEFAULT_PAGE_SIZE, rowNumber } from '../../../../core/interfaces/pagination.interfaces';
 import { UserService } from '../../../platform/users/services/user.service';
 import { AdminUser, CreateUserPayload, UpdateUserPayload, UsersFilterParams } from '../../../platform/users/interfaces/user.interfaces';
 import { RoleSummary } from '../../../platform/roles/interfaces/role.interfaces';
@@ -52,7 +53,7 @@ export class AdminUsersComponent implements OnInit {
     loading = false;
     saving  = false;
 
-    readonly pageSize = 10;
+    readonly pageSize = DEFAULT_PAGE_SIZE;
     currentPage       = 1;
 
     showModal    = false;
@@ -114,11 +115,14 @@ export class AdminUsersComponent implements OnInit {
         return this.tableConfig.columns.filter(c => c.filterable);
     }
 
-    onPageChange(page: number | '...'): void {
-        if (typeof page !== 'number') return;
+    onPageChange(page: number): void {
         if (page < 1 || page > this.totalPages) return;
         this.currentPage = page;
         this.loadUsers();
+    }
+
+    getRowNumber(index: number): number {
+        return rowNumber(this.currentPage, this.pageSize, index);
     }
 
     loadRoles(): void {
@@ -288,7 +292,7 @@ export class AdminUsersComponent implements OnInit {
     isInvalid(field: string): boolean { return isFieldInvalid(this.form, field); }
 
     private buildGridTemplate(): string {
-        const widths = this.tableConfig.columns.map(c => c.width ?? '1fr');
+        const widths = ['45px', ...this.tableConfig.columns.map(c => c.width ?? '1fr')];
         if (this.tableConfig.editable || this.tableConfig.deletable) widths.push('90px');
         return widths.join(' ');
     }

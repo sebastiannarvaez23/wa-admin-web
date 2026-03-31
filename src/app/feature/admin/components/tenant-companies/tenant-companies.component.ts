@@ -8,6 +8,7 @@ import { NotificationService } from 'wa-components-web';
 import { isFieldInvalid } from '../../../../core/utils/form.utils';
 import { extractError } from '../../../../core/utils/error.utils';
 import { TableConfig } from '../../../../core/interfaces/table.interfaces';
+import { DEFAULT_PAGE_SIZE, rowNumber } from '../../../../core/interfaces/pagination.interfaces';
 import { TenantService } from '../../../platform/tenants/services/tenant.service';
 import { Tenant, TenantsFilterParams } from '../../../platform/tenants/interfaces/tenant.interfaces';
 
@@ -49,7 +50,7 @@ export class TenantCompaniesComponent implements OnInit {
     loading = false;
     saving  = false;
 
-    readonly pageSize = 10;
+    readonly pageSize = DEFAULT_PAGE_SIZE;
     currentPage       = 1;
 
     showModal      = false;
@@ -108,6 +109,10 @@ export class TenantCompaniesComponent implements OnInit {
         if (page < 1 || page > this.totalPages) return;
         this.currentPage = page;
         this.loadTenants();
+    }
+
+    getRowNumber(index: number): number {
+        return rowNumber(this.currentPage, this.pageSize, index);
     }
 
     loadTenants(): void {
@@ -256,7 +261,7 @@ export class TenantCompaniesComponent implements OnInit {
     isInvalid(field: string): boolean { return isFieldInvalid(this.form, field); }
 
     private buildGridTemplate(): string {
-        const widths = this.tableConfig.columns.map(c => c.width ?? '1fr');
+        const widths = ['45px', ...this.tableConfig.columns.map(c => c.width ?? '1fr')];
         if (this.tableConfig.editable || this.tableConfig.deletable) widths.push('90px');
         return widths.join(' ');
     }

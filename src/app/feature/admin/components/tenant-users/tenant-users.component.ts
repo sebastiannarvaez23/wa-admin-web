@@ -6,6 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 
 import { NotificationService } from 'wa-components-web';
 import { TableConfig } from '../../../../core/interfaces/table.interfaces';
+import { DEFAULT_PAGE_SIZE, rowNumber } from '../../../../core/interfaces/pagination.interfaces';
 import { TenantUserService } from '../../../platform/tenants/services/tenant-user.service';
 import { TenantUser, TenantUsersFilterParams } from '../../../platform/tenants/interfaces/tenant.interfaces';
 
@@ -45,7 +46,7 @@ export class TenantUsersComponent implements OnInit {
 
     loading = false;
 
-    readonly pageSize = 10;
+    readonly pageSize = DEFAULT_PAGE_SIZE;
     currentPage       = 1;
 
     filterForm: FormGroup;
@@ -91,6 +92,10 @@ export class TenantUsersComponent implements OnInit {
         if (page < 1 || page > this.totalPages) return;
         this.currentPage = page;
         this.loadUsers();
+    }
+
+    getRowNumber(index: number): number {
+        return rowNumber(this.currentPage, this.pageSize, index);
     }
 
     loadUsers(): void {
@@ -159,7 +164,7 @@ export class TenantUsersComponent implements OnInit {
     }
 
     private buildGridTemplate(): string {
-        const widths = this.tableConfig.columns.map(c => c.width ?? '1fr');
+        const widths = ['45px', ...this.tableConfig.columns.map(c => c.width ?? '1fr')];
         if (this.tableConfig.editable || this.tableConfig.deletable) widths.push('90px');
         return widths.join(' ');
     }

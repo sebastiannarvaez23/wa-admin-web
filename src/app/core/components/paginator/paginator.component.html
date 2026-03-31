@@ -1,0 +1,30 @@
+<div class="paginator" *ngIf="total > 0">
+
+    <span class="record-count">
+        <strong>{{ total }}</strong>
+        {{ (total === 1 ? 'common.paginator.record' : 'common.paginator.records') | translate }}
+    </span>
+
+    <div class="page-nav" *ngIf="totalPages > 1">
+        <button class="page-btn" [title]="'common.paginator.first' | translate"
+            [disabled]="currentPage === 1" (click)="onPageChange(1)">
+            <i class="bx bx-chevrons-left"></i>
+        </button>
+        <button class="page-btn" [title]="'common.paginator.prev' | translate"
+            [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
+            <i class="bx bx-chevron-left"></i>
+        </button>
+
+        <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
+
+        <button class="page-btn" [title]="'common.paginator.next' | translate"
+            [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
+            <i class="bx bx-chevron-right"></i>
+        </button>
+        <button class="page-btn" [title]="'common.paginator.last' | translate"
+            [disabled]="currentPage === totalPages" (click)="onPageChange(totalPages)">
+            <i class="bx bx-chevrons-right"></i>
+        </button>
+    </div>
+
+</div>

@@ -9,6 +9,7 @@ import { DialogService, NotificationService } from 'wa-components-web';
 import { isFieldInvalid } from '../../../../core/utils/form.utils';
 import { extractError } from '../../../../core/utils/error.utils';
 import { TableConfig } from '../../../../core/interfaces/table.interfaces';
+import { DEFAULT_PAGE_SIZE, rowNumber } from '../../../../core/interfaces/pagination.interfaces';
 import { EmailTemplateService } from '../../../platform/communication/services/email-template.service';
 import { EmailSenderService } from '../../../platform/communication/services/email-sender.service';
 import { EmailTemplate, EmailSender } from '../../../platform/communication/interfaces/email-template.interfaces';
@@ -46,6 +47,12 @@ export class EmailTemplatesComponent implements OnInit {
 
     templates: EmailTemplate[] = [];
     filteredTemplates: EmailTemplate[] = [];
+    pagedTemplates: EmailTemplate[] = [];
+
+    readonly pageSize = DEFAULT_PAGE_SIZE;
+    currentPage = 1;
+    total = 0;
+    totalPages = 0;
 
     loading = false;
     saving = false;
@@ -146,6 +153,16 @@ export class EmailTemplatesComponent implements OnInit {
             .some(v => !!v && v.trim() !== '');
     }
 
+    onPageChange(page: number): void {
+        if (page < 1 || page > this.totalPages) return;
+        this.currentPage = page;
+        this.paginateFiltered();
+    }
+
+    getRowNumber(index: number): number {
+        return rowNumber(this.currentPage, this.pageSize, index);
+    }
+
     private applyFilters(): void {
         const v = this.filterForm.value as Record<string, string>;
         this.filteredTemplates = this.templates.filter(t => {
@@ -162,6 +179,15 @@ export class EmailTemplatesComponent implements OnInit {
             }
             return true;
         });
+        this.currentPage = 1;
+        this.paginateFiltered();
+    }
+
+    private paginateFiltered(): void {
+        this.total = this.filteredTemplates.length;
+        this.totalPages = Math.ceil(this.total / this.pageSize) || 1;
+        const start = (this.currentPage - 1) * this.pageSize;
+        this.pagedTemplates = this.filteredTemplates.slice(start, start + this.pageSize);
         this.cdr.markForCheck();
     }
 
@@ -593,7 +619,7 @@ export class EmailTemplatesComponent implements OnInit {
     }
 
     private buildGridTemplate(): string {
-        const widths = this.tableConfig.columns.map(c => c.width ?? '1fr');
+        const widths = ['45px', ...this.tableConfig.columns.map(c => c.width ?? '1fr')];
         if (this.tableConfig.editable || this.tableConfig.deletable) widths.push('90px');
         return widths.join(' ');
     }

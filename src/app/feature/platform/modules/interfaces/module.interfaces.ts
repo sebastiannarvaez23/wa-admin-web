@@ -1,3 +1,5 @@
+import { PaginatedResponse } from '../../../../core/interfaces/pagination.interfaces';
+
 // ── Platform Module ───────────────────────────────────────────────────────────
 
 export interface PlatformModule {
@@ -17,13 +19,7 @@ export interface PlatformModule {
     updated_at:   string;
 }
 
-export interface PaginatedModulesResponse {
-    items:       PlatformModule[];
-    total:       number;
-    page:        number;
-    page_size:   number;
-    total_pages: number;
-}
+export type PaginatedModulesResponse = PaginatedResponse<PlatformModule>;
 
 export interface ModulesFilterParams {
     name?:       string;

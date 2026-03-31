@@ -8,17 +8,17 @@ import { ModuleLimit, Subscription, SubscriptionLimitValue, SubscriptionModule }
 import { SubscriptionLimitApiItem } from '../interfaces/subscription-limit.interfaces';
 
 interface SubscriptionApiResponse {
-    id:               string;
-    code:             string;
-    name:             string;
-    description:      string;
-    price:            string;
-    logo:             string;
-    is_active:        boolean;
-    modules:          string[];
-    features:         string[];
-    created_at:       string;
-    updated_at:       string;
+    id: string;
+    code: string;
+    name: string;
+    description: string;
+    price: string;
+    logo: string;
+    is_active: boolean;
+    modules: string[];
+    features: string[];
+    created_at: string;
+    updated_at: string;
 }
 
 // ── Modules catalog (shared with wa-client-web) ───────────────────────────────
@@ -52,7 +52,7 @@ const MODULES_CATALOG: CatalogEntry[] = [
             { key: 'create', label: 'Crear pedidos', category: 'features' },
             { key: 'edit', label: 'Editar pedidos', category: 'features' },
             { key: 'cancel', label: 'Cancelar pedidos', category: 'features' },
-            { key: 'view-status', label: 'Ver estados de la orden', category: 'features' },
+            { key: 'view-status', label: 'Ver estados de la Pedidos', category: 'features' },
             { key: 'inventory-validation', label: 'Validación de disponibilidad', category: 'features' },
             { key: 'priorities', label: 'Manejo de prioridades', category: 'features' },
             { key: 'multi-warehouse', label: 'Soporte multi-bodega', category: 'features' },
@@ -113,7 +113,7 @@ const MODULES_CATALOG: CatalogEntry[] = [
             { key: 'picking-rules', label: 'Reglas de picking (FIFO, FEFO, LIFO)', category: 'features' },
             { key: 'traceability', label: 'Trazabilidad de picking', category: 'features' },
             { key: 'route-optimization', label: 'Optimización de rutas de picking', category: 'ai' },
-            { key: 'order-grouping', label: 'Agrupación inteligente de órdenes', category: 'ai' },
+            { key: 'order-grouping', label: 'Agrupación inteligente de Pedidos', category: 'ai' },
             { key: 'auto-assignment', label: 'Asignación automática de operarios', category: 'ai' },
         ],
     },
@@ -253,15 +253,15 @@ export function buildModules(enabledModules: string[], enabledFeatures: string[]
     const modSet = new Set(enabledModules);
     const featSet = new Set(enabledFeatures);
     return MODULES_CATALOG.map(m => ({
-        code:        m.code,
-        name:        m.name,
+        code: m.code,
+        name: m.name,
         description: m.description,
-        icon:        m.icon,
-        hasAccess:   modSet.has(m.code),
-        features:    m.features.map(f => ({
-            key:      `${m.code}.${f.key}`,
-            label:    f.label,
-            enabled:  featSet.has(`${m.code}.${f.key}`),
+        icon: m.icon,
+        hasAccess: modSet.has(m.code),
+        features: m.features.map(f => ({
+            key: `${m.code}.${f.key}`,
+            label: f.label,
+            enabled: featSet.has(`${m.code}.${f.key}`),
             category: f.category,
         })),
     }));
@@ -292,13 +292,13 @@ const SEED_SUBSCRIPTIONS: Subscription[] = [
         modules: buildModules(
             ['dashboard', 'orders', 'reception', 'inventories', 'picking', 'dispatches', 'third_parties', 'settings'],
             ['dashboard.view-summary', 'dashboard.real-time-metrics', 'dashboard.alerts-notifications', 'dashboard.kpis',
-             'orders.create', 'orders.edit', 'orders.view-status', 'orders.inventory-validation',
-             'reception.create', 'reception.edit', 'reception.quality-control',
-             'inventories.real-time-view', 'inventories.adjustments', 'inventories.physical-counts', 'inventories.movement-history',
-             'picking.create-tasks', 'picking.assign-tasks', 'picking.traceability',
-             'dispatches.create', 'dispatches.edit', 'dispatches.carrier-assignment',
-             'third_parties.client-management', 'third_parties.supplier-management', 'third_parties.contact-info',
-             'settings.company-config', 'settings.warehouse-management', 'settings.notifications-config'],
+                'orders.create', 'orders.edit', 'orders.view-status', 'orders.inventory-validation',
+                'reception.create', 'reception.edit', 'reception.quality-control',
+                'inventories.real-time-view', 'inventories.adjustments', 'inventories.physical-counts', 'inventories.movement-history',
+                'picking.create-tasks', 'picking.assign-tasks', 'picking.traceability',
+                'dispatches.create', 'dispatches.edit', 'dispatches.carrier-assignment',
+                'third_parties.client-management', 'third_parties.supplier-management', 'third_parties.contact-info',
+                'settings.company-config', 'settings.warehouse-management', 'settings.notifications-config'],
         ),
         enabledFeatureKeys: [
             'dashboard.view-summary', 'dashboard.real-time-metrics', 'dashboard.alerts-notifications', 'dashboard.kpis',
@@ -337,18 +337,18 @@ const SEED_SUBSCRIPTIONS: Subscription[] = [
 ];
 
 export interface CreateSubscriptionPayload {
-    code:        string;
-    name:        string;
+    code: string;
+    name: string;
     description: string;
-    price:       number;
+    price: number;
 }
 
 export interface UpdateSubscriptionPayload {
-    code?:          string;
-    name?:          string;
-    description?:   string;
-    price?:         number;
-    is_active?:     boolean;
+    code?: string;
+    name?: string;
+    description?: string;
+    price?: number;
+    is_active?: boolean;
     module_limits?: { module: string; limits: { key: string; value: number | null }[] }[];
 }
 
@@ -359,23 +359,23 @@ export interface LimitDefinition {
 }
 
 const LIMITS_CATALOG: Record<string, LimitDefinition[]> = {
-    dashboard:     [{ key: 'max_widgets' },          { key: 'max_kpi_cards' }],
-    orders:        [{ key: 'max_orders_per_day' },   { key: 'max_items_per_order' },    { key: 'max_open_orders' }],
-    reception:     [{ key: 'max_receptions_per_day' }, { key: 'max_items_per_reception' }],
-    location:      [{ key: 'max_warehouses' },       { key: 'max_zones_per_warehouse' }, { key: 'max_locations' }],
-    inventories:   [{ key: 'max_skus' },             { key: 'max_adjustments_per_day' }, { key: 'max_transfers_per_month' }],
-    picking:       [{ key: 'max_tasks_per_user' },   { key: 'max_items_per_task' },     { key: 'max_concurrent_waves' }],
-    packing:       [{ key: 'max_tasks_per_user' },   { key: 'max_items_per_task' }],
-    dispatches:    [{ key: 'max_dispatches_per_day' }, { key: 'max_orders_per_dispatch' }],
-    shipping:      [{ key: 'max_carriers' },         { key: 'max_active_shipments' }],
-    third_parties: [{ key: 'max_clients' },          { key: 'max_suppliers' },          { key: 'max_carriers' }],
-    users_roles:   [{ key: 'max_users' },            { key: 'max_roles' }],
-    tasks:         [{ key: 'max_active_tasks' },     { key: 'max_tasks_per_user' },     { key: 'max_recurring_tasks' }],
-    integrations:  [{ key: 'max_webhooks' },         { key: 'max_api_requests_per_day' }, { key: 'max_integrations' }],
-    automation:    [{ key: 'max_rules' },            { key: 'max_executions_per_day' }, { key: 'max_chained_actions' }],
-    analytics:     [{ key: 'max_dashboards' },       { key: 'max_exports_per_month' },  { key: 'max_data_retention_days' }],
-    audit:         [{ key: 'max_log_retention_days' }, { key: 'max_exported_logs' }],
-    settings:      [{ key: 'max_warehouses' },       { key: 'max_templates' }],
+    dashboard: [{ key: 'max_widgets' }, { key: 'max_kpi_cards' }],
+    orders: [{ key: 'max_orders_per_day' }, { key: 'max_items_per_order' }, { key: 'max_open_orders' }],
+    reception: [{ key: 'max_receptions_per_day' }, { key: 'max_items_per_reception' }],
+    location: [{ key: 'max_warehouses' }, { key: 'max_zones_per_warehouse' }, { key: 'max_locations' }],
+    inventories: [{ key: 'max_skus' }, { key: 'max_adjustments_per_day' }, { key: 'max_transfers_per_month' }],
+    picking: [{ key: 'max_tasks_per_user' }, { key: 'max_items_per_task' }, { key: 'max_concurrent_waves' }],
+    packing: [{ key: 'max_tasks_per_user' }, { key: 'max_items_per_task' }],
+    dispatches: [{ key: 'max_dispatches_per_day' }, { key: 'max_orders_per_dispatch' }],
+    shipping: [{ key: 'max_carriers' }, { key: 'max_active_shipments' }],
+    third_parties: [{ key: 'max_clients' }, { key: 'max_suppliers' }, { key: 'max_carriers' }],
+    users_roles: [{ key: 'max_users' }, { key: 'max_roles' }],
+    tasks: [{ key: 'max_active_tasks' }, { key: 'max_tasks_per_user' }, { key: 'max_recurring_tasks' }],
+    integrations: [{ key: 'max_webhooks' }, { key: 'max_api_requests_per_day' }, { key: 'max_integrations' }],
+    automation: [{ key: 'max_rules' }, { key: 'max_executions_per_day' }, { key: 'max_chained_actions' }],
+    analytics: [{ key: 'max_dashboards' }, { key: 'max_exports_per_month' }, { key: 'max_data_retention_days' }],
+    audit: [{ key: 'max_log_retention_days' }, { key: 'max_exported_logs' }],
+    settings: [{ key: 'max_warehouses' }, { key: 'max_templates' }],
 };
 
 export function buildModuleLimits(
@@ -388,13 +388,13 @@ export function buildModuleLimits(
         const code = bl.functionality_module_code;
         if (!limitsByModule.has(code)) { limitsByModule.set(code, []); }
         limitsByModule.get(code)!.push({
-            key:             bl.functionality_key,
-            value:           bl.max_value,
-            id:              bl.id,
+            key: bl.functionality_key,
+            value: bl.max_value,
+            id: bl.id,
             functionalityId: bl.functionality_id,
-            label:           bl.functionality_label,
-            name:            bl.name,
-            validationType:  bl.validation_type,
+            label: bl.functionality_label,
+            name: bl.name,
+            validationType: bl.validation_type,
         });
     }
 
@@ -415,21 +415,21 @@ export class SubscriptionService {
 
     private readonly base = `${environment.apiUrl}/billing/subscriptions/`;
 
-    constructor(private http: HttpClient) {}
+    constructor(private http: HttpClient) { }
 
     private mapResponse(item: SubscriptionApiResponse): Subscription {
         return {
-            id:                  item.id,
-            code:                item.code,
-            name:                item.name,
-            description:         item.description,
-            price:               Number(item.price),
-            logo:                item.logo,
-            is_active:           item.is_active,
-            modules:             buildModules(item.modules, item.features),
-            enabledFeatureKeys:  [...item.features],
-            created_at:          item.created_at,
-            updated_at:          item.updated_at,
+            id: item.id,
+            code: item.code,
+            name: item.name,
+            description: item.description,
+            price: Number(item.price),
+            logo: item.logo,
+            is_active: item.is_active,
+            modules: buildModules(item.modules, item.features),
+            enabledFeatureKeys: [...item.features],
+            created_at: item.created_at,
+            updated_at: item.updated_at,
         };
     }
 

@@ -1,4 +1,5 @@
 import { RoleSummary } from '../../roles/interfaces/role.interfaces';
+import { PaginatedResponse } from '../../../../core/interfaces/pagination.interfaces';
 
 export interface AdminUser {
     id: string;
@@ -11,13 +12,7 @@ export interface AdminUser {
     is_active: boolean;
 }
 
-export interface PaginatedUsersResponse {
-    items:       AdminUser[];
-    total:       number;
-    page:        number;
-    page_size:   number;
-    total_pages: number;
-}
+export type PaginatedUsersResponse = PaginatedResponse<AdminUser>;
 
 export interface UsersFilterParams {
     name?:     string;

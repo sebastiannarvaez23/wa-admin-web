@@ -275,6 +275,16 @@
 
 .table-row:hover { background: var(--very-like); }
 
+/* ── Row number ──────────────────────────────────────────────────────────── */
+
+.cell-row-number {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-align: center;
+    white-space: nowrap;
+}
+
 /* ── Cell types ───────────────────────────────────────────────────────────── */
 
 .user-cell {
@@ -432,72 +442,6 @@
     text-decoration: underline;
     padding: 0;
     margin-top: 4px;
-}
-
-/* ── Paginator ─────────────────────────────────────────────────────────────── */
-
-.paginator {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px 20px;
-    border-top: 1px solid var(--surface-border);
-    background: var(--very-like);
-    flex-shrink: 0;
-    flex-wrap: wrap;
-}
-
-.record-count {
-    font-size: 0.78rem;
-    color: var(--text-secondary);
-    white-space: nowrap;
-}
-
-.record-count strong {
-    color: var(--primary-color);
-    font-weight: 700;
-}
-
-.page-nav {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-
-.page-indicator {
-    font-size: 0.78rem;
-    color: var(--primary-color);
-    font-weight: 600;
-    padding: 0 6px;
-    white-space: nowrap;
-}
-
-.page-btn {
-    min-width: 30px;
-    height: 30px;
-    padding: 0 6px;
-    border: 1px solid var(--surface-border);
-    border-radius: 6px;
-    background: var(--very-white);
-    cursor: pointer;
-    font-size: 0.82rem;
-    font-family: inherit;
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-
-.page-btn:hover:not(:disabled) {
-    background: var(--primary-color-hover);
-    border-color: var(--primary-color);
-}
-
-.page-btn:disabled {
-    opacity: 0.35;
-    cursor: default;
 }
 
 /* ── Modal ────────────────────────────────────────────────────────────────── */

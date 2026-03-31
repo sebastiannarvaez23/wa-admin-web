@@ -879,7 +879,18 @@
     "edit": "Editar",
     "cancel": "Cancelar",
     "save": "Guardar",
-    "apply": "Aplicar"
+    "apply": "Aplicar",
+    "paginator": {
+      "record": "registro",
+      "records": "registros",
+      "first": "Primera página",
+      "prev": "Página anterior",
+      "next": "Página siguiente",
+      "last": "Última página"
+    },
+    "table": {
+      "row-number": "#"
+    }
   },
   "dialog": {
     "common": {

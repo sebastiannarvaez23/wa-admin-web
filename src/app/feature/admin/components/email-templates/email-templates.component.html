@@ -23,6 +23,7 @@
 
         <!-- Column headers -->
         <div class="table-head" [style.grid-template-columns]="gridTemplate">
+            <span class="col-header">{{ 'common.table.row-number' | translate }}</span>
             <span *ngFor="let col of tableConfig.columns; trackBy: trackByKey" class="col-header"
                 [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
                 {{ col.label | translate }}
@@ -36,6 +37,7 @@
 
         <!-- Filter row -->
         <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
+            <div class="filter-cell filter-spacer"></div>
             <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                 <div class="filter-cell" *ngIf="col.filterable && col.filterType !== 'select'; else selectOrSpacer">
                     <div class="filter-input-wrapper" [class.has-value]="filterForm.get(col.key)?.value">
@@ -78,8 +80,10 @@
 
         <!-- Data rows -->
         <ng-container *ngIf="!loading">
-            <div class="table-row" *ngFor="let item of filteredTemplates; trackBy: trackById"
+            <div class="table-row" *ngFor="let item of pagedTemplates; let i = index; trackBy: trackById"
                 [style.grid-template-columns]="gridTemplate">
+
+                <span class="cell-row-number">{{ getRowNumber(i) }}</span>
 
                 <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                     <ng-container [ngSwitch]="col.type">
@@ -126,7 +130,7 @@
             </div>
 
             <!-- Empty state -->
-            <div class="empty-state" *ngIf="filteredTemplates.length === 0">
+            <div class="empty-state" *ngIf="pagedTemplates.length === 0">
                 <i class="bx" [ngClass]="hasActiveFilters ? 'bx-search-alt' : 'bx-envelope'"></i>
                 <span>
                     {{ (hasActiveFilters
@@ -142,15 +146,13 @@
 
     </div>
 
-    <!-- Record count -->
-    <div class="paginator" *ngIf="filteredTemplates.length > 0">
-        <span class="record-count">
-            <strong>{{ filteredTemplates.length }}</strong>
-            {{ (filteredTemplates.length === 1
-                ? 'admin.communications.emails.paginator.record'
-                : 'admin.communications.emails.paginator.records') | translate }}
-        </span>
-    </div>
+    <!-- Paginator -->
+    <wa-paginator
+        [total]="total"
+        [totalPages]="totalPages"
+        [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)">
+    </wa-paginator>
 
 </div>
 

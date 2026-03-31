@@ -18,6 +18,7 @@
 
         <!-- Column headers (sticky top: 0) -->
         <div class="table-head" [style.grid-template-columns]="gridTemplate">
+            <span class="col-header">{{ 'common.table.row-number' | translate }}</span>
             <span *ngFor="let col of tableConfig.columns; trackBy: trackByKey" class="col-header"
                 [class.col-has-filter]="col.filterable && filterForm.get(col.key)?.value">
                 {{ col.label | translate }}
@@ -31,6 +32,7 @@
 
         <!-- Filter row (sticky top: 44px) -->
         <div class="table-filters" [formGroup]="filterForm" [style.grid-template-columns]="gridTemplate">
+            <div class="filter-cell filter-spacer"></div>
             <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
 
                 <!-- Text filter -->
@@ -80,7 +82,9 @@
 
         <!-- Data rows -->
         <ng-container *ngIf="!loading">
-            <div class="table-row" *ngFor="let user of pagedUsers; trackBy: trackById" [style.grid-template-columns]="gridTemplate">
+            <div class="table-row" *ngFor="let user of pagedUsers; let i = index; trackBy: trackById" [style.grid-template-columns]="gridTemplate">
+
+                <span class="cell-row-number">{{ getRowNumber(i) }}</span>
 
                 <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                     <ng-container [ngSwitch]="col.type">
@@ -156,37 +160,12 @@
     </div><!-- /table-scrollable -->
 
     <!-- Paginator -->
-    <div class="paginator" *ngIf="total > 0">
-
-        <span class="record-count">
-            <strong>{{ total }}</strong>
-            {{ (total === 1 ? 'admin.users-roles.users.paginator.record' : 'admin.users-roles.users.paginator.records')
-            | translate }}
-        </span>
-
-        <div class="page-nav" *ngIf="totalPages > 1">
-            <button class="page-btn" [title]="'admin.users-roles.users.paginator.first' | translate"
-                [disabled]="currentPage === 1" (click)="onPageChange(1)">
-                <i class="bx bx-chevrons-left"></i>
-            </button>
-            <button class="page-btn" [title]="'admin.users-roles.users.paginator.prev' | translate"
-                [disabled]="currentPage === 1" (click)="onPageChange(currentPage - 1)">
-                <i class="bx bx-chevron-left"></i>
-            </button>
-
-            <span class="page-indicator">{{ currentPage }} / {{ totalPages }}</span>
-
-            <button class="page-btn" [title]="'admin.users-roles.users.paginator.next-page' | translate"
-                [disabled]="currentPage === totalPages" (click)="onPageChange(currentPage + 1)">
-                <i class="bx bx-chevron-right"></i>
-            </button>
-            <button class="page-btn" [title]="'admin.users-roles.users.paginator.last' | translate"
-                [disabled]="currentPage === totalPages" (click)="onPageChange(totalPages)">
-                <i class="bx bx-chevrons-right"></i>
-            </button>
-        </div>
-
-    </div>
+    <wa-paginator
+        [total]="total"
+        [totalPages]="totalPages"
+        [currentPage]="currentPage"
+        (pageChange)="onPageChange($event)">
+    </wa-paginator>
 
 </div><!-- /table-shell -->
 
