@@ -20,7 +20,7 @@ export class TenantUsersComponent implements OnInit {
 
     readonly tableConfig: TableConfig = {
         columns: [
-            { key: 'name',         label: 'admin.tenants.users.table.name',    filterable: true, type: 'text',         width: '1.8fr' },
+            { key: 'name',         label: 'admin.tenants.users.table.name',    filterable: true, type: 'user-cell',    width: '1.8fr' },
             { key: 'email',        label: 'admin.tenants.users.table.email',   filterable: true, type: 'text',         width: '1.5fr' },
             { key: 'company_name', label: 'admin.tenants.users.table.company', filterable: true, type: 'text',         width: '1.2fr' },
             {
@@ -132,6 +132,13 @@ export class TenantUsersComponent implements OnInit {
 
     getInitials(user: TenantUser): string {
         return `${user.first_name?.[0] ?? ''}${user.last_name?.[0] ?? ''}`.toUpperCase();
+    }
+
+    getRoleClass(rolName: string): string {
+        const l = (rolName ?? '').toLowerCase();
+        if (l.includes('admin'))                            return 'admin';
+        if (l.includes('emplead') || l.includes('operat')) return 'operator';
+        return 'viewer';
     }
 
     getCellValue(user: TenantUser, key: string): unknown {

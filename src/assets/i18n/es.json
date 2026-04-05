@@ -782,7 +782,17 @@
             "pattern-code": "Solo letras mayúsculas, números y guiones bajos"
           },
           "cancel": "Cancelar",
-          "save": "Guardar"
+          "save": "Guardar",
+          "test-email": {
+            "btn": "Enviar prueba",
+            "title": "Enviar correo de prueba",
+            "description": "Se enviará el correo usando los datos mock actuales como contexto de la plantilla.",
+            "email-label": "Correo destino",
+            "email-placeholder": "Ej. prueba@empresa.com",
+            "send": "Enviar",
+            "success": "Correo de prueba enviado exitosamente",
+            "error": "Error al enviar el correo de prueba"
+          }
         },
         "notifications": {
           "load-error": "Error al cargar las plantillas de correo",

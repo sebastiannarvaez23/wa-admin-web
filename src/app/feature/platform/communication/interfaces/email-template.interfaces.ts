@@ -48,3 +48,9 @@ export interface UpdateEmailTemplatePayload {
     description?: string;
     is_active?: boolean;
 }
+
+export interface SendTestEmailPayload {
+    template_code: string;
+    to: string[];
+    context?: Record<string, string>;
+}

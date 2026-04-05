@@ -320,10 +320,48 @@
             <wa-btn variant="secondary" [disabled]="saving" (clicked)="closeModal()">
                 {{ 'admin.communications.emails.modal.cancel' | translate }}
             </wa-btn>
+            <wa-btn *ngIf="editingItem" variant="secondary" [disabled]="saving" (clicked)="openTestEmail()">
+                <i class="bx bx-send"></i>
+                {{ 'admin.communications.emails.modal.test-email.btn' | translate }}
+            </wa-btn>
             <wa-btn [loading]="saving" (clicked)="save()">
                 {{ 'admin.communications.emails.modal.save' | translate }}
             </wa-btn>
         </div>
+    </div>
+</div>
+
+<!-- ── Test email modal ──────────────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showTestEmailModal" (click)="closeTestEmail()">
+    <div class="modal-card sender-form-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ 'admin.communications.emails.modal.test-email.title' | translate }}</h3>
+            <button class="modal-close" (click)="closeTestEmail()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+        <form [formGroup]="testEmailForm" (ngSubmit)="sendTestEmail()">
+            <div class="sender-form-body">
+                <p class="modal-description">
+                    {{ 'admin.communications.emails.modal.test-email.description' | translate }}
+                </p>
+                <wa-form-field formControlName="email"
+                    [label]="'admin.communications.emails.modal.test-email.email-label' | translate"
+                    [placeholder]="'admin.communications.emails.modal.test-email.email-placeholder' | translate"
+                    [invalid]="isTestEmailInvalid"
+                    [errorMessage]="'admin.communications.emails.modal.errors.email' | translate">
+                </wa-form-field>
+            </div>
+            <div class="modal-footer">
+                <wa-btn variant="secondary" type="button" [disabled]="sendingTest" (clicked)="closeTestEmail()">
+                    {{ 'admin.communications.emails.modal.cancel' | translate }}
+                </wa-btn>
+                <wa-btn type="submit" [loading]="sendingTest">
+                    <i class="bx bx-send"></i>
+                    {{ 'admin.communications.emails.modal.test-email.send' | translate }}
+                </wa-btn>
+            </div>
+        </form>
     </div>
 </div>
 

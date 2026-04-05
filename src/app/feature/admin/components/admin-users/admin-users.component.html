@@ -13,6 +13,12 @@
 <!-- ── Table shell ──────────────────────────────────────────────────────── -->
 <div class="table-shell">
 
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+        <i class="bx bx-loader-alt bx-spin"></i>
+        <span>{{ 'admin.users-roles.users.loading' | translate }}</span>
+    </div>
+
     <!-- Table scrollable area -->
     <div class="table-scrollable">
 
@@ -72,12 +78,6 @@
                     {{ 'admin.users-roles.users.filter.clear' | translate }}
                 </button>
             </div>
-        </div>
-
-        <!-- Loading -->
-        <div class="loading-state" *ngIf="loading">
-            <i class="bx bx-loader-alt bx-spin"></i>
-            <span>{{ 'admin.users-roles.users.loading' | translate }}</span>
         </div>
 
         <!-- Data rows -->

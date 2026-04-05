@@ -6,6 +6,7 @@ import { environment } from '../../../../../environments/environment';
 import {
     CreateEmailTemplatePayload,
     EmailTemplate,
+    SendTestEmailPayload,
     UpdateEmailTemplatePayload,
 } from '../interfaces/email-template.interfaces';
 
@@ -34,5 +35,9 @@ export class EmailTemplateService {
 
     delete(id: string): Observable<void> {
         return this.http.delete<void>(`${this.base}${id}/`);
+    }
+
+    sendTest(payload: SendTestEmailPayload): Observable<{ sent: boolean }> {
+        return this.http.post<{ sent: boolean }>(`${this.base}send/`, payload);
     }
 }

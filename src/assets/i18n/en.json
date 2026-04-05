@@ -707,7 +707,17 @@
             "pattern-code": "Only uppercase letters, numbers, and underscores"
           },
           "cancel": "Cancel",
-          "save": "Save"
+          "save": "Save",
+          "test-email": {
+            "btn": "Send test",
+            "title": "Send test email",
+            "description": "The email will be sent using the current mock data as the template context.",
+            "email-label": "Recipient email",
+            "email-placeholder": "e.g. test@company.com",
+            "send": "Send",
+            "success": "Test email sent successfully",
+            "error": "Error sending test email"
+          }
         },
         "notifications": {
           "load-error": "Error loading email templates",

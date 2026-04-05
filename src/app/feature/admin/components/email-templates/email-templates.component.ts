@@ -8,6 +8,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DialogService, NotificationService } from 'wa-components-web';
 import { isFieldInvalid } from '../../../../core/utils/form.utils';
 import { extractError } from '../../../../core/utils/error.utils';
+import { environment } from '../../../../../environments/environment';
 import { TableConfig } from '../../../../core/interfaces/table.interfaces';
 import { DEFAULT_PAGE_SIZE, rowNumber } from '../../../../core/interfaces/pagination.interfaces';
 import { EmailTemplateService } from '../../../platform/communication/services/email-template.service';
@@ -77,6 +78,11 @@ export class EmailTemplatesComponent implements OnInit {
     htmlLineNumbers: number[] = [1];
     emulateVars = false;
 
+    // Test email
+    showTestEmailModal = false;
+    sendingTest = false;
+    testEmailForm: FormGroup;
+
     @ViewChild('highlightEl') highlightEl!: ElementRef<HTMLPreElement>;
     @ViewChild('lineNumbersEl') lineNumbersEl!: ElementRef<HTMLDivElement>;
 
@@ -102,6 +108,10 @@ export class EmailTemplatesComponent implements OnInit {
             mock_data: ['{}'],
             description: [''],
             is_active: [true],
+        });
+
+        this.testEmailForm = this.fb.group({
+            email: ['', [Validators.required, Validators.email]],
         });
 
         this.senderForm = this.fb.group({
@@ -135,6 +145,14 @@ export class EmailTemplatesComponent implements OnInit {
             const src = html || '';
             this.highlightedHtml = this.highlightSyntax(src);
             this.updateLineNumbers(src);
+            this.updatePreview();
+            this.cdr.markForCheck();
+        });
+
+        this.form.get('mock_data')!.valueChanges.pipe(
+            debounceTime(150),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe(() => {
             this.updatePreview();
             this.cdr.markForCheck();
         });
@@ -458,6 +476,51 @@ export class EmailTemplatesComponent implements OnInit {
             });
     }
 
+    // ── Test email ──────────────────────────────────────────────────────────
+
+    get isTestEmailInvalid(): boolean {
+        const c = this.testEmailForm.get('email');
+        return !!(c?.invalid && c?.touched);
+    }
+
+    openTestEmail(): void {
+        this.testEmailForm.reset();
+        this.showTestEmailModal = true;
+    }
+
+    closeTestEmail(): void {
+        this.showTestEmailModal = false;
+        this.testEmailForm.reset();
+    }
+
+    sendTestEmail(): void {
+        if (this.testEmailForm.invalid) { this.testEmailForm.markAllAsTouched(); return; }
+        this.sendingTest = true;
+
+        let mockData: Record<string, string> = {};
+        try { mockData = JSON.parse(this.form.get('mock_data')?.value || '{}'); } catch { /* ignore */ }
+
+        const code = (this.form.getRawValue().code || '').toUpperCase();
+
+        this.emailTemplateService.sendTest({
+            template_code: code,
+            to: [this.testEmailForm.get('email')!.value],
+            context: mockData,
+        }).pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+            next: () => {
+                this.notification.push(this.translate.instant('admin.communications.emails.modal.test-email.success'), 'success');
+                this.sendingTest = false;
+                this.closeTestEmail();
+                this.cdr.markForCheck();
+            },
+            error: err => {
+                this.notification.push(extractError(err, this.translate.instant('admin.communications.emails.modal.test-email.error')), 'error');
+                this.sendingTest = false;
+                this.cdr.markForCheck();
+            },
+        });
+    }
+
     // ── Form helpers ────────────────────────────────────────────────────────
 
     isInvalid(field: string): boolean { return isFieldInvalid(this.form, field); }
@@ -512,12 +575,29 @@ export class EmailTemplatesComponent implements OnInit {
     }
 
     private replaceVars(html: string): string {
-        let mockData: Record<string, string> = {};
+        let mockData: Record<string, unknown> = {};
         try { mockData = JSON.parse(this.form.get('mock_data')?.value || '{}'); } catch { /* ignore */ }
-        return html.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => {
-            if (mockData[key]) return mockData[key];
-            return `{{ ${key} }}`;
+        const staticBase = environment.apiUrl.replace(/\/api.*$/, '/static/');
+        const imageExts = /\.(png|jpe?g|gif|svg|webp)$/i;
+
+        // Evaluate {% if var %}...{% endif %} blocks
+        let result = html.replace(
+            /\{%\s*if\s+(\w+)\s*%\}([\s\S]*?)\{%\s*endif\s*%\}/g,
+            (_, key, inner) => mockData[key] ? inner : '',
+        );
+
+        // Replace {{ variable }} with mock values
+        result = result.replace(/\{\{\s*(\w+)\s*\}\}/g, (_, key) => {
+            const val = mockData[key];
+            if (val === undefined || val === null) return `{{ ${key} }}`;
+            const strVal = String(val);
+            if (imageExts.test(strVal) && !/^https?:\/\/|^data:/.test(strVal)) {
+                return `${staticBase}${strVal}`;
+            }
+            return strVal;
         });
+
+        return result;
     }
 
     private updateLineNumbers(html: string): void {

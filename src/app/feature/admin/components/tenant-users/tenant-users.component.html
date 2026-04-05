@@ -9,7 +9,13 @@
 <!-- ── Table shell ──────────────────────────────────────────────────────── -->
 <div class="table-shell">
 
-    <div class="table-scrollable">
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+        <i class="bx bx-loader-alt bx-spin"></i>
+        <span>{{ 'admin.tenants.users.loading' | translate }}</span>
+    </div>
+
+    <div class="table-scrollable" *ngIf="!loading">
 
         <!-- Column headers -->
         <div class="table-head" [style.grid-template-columns]="gridTemplate">
@@ -61,20 +67,25 @@
             </div>
         </div>
 
-        <!-- Loading -->
-        <div class="loading-state" *ngIf="loading">
-            <i class="bx bx-loader-alt bx-spin"></i>
-            <span>{{ 'admin.tenants.users.loading' | translate }}</span>
-        </div>
-
         <!-- Data rows -->
-        <ng-container *ngIf="!loading">
+        <ng-container>
             <div class="table-row" *ngFor="let user of pagedUsers; let i = index; trackBy: trackById" [style.grid-template-columns]="gridTemplate">
 
                 <span class="cell-row-number">{{ getRowNumber(i) }}</span>
 
                 <ng-container *ngFor="let col of tableConfig.columns; trackBy: trackByKey">
                     <ng-container [ngSwitch]="col.type">
+
+                        <!-- user-cell -->
+                        <div *ngSwitchCase="'user-cell'" class="user-cell">
+                            <div class="avatar" [ngClass]="getRoleClass(user.rol?.name ?? '')">
+                                {{ getInitials(user) }}
+                            </div>
+                            <div class="user-info">
+                                <span class="user-name">{{ user.first_name }} {{ user.last_name }}</span>
+                                <span class="user-phone">{{ user.telephone }}</span>
+                            </div>
+                        </div>
 
                         <!-- text -->
                         <span *ngSwitchCase="'text'" class="cell-text">
