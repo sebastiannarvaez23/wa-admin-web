@@ -507,8 +507,101 @@
         }
       },
       "params": {
-        "under-construction": "Esta sección está en construcción",
-        "hint": "La configuración de parámetros estará disponible próximamente."
+        "title": "Parámetros de plataforma",
+        "subtitle": "Gestiona los parámetros globales de configuración agrupados por tipo",
+        "validation": {
+          "required": "Este campo es obligatorio",
+          "minlength": "Mínimo {{min}} caracteres",
+          "maxlength": "Máximo {{max}} caracteres",
+          "pattern-code": "Solo letras mayúsculas y guion bajo (_)",
+          "pattern-name": "Solo letras y espacios, sin caracteres especiales",
+          "pattern-description": "Solo letras y espacios, sin caracteres especiales",
+          "data-type-value": "El valor no es válido para el tipo {{type}}"
+        },
+        "new-param": "Nuevo parámetro",
+        "manage-groups": "Grupos",
+        "loading": "Cargando parámetros...",
+        "empty": "No hay parámetros registrados",
+        "empty-group": "Sin parámetros en este grupo",
+        "data-types": {
+          "STRING": "Texto",
+          "INT": "Entero",
+          "DECIMAL": "Decimal",
+          "BOOL": "Booleano",
+          "JSON": "JSON"
+        },
+        "bool-values": {
+          "true": "Activado",
+          "false": "Desactivado"
+        },
+        "card": {
+          "edit": "Editar parámetro",
+          "delete": "Eliminar parámetro",
+          "toggle-on": "Activo",
+          "toggle-off": "Inactivo"
+        },
+        "modal": {
+          "create-title": "Nuevo parámetro",
+          "edit-title": "Editar parámetro",
+          "code-label": "Código",
+          "code-placeholder": "Ej. MAX_LOGIN_RETRIES",
+          "name-label": "Nombre",
+          "name-placeholder": "Ej. Máximo de reintentos",
+          "description-label": "Descripción",
+          "description-placeholder": "Descripción opcional del parámetro",
+          "group-label": "Grupo",
+          "group-placeholder": "Selecciona un grupo",
+          "data-type-label": "Tipo de dato",
+          "value-label": "Valor",
+          "value-placeholder": "Valor del parámetro",
+          "is-active-label": "Activo",
+          "save": "Guardar",
+          "cancel": "Cancelar",
+          "errors": {
+            "required": "Este campo es obligatorio",
+            "pattern-code": "Solo mayúsculas, números y guiones bajos"
+          }
+        },
+        "groups": {
+          "title": "Grupos de parámetros",
+          "add-btn": "Nuevo grupo",
+          "empty": "No hay grupos registrados",
+          "code-label": "Código",
+          "code-placeholder": "Ej. SECURITY",
+          "name-label": "Nombre",
+          "name-placeholder": "Ej. Seguridad y acceso",
+          "description-label": "Descripción",
+          "description-placeholder": "Descripción del grupo",
+          "form-title-add": "Nuevo grupo",
+          "form-title-edit": "Editar grupo",
+          "save": "Guardar",
+          "cancel": "Cancelar"
+        },
+        "delete-dialog": {
+          "title": "Eliminar parámetro",
+          "message": "¿Estás seguro de que deseas eliminar el parámetro \"{{name}}\"?",
+          "confirm": "Eliminar"
+        },
+        "delete-group-dialog": {
+          "title": "Eliminar grupo",
+          "message": "¿Estás seguro de que deseas eliminar el grupo \"{{name}}\"?",
+          "confirm": "Eliminar"
+        },
+        "notifications": {
+          "load-error": "Error al cargar los parámetros",
+          "create-success": "Parámetro creado correctamente",
+          "create-error": "Error al crear el parámetro",
+          "update-success": "Parámetro actualizado correctamente",
+          "update-error": "Error al actualizar el parámetro",
+          "delete-success": "Parámetro eliminado correctamente",
+          "delete-error": "Error al eliminar el parámetro",
+          "group-create-success": "Grupo creado correctamente",
+          "group-create-error": "Error al crear el grupo",
+          "group-update-success": "Grupo actualizado correctamente",
+          "group-update-error": "Error al actualizar el grupo",
+          "group-delete-success": "Grupo eliminado correctamente",
+          "group-delete-error": "Error al eliminar el grupo"
+        }
       }
     },
     "subscriptions": {

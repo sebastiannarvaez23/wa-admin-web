@@ -23,12 +23,7 @@
                                  [allowEditGeneric]="true">
         </wa-permissions-manager>
 
-        <!-- Params: under construction -->
-        <div class="construction-state" *ngIf="activeTab === 'params'">
-            <i class="bx bx-hard-hat"></i>
-            <span>{{ 'admin.tenants.params.under-construction' | translate }}</span>
-            <p class="construction-hint">{{ 'admin.tenants.params.hint' | translate }}</p>
-        </div>
+        <wa-parameters *ngIf="activeTab === 'params'"></wa-parameters>
     </div>
 
 </div>

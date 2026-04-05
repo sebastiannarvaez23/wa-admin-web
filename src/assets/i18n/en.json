@@ -506,8 +506,101 @@
         }
       },
       "params": {
-        "under-construction": "This section is under construction",
-        "hint": "Parameter configuration will be available soon."
+        "title": "Platform Parameters",
+        "subtitle": "Manage global configuration parameters grouped by type",
+        "validation": {
+          "required": "This field is required",
+          "minlength": "Minimum {{min}} characters",
+          "maxlength": "Maximum {{max}} characters",
+          "pattern-code": "Only uppercase letters and underscore (_)",
+          "pattern-name": "Only letters and spaces, no special characters",
+          "pattern-description": "Only letters and spaces, no special characters",
+          "data-type-value": "Value is not valid for type {{type}}"
+        },
+        "new-param": "New parameter",
+        "manage-groups": "Groups",
+        "loading": "Loading parameters...",
+        "empty": "No parameters registered",
+        "empty-group": "No parameters in this group",
+        "data-types": {
+          "STRING": "Text",
+          "INT": "Integer",
+          "DECIMAL": "Decimal",
+          "BOOL": "Boolean",
+          "JSON": "JSON"
+        },
+        "bool-values": {
+          "true": "Enabled",
+          "false": "Disabled"
+        },
+        "card": {
+          "edit": "Edit parameter",
+          "delete": "Delete parameter",
+          "toggle-on": "Active",
+          "toggle-off": "Inactive"
+        },
+        "modal": {
+          "create-title": "New parameter",
+          "edit-title": "Edit parameter",
+          "code-label": "Code",
+          "code-placeholder": "e.g. MAX_LOGIN_RETRIES",
+          "name-label": "Name",
+          "name-placeholder": "e.g. Max login retries",
+          "description-label": "Description",
+          "description-placeholder": "Optional parameter description",
+          "group-label": "Group",
+          "group-placeholder": "Select a group",
+          "data-type-label": "Data type",
+          "value-label": "Value",
+          "value-placeholder": "Parameter value",
+          "is-active-label": "Active",
+          "save": "Save",
+          "cancel": "Cancel",
+          "errors": {
+            "required": "This field is required",
+            "pattern-code": "Only uppercase letters, numbers and underscores"
+          }
+        },
+        "groups": {
+          "title": "Parameter Groups",
+          "add-btn": "New group",
+          "empty": "No groups registered",
+          "code-label": "Code",
+          "code-placeholder": "e.g. SECURITY",
+          "name-label": "Name",
+          "name-placeholder": "e.g. Security & Access",
+          "description-label": "Description",
+          "description-placeholder": "Group description",
+          "form-title-add": "New group",
+          "form-title-edit": "Edit group",
+          "save": "Save",
+          "cancel": "Cancel"
+        },
+        "delete-dialog": {
+          "title": "Delete parameter",
+          "message": "Are you sure you want to delete the parameter \"{{name}}\"?",
+          "confirm": "Delete"
+        },
+        "delete-group-dialog": {
+          "title": "Delete group",
+          "message": "Are you sure you want to delete the group \"{{name}}\"?",
+          "confirm": "Delete"
+        },
+        "notifications": {
+          "load-error": "Error loading parameters",
+          "create-success": "Parameter created successfully",
+          "create-error": "Error creating parameter",
+          "update-success": "Parameter updated successfully",
+          "update-error": "Error updating parameter",
+          "delete-success": "Parameter deleted successfully",
+          "delete-error": "Error deleting parameter",
+          "group-create-success": "Group created successfully",
+          "group-create-error": "Error creating group",
+          "group-update-success": "Group updated successfully",
+          "group-update-error": "Error updating group",
+          "group-delete-success": "Group deleted successfully",
+          "group-delete-error": "Error deleting group"
+        }
       }
     },
     "subscriptions": {

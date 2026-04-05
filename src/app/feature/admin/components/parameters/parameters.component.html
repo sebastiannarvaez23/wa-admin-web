@@ -1,0 +1,282 @@
+<!-- ── Page header ──────────────────────────────────────────────────────── -->
+<div class="page-header">
+    <div>
+        <h2>{{ 'admin.tenants.params.title' | translate }}</h2>
+        <p class="subtitle">{{ 'admin.tenants.params.subtitle' | translate }}</p>
+    </div>
+    <div class="header-actions">
+        <wa-btn variant="secondary" (clicked)="showGroupsModal = true">
+            <i class="bx bx-category"></i>
+            {{ 'admin.tenants.params.manage-groups' | translate }}
+        </wa-btn>
+        <wa-btn (clicked)="openCreateParam()">
+            <i class="bx bx-plus"></i>
+            {{ 'admin.tenants.params.new-param' | translate }}
+        </wa-btn>
+    </div>
+</div>
+
+<!-- ── Scrollable content ──────────────────────────────────────────────── -->
+<div waScrollable>
+
+    <!-- Loading -->
+    <div class="loading-state" *ngIf="loading">
+        <i class="bx bx-loader-alt bx-spin"></i>
+        <span>{{ 'admin.tenants.params.loading' | translate }}</span>
+    </div>
+
+    <!-- Grouped parameter cards -->
+    <ng-container *ngIf="!loading">
+
+        <!-- Empty state -->
+        <div class="empty-state-params" *ngIf="grouped.length === 0">
+            <i class="bx bx-slider-alt"></i>
+            <span>{{ 'admin.tenants.params.empty' | translate }}</span>
+        </div>
+
+        <!-- Grouped sections -->
+        <ng-container *ngFor="let group of grouped; trackBy: trackByGroupId">
+
+            <!-- Group divider -->
+            <div class="group-divider">
+                <span class="group-label">
+                    <i class="bx bx-category"></i>
+                    {{ group.type.name }}
+                </span>
+                <span class="group-code">{{ group.type.code }}</span>
+                <div class="group-line"></div>
+            </div>
+
+            <!-- Parameter cards -->
+            <div class="param-cards" *ngIf="group.params.length > 0">
+                <div class="param-card" *ngFor="let p of group.params; trackBy: trackById"
+                     [class.inactive]="!p.is_active">
+
+                    <div class="param-card-body">
+                        <div class="param-main">
+                            <span class="param-code">{{ p.code }}</span>
+                            <span class="param-name">{{ p.name }}</span>
+                        </div>
+
+                        <div class="param-value-area">
+                            <span class="param-type-badge">{{ 'admin.tenants.params.data-types.' + p.data_type | translate }}</span>
+                            <span class="param-value" [class.json-value]="p.data_type === 'JSON'">{{ displayValue(p) }}</span>
+                        </div>
+                    </div>
+
+                    <div class="param-card-actions">
+                        <button class="icon-btn" [class.toggle-on]="p.is_active"
+                                [class.toggle-off]="!p.is_active" (click)="toggleActive(p)"
+                                [title]="(p.is_active ? 'admin.tenants.params.card.toggle-on' : 'admin.tenants.params.card.toggle-off') | translate">
+                            <i class="bx" [ngClass]="p.is_active ? 'bx-toggle-right' : 'bx-toggle-left'"></i>
+                        </button>
+                        <button class="icon-btn edit" (click)="openEditParam(p)"
+                                [title]="'admin.tenants.params.card.edit' | translate">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="icon-btn delete" (click)="confirmDeleteParam(p)"
+                                [title]="'admin.tenants.params.card.delete' | translate">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty group -->
+            <div class="empty-group" *ngIf="group.params.length === 0">
+                <i class="bx bx-info-circle"></i>
+                <span>{{ 'admin.tenants.params.empty-group' | translate }}</span>
+            </div>
+
+        </ng-container>
+    </ng-container>
+
+</div>
+
+<!-- ── Create / Edit parameter modal ───────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showParamModal" (click)="closeParamModal()">
+    <div class="modal-card" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ (editingParam
+                ? 'admin.tenants.params.modal.edit-title'
+                : 'admin.tenants.params.modal.create-title') | translate }}</h3>
+            <button class="modal-close" (click)="closeParamModal()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="modal-form" [formGroup]="paramForm">
+
+            <div class="form-row-2">
+                <wa-form-field formControlName="code"
+                    [label]="'admin.tenants.params.modal.code-label' | translate"
+                    [placeholder]="'admin.tenants.params.modal.code-placeholder' | translate"
+                    [invalid]="isParamInvalid('code')"
+                    [errorMessage]="getParamError('code')"
+                    allowed="letters"
+                    [extraChars]="'_'"
+                    [allowSpaces]="false"
+                    [uppercase]="true"
+                    [maxLength]="20"
+                    [showCount]="true">
+                </wa-form-field>
+                <wa-form-field formControlName="name"
+                    [label]="'admin.tenants.params.modal.name-label' | translate"
+                    [placeholder]="'admin.tenants.params.modal.name-placeholder' | translate"
+                    [invalid]="isParamInvalid('name')"
+                    [errorMessage]="getParamError('name')"
+                    [maxLength]="30"
+                    [showCount]="true">
+                </wa-form-field>
+            </div>
+
+            <wa-form-field formControlName="description"
+                [label]="'admin.tenants.params.modal.description-label' | translate"
+                [placeholder]="'admin.tenants.params.modal.description-placeholder' | translate"
+                [invalid]="isParamInvalid('description')"
+                [errorMessage]="getParamError('description')"
+                [maxLength]="120"
+                [showCount]="true">
+            </wa-form-field>
+
+            <div class="form-row-2">
+                <div class="select-wrapper">
+                    <label class="select-label">{{ 'admin.tenants.params.modal.group-label' | translate }}</label>
+                    <select formControlName="parameter_type" class="native-select"
+                            [class.invalid]="isParamInvalid('parameter_type')">
+                        <option value="">{{ 'admin.tenants.params.modal.group-placeholder' | translate }}</option>
+                        <option *ngFor="let t of parameterTypes" [value]="t.id">{{ t.name }}</option>
+                    </select>
+                </div>
+                <div class="select-wrapper">
+                    <label class="select-label">{{ 'admin.tenants.params.modal.data-type-label' | translate }}</label>
+                    <select formControlName="data_type" class="native-select">
+                        <option *ngFor="let dt of dataTypes" [value]="dt">
+                            {{ 'admin.tenants.params.data-types.' + dt | translate }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <wa-form-field formControlName="value"
+                [label]="'admin.tenants.params.modal.value-label' | translate"
+                [placeholder]="'admin.tenants.params.modal.value-placeholder' | translate"
+                [invalid]="isParamInvalid('value')"
+                [errorMessage]="getParamError('value')">
+            </wa-form-field>
+
+        </div>
+
+        <div class="modal-footer">
+            <wa-btn variant="secondary" [disabled]="saving" (clicked)="closeParamModal()">
+                {{ 'admin.tenants.params.modal.cancel' | translate }}
+            </wa-btn>
+            <wa-btn [loading]="saving" (clicked)="saveParam()">
+                {{ 'admin.tenants.params.modal.save' | translate }}
+            </wa-btn>
+        </div>
+    </div>
+</div>
+
+<!-- ── Groups management modal ─────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showGroupsModal" (click)="showGroupsModal = false">
+    <div class="modal-card senders-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ 'admin.tenants.params.groups.title' | translate }}</h3>
+            <button class="modal-close" (click)="showGroupsModal = false">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+
+        <div class="senders-body">
+            <div class="senders-toolbar">
+                <wa-btn variant="secondary" size="sm"
+                    (clicked)="openGroupForm()">
+                    <i class="bx bx-plus"></i>
+                    {{ 'admin.tenants.params.groups.add-btn' | translate }}
+                </wa-btn>
+            </div>
+
+            <div class="senders-list">
+                <div class="sender-item" *ngFor="let g of parameterTypes; trackBy: trackById">
+                    <div class="sender-info">
+                        <div class="sender-info-row">
+                            <span class="sender-name">{{ g.name }}</span>
+                            <span class="sender-email">{{ g.code }}</span>
+                        </div>
+                        <span class="group-description" *ngIf="g.description">{{ g.description }}</span>
+                    </div>
+                    <div class="sender-item-actions">
+                        <button class="icon-btn edit" (click)="openGroupForm(g)"
+                                [title]="'admin.tenants.params.groups.form-title-edit' | translate">
+                            <i class="bx bx-edit"></i>
+                        </button>
+                        <button class="icon-btn delete" (click)="confirmDeleteGroup(g)"
+                                [title]="'admin.tenants.params.delete-group-dialog.title' | translate">
+                            <i class="bx bx-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="senders-empty" *ngIf="parameterTypes.length === 0">
+                    <i class="bx bx-category"></i>
+                    <span>{{ 'admin.tenants.params.groups.empty' | translate }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Group form modal ────────────────────────────────────────────────── -->
+<div class="modal-overlay" *ngIf="showGroupForm" (click)="cancelGroupForm()">
+    <div class="modal-card sender-form-modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h3>{{ (editingGroup
+                ? 'admin.tenants.params.groups.form-title-edit'
+                : 'admin.tenants.params.groups.form-title-add') | translate }}</h3>
+            <button class="modal-close" (click)="cancelGroupForm()">
+                <i class="bx bx-x"></i>
+            </button>
+        </div>
+        <form [formGroup]="groupForm" (ngSubmit)="saveGroup()">
+            <div class="sender-form-body">
+                <wa-form-field formControlName="code"
+                    [label]="'admin.tenants.params.groups.code-label' | translate"
+                    [placeholder]="'admin.tenants.params.groups.code-placeholder' | translate"
+                    [invalid]="isGroupInvalid('code')"
+                    [errorMessage]="getGroupError('code')"
+                    allowed="letters"
+                    [extraChars]="'_'"
+                    [allowSpaces]="false"
+                    [uppercase]="true"
+                    [maxLength]="20"
+                    [showCount]="true">
+                </wa-form-field>
+                <wa-form-field formControlName="name"
+                    [label]="'admin.tenants.params.groups.name-label' | translate"
+                    [placeholder]="'admin.tenants.params.groups.name-placeholder' | translate"
+                    [invalid]="isGroupInvalid('name')"
+                    [errorMessage]="getGroupError('name')"
+                    [maxLength]="30"
+                    [showCount]="true">
+                </wa-form-field>
+                <wa-form-field formControlName="description"
+                    [label]="'admin.tenants.params.groups.description-label' | translate"
+                    [placeholder]="'admin.tenants.params.groups.description-placeholder' | translate"
+                    [invalid]="isGroupInvalid('description')"
+                    [errorMessage]="getGroupError('description')"
+                    [maxLength]="120"
+                    [showCount]="true">
+                </wa-form-field>
+            </div>
+            <div class="modal-footer">
+                <wa-btn variant="secondary" type="button" (clicked)="cancelGroupForm()">
+                    {{ 'admin.tenants.params.groups.cancel' | translate }}
+                </wa-btn>
+                <wa-btn type="submit" [disabled]="groupForm.invalid || savingGroup">
+                    <i class="bx" [ngClass]="editingGroup ? 'bx-check' : 'bx-plus'"></i>
+                    {{ 'admin.tenants.params.groups.save' | translate }}
+                </wa-btn>
+            </div>
+        </form>
+    </div>
+</div>

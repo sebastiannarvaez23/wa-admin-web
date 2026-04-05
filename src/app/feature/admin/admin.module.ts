@@ -21,6 +21,7 @@ import { TenantUsersComponent } from './components/tenant-users/tenant-users.com
 import { PermissionsManagerComponent } from '../platform/roles/components/permissions-manager/permissions-manager.component';
 import { CommunicationsPageComponent } from './pages/communications/communications-page.component';
 import { EmailTemplatesComponent } from './components/email-templates/email-templates.component';
+import { ParametersComponent } from './components/parameters/parameters.component';
 
 @NgModule({
     declarations: [
@@ -38,6 +39,7 @@ import { EmailTemplatesComponent } from './components/email-templates/email-temp
         PermissionsManagerComponent,
         CommunicationsPageComponent,
         EmailTemplatesComponent,
+        ParametersComponent,
     ],
     imports: [
         CommonModule,
