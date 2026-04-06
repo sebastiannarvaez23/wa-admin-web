@@ -9,6 +9,14 @@
     overflow: hidden;
 }
 
+/* ── Loading state (override absolute positioning from admin-users) ───── */
+
+.loading-state {
+    position: static;
+    background: none;
+    padding: 80px 20px;
+}
+
 /* ── Group divider ───────────────────────────────────────────────────────── */
 
 .group-divider {
